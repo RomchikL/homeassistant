@@ -1,0 +1,138 @@
+#yandex_smart_home:
+notifier:
+  - oauth_token: !secret yaha-oauth_token
+    skill_id: !secret yaha-skill_id 
+    user_id: !secret yaha-user_id 
+    
+
+    # Если в диалоге авторизовано несколько пользователей Home Assistant или
+    # к одному Home Assistant подключено несколько навыков - на каждое сочетание
+    # диалог/пользователь_HA нужно добавить отдельные записи:
+#    - oauth_token: XXXXXXXXXXXXXXXXXXXXXXXXXXX  # запрашивается с аккаунта владельца диалога, в котором авторизован user_id
+#      skill_id: xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx
+#      user_id: yyyyyyyyyyyyyyyyyyyyyyyyyyyy
+
+
+filter:
+  include_entities:
+################# Зал ######################
+    - fan.lr_humidifier
+    - switch.lr_pb_server
+    - switch.lr_belaya
+    - light.lamp_1s
+    - media_player.android_tv_192_168_1_150
+################# Кухня ######################
+    - switch.kn_led_flower
+    - switch.kn_fir
+################# Коридор ######################
+    - camera.laxicam_mini7s
+################# Разобрать ######################
+    - switch.light_in_kn_lamps
+    - switch.light_in_kn_lenta
+    - switch.light_in_lr_lenta
+    - switch.light_in_lr_lamp
+#  include_domains:
+#    - media_player
+entity_config:
+################# Зал ######################
+  fan.lr_humidifier:
+     name: Дуся
+     room: Зал
+     type: devices.types.humidifier
+     properties:
+       - type: temperature
+         entity: sensor.lr_humidifier_temperature
+       - type: humidity # если хочется переместить датчик "из атрибута" в конец списка
+         attribute: humidity
+       - type: water_level
+         entity: binary_sensor.lr_humidifier_water
+     modes:
+       fan_speed:
+         auto: ['Humidity']
+         low: ['Low']
+         medium: ['Medium']
+         high: ['High']
+
+  switch.lr_pb_server:
+    type: devices.types.socket
+    name: Розетка сервера
+    room: Зал
+    properties:
+      - type: voltage
+        entity: sensor.lr_pb_server_voltage
+      - type: amperage
+        entity: sensor.lr_pb_server_amperage
+      - type: power
+        entity: sensor.lr_pb_server_power
+        
+  media_player.android_tv_192_168_1_150:
+    type: devices.types.media_device.tv_box
+    name: Телевизор
+    room: Зал
+    
+  light.lamp_1s:
+    name: Настольная лампа
+    room: Зал
+    
+  switch.lr_belaya:
+    type: devices.types.light
+    name: Фонарики
+    room: Зал
+    
+################# Кухня ######################
+  switch.kn_led_flower:
+     type: devices.types.light
+     name: Лента для цветов
+     room: Кухня
+     properties:
+       - type: voltage
+         entity: sensor.kn_led_flower_voltage
+       - type: amperage
+         entity: sensor.kn_led_flower_amperage
+       - type: power
+         entity: sensor.kn_led_flower_power
+         
+  switch.kn_fir:
+    type: devices.types.light
+    name: Ёлочки
+    room: Кухня
+    properties:
+      - type: voltage
+        entity: sensor.kn_fir_voltage
+      - type: amperage
+        entity: sensor.kn_fir_amperage
+      - type: power
+        entity: sensor.kn_fir_power 
+
+################# Коридор ######################
+  camera.laxicam_mini7s:
+    type: devices.types.camera
+    name: Камера в коридоре
+    room: Коридор
+    
+################# Разобрать ######################
+  switch.light_in_kn_lamps:
+    type: devices.types.light #light
+    name: Лампочки
+    room: Кухня
+  switch.light_in_kn_lenta:
+    type: devices.types.light #light
+    name: Лента
+    room: Кухня
+  switch.light_in_lr_lenta:
+    type: devices.types.light
+    name: Лента
+    room: Гостиная
+  switch.light_in_lr_lamp:
+    type: devices.types.light
+    name: Лампочки
+    room: Гостиная
+
+
+
+   
+    
+    
+    
+    
+

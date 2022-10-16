@@ -1,0 +1,11 @@
+title: My home
+views:
+  - !include lovelace/001_telemetry.yaml
+  - !include lovelace/002_logic.yaml
+  - !include lovelace/100_lr_compl.yaml
+  - !include lovelace/110_kn_compl.yaml
+  - !include lovelace/120_cr_compl.yaml
+  - !include lovelace/130_outdoor.yaml
+
+  
+  

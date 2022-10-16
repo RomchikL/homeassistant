@@ -1,0 +1,41 @@
+##################   Corridor
+title: Коридор
+icon: phu:rooms-other
+cards:
+
+############################ Колонка 1 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Видеонаблюдение**
+
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+            - type: picture-glance
+              title: Камера
+              show_name: false
+              entities:
+#               - entity: switch.laxi_mini7s_an_kai_v300_8m_motion_alarm
+#               - entity: switch.laxi_mini7s_an_kai_v300_8m_sound_detection
+               - entity: input_button.laxi_mini7s
+                 tap_action:
+                    action: call-service
+                    service: input_button.press
+                    service_data:
+                      entity_id: input_button.laxi_mini7s
+              camera_image: camera.laxicam_mini7s
+              camera_view: live
+#            - type: entities
+#              show_header_toggle: false
+#              entities:
+#                # - entity: sensor.reolink_411_ws_last_event
+#                #   name: Последнее событие
+#                - entity: switch.0x00158d0003f46bb6_l2

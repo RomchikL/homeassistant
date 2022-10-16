@@ -1,0 +1,361 @@
+lr_telegram_lamp_1s:
+
+
+    template:
+    
+      - sensor:
+      
+          - name: lr_lamp_1s_color
+            state: >
+              {% if is_state('light.lamp_1s', 'on') %}
+              {{ (1000000/state_attr('light.lamp_1s', 'color_temp') ) | float |round(0)}}
+              {% else %}
+              Выключено
+              {% endif %}
+              
+          - name: lr_lamp_1s_brightness
+            state: >
+              {% if is_state('light.lamp_1s', 'on') %}
+              {{ (state_attr('light.lamp_1s', 'brightness') / 2.55 ) | float |round(0)}}
+              {% else %}
+              0
+              {% endif %}
+              
+          - name: lr_lamp_1s_effect
+            state: >
+              {% if is_state('light.lamp_1s', 'on') and (state_attr('light.lamp_1s', 'effect') != null) %}
+              {{ state_attr('light.lamp_1s', 'effect') }}
+              {% else %}
+              Выключено
+              {% endif %}
+              
+              
+    automation:
+
+    ## Управление основными параметрами лампы
+      - id: Настольная лампа в гостиной
+        alias: lr_telegram_lamp_1s_menu_control
+        initial_state: true
+        trigger: 
+          - platform: event
+            event_type: telegram_callback
+            event_data: {}
+        action:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/lr_lamp_1s_control'' }}'
+                sequence:
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: &msg_lr_lamp1s |
+                        {{'\U0001F4F1'}} Гостиная, настольная лампа:
+                        {{'\U0001F308'}} Цвет - {{ states('sensor.lr_lamp_1s_color') }}
+                        {{'\U0001F4A1'}} Яркость - {{ states('sensor.lr_lamp_1s_brightness') }} %
+                        {{'\U0001FA84'}} Эффект - {{states('sensor.lr_lamp_1s_effect') }}
+                      inline_keyboard: &keyb_lr_lamp1s
+                        - '{{''\U0001F4A1''}} Лампа - {% if is_state(''light.lamp_1s'', ''off'')%}{{''🔴''}}{% elif is_state(''light.lamp_1s'', ''on'')%}{{''🟢''}}{% else %}{{''🟡''}}{% endif %}:/toggle_lr_lamp_1s_local'
+                        - '{{''\U0001F505''}} Яркость -10%:/brightness_down_lamp_1s, {{''\U0001F506''}} Яркость +10%:/brightness_up_lamp_1s'
+                        - '{{''\U0001FA84''}} Эффекты:/effect_lr_lamp_1s, {{''\U0001F308''}} Цвет:/color_lr_lamp_1s'
+                        - '{{''\U000021A9''}} Вернуться:/lr_control , {{''\U000021AA''}} Обновить:/lr_lamp_1s_control' 
+                        
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/toggle_lr_lamp_1s_local'' }}'
+                sequence:
+                  - service: light.toggle
+                    entity_id: light.lamp_1s
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - {% if is_state('light.lamp_1s', 'on') %} Включена {% else %} Выключена {% endif %} 
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s
+                      inline_keyboard: *keyb_lr_lamp1s
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/brightness_down_lamp_1s'' }}'
+                  - condition: state
+                    entity_id: light.lamp_1s
+                    state: 'on'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data_template:
+                      brightness_pct: > 
+                        {% set brightness = states('sensor.lr_lamp_1s_brightness') | float  -10 %}
+                        {% if brightness < 1 %}
+                          1
+                        {% else %}
+                          {{ brightness }}
+                        {% endif %}
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Текущая яркость - {{ states('sensor.lr_lamp_1s_brightness') }} %
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s
+                      inline_keyboard: *keyb_lr_lamp1s
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/brightness_up_lamp_1s'' }}'
+                  - condition: state
+                    entity_id: light.lamp_1s
+                    state: 'on'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data_template:
+                      brightness_pct: > 
+                        {% set brightness = states('sensor.lr_lamp_1s_brightness') | float +10 %}
+                        {% if brightness > 100 %}
+                          100
+                        {% else %}
+                          {{ brightness }}
+                        {% endif %}
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Текущая яркость - {{ states('sensor.lr_lamp_1s_brightness') }} %
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s
+                      inline_keyboard: *keyb_lr_lamp1s
+
+    ## Управление цветом лампы
+      - id: Настольная лампа меню управления цветом
+        alias: lr_telegram_lamp_1s_color
+        initial_state: true
+        trigger: 
+          - platform: event
+            event_type: telegram_callback
+            event_data: {}
+        action:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/color_lr_lamp_1s'' }}'
+                sequence:
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: &msg_lr_lamp1s_color |
+                        {{'\U0001F4F1'}} Гостиная, настольная лампа:
+                        {{'\U0001F308'}} Цвет - {{ states('sensor.lr_lamp_1s_color') }}
+                        {{'\U0001F4A1'}} Яркость - {{ states('sensor.lr_lamp_1s_brightness') }}
+                        {{'\U0001FA84'}} Эффект - {{states('sensor.lr_lamp_1s_effect') }}
+                      inline_keyboard: &keyb_lr_lamp1s_color
+                        - '2600 К:/lr_lamp_1s_2600 , 3500 К:/lr_lamp_1s_3500 , 4000 К:/lr_lamp_1s_4000 , 5000 К:/lr_lamp_1s_5000'
+                        - '{{''\U000021A9''}} Вернуться:/lr_lamp_1s_control , {{''\U000021AA''}} Обновить:/color_lr_lamp_1s' 
+                        
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/lr_lamp_1s_2600'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      color_temp: 384
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен цвет 2600 К
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_color
+                      inline_keyboard: *keyb_lr_lamp1s_color
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/lr_lamp_1s_3500'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      color_temp: 286
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен цвет 3500 К
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_color
+                      inline_keyboard: *keyb_lr_lamp1s_color
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/lr_lamp_1s_4000'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      color_temp: 250
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен цвет 4000 К
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_color
+                      inline_keyboard: *keyb_lr_lamp1s_color
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/lr_lamp_1s_5000'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      color_temp: 200
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен цвет 5000 К
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_color
+                      inline_keyboard: *keyb_lr_lamp1s_color
+                      
+    ## Управление эффектами лампы
+      - id: Настольная лампа меню управления эффектами
+        alias: lr_telegram_lamp_1s_effect
+        initial_state: true
+        trigger: 
+          - platform: event
+            event_type: telegram_callback
+            event_data: {}
+        action:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/effect_lr_lamp_1s'' }}'
+                sequence:
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: &msg_lr_lamp1s_effect |
+                        {{'\U0001F4F1'}} Гостиная, настольная лампа:
+                        {{'\U0001F308'}} Цвет - {{ states('sensor.lr_lamp_1s_color') }}
+                        {{'\U0001F4A1'}} Яркость - {{ states('sensor.lr_lamp_1s_brightness') }}
+                        {{'\U0001FA84'}} Эффект - {{states('sensor.lr_lamp_1s_effect') }}
+                      inline_keyboard: &keyb_lr_lamp1s_effect
+                        - 'Slow Temp:/slow_temp_lr_lamp_1s , Stop:/stop_temp_lr_lamp_1s'
+                        - '{{''\U000021A9''}} Вернуться:/lr_lamp_1s_control , {{''\U000021AA''}} Обновить:/effect_lr_lamp_1s'
+                        
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/slow_temp_lr_lamp_1s'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      effect: Slow Temp
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен эффект Slow Temp
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_effect
+                      inline_keyboard: *keyb_lr_lamp1s_effect
+                
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/stop_temp_lr_lamp_1s'' }}'
+                sequence:
+                  - service: light.turn_on
+                    entity_id: light.lamp_1s
+                    data:
+                      effect: Stop
+                  - delay: 00:00:01
+                  - service: telegram_bot.answer_callback_query
+                    data:
+                      callback_query_id: "{{ trigger.event.data.id }}"
+                      message: | 
+                          {{"\U0001F4AC"}} Настольная лампа - установлен эффект Stop
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: *msg_lr_lamp1s_effect
+                      inline_keyboard: *keyb_lr_lamp1s_effect
+                        
+                        
+                        
+              

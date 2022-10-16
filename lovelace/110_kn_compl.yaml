@@ -1,0 +1,204 @@
+##################   Kitchen
+title: Кухня
+icon: phu:rooms-dining
+cards:
+
+
+############################ Колонка 1 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Управление**
+             
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              content: >
+                 **Освещение**
+            - type: horizontal-stack
+              cards:        
+                - type: button
+                  entity: switch.kn_led_flower
+                  name: Цветы
+                  tap_action:
+                    action: toggle
+                    
+                - type: button
+                  entity: switch.light_in_kn_lamps
+                  name: Лампочки
+                  tap_action:
+                    action: toggle                    
+                    
+                - type: button
+                  entity: switch.light_in_kn_lenta
+                  name: Лента
+                  tap_action:
+                    action: toggle
+                    
+                - type: button
+                  entity: switch.kn_fir
+                  name: Ёлочки
+                  tap_action:
+                    action: toggle
+                    
+                    
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+
+            - type: markdown
+              style: |
+                  ha-card {
+                    color: #f8ffd8;
+                    --paper-item-icon-color: #f8ffd8;
+                    --paper-item-icon-active-color: #f8ffd8;
+                    font-weight: bold;
+                    font-size: 14px;
+                  } 
+              content: >
+                **Розетки**
+
+
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.kn_led_flower
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.kn_led_flower", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Цветы
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.kn_led_flower_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.kn_led_flower_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.kn_led_flower_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.kn_led_flower_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.kn_led_flower_energy
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.kn_led_flower_energy')}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
+                    
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.kn_fir
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.kn_fir", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Ёлочки
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.kn_fir_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.kn_fir_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.kn_fir_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.kn_fir_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.kn_fir_energy
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.kn_fir_energy')}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
+
+
+
+############################ Колонка 2 ############################
+
+        
+    - type: custom:mini-media-player
+      entity: media_player.kn_yandex_station_mini
+      artwork: cover
+      sound_mode: icon
+      shortcuts:
+        attribute: sound_mode
+        buttons:
+          - icon: 'mdi:account-voice'
+            id: Произнеси текст
+            type: sound_mode
+          - icon: 'mdi:robot'
+            id: Выполни команду
+            type: sound_mode
+          - icon: 'mdi:playlist-star'
+            id: включи мою любимую музыку вперемешку
+            type: command
+          - icon: 'mdi:playlist-music'
+            id: включи плейлист дня
+            type: command
+          - icon: 'mdi:heart'
+            id: лайк
+            type: command
+          - icon: 'mdi:heart-off'
+            id: снять лайк
+            type: command
+        columns: 6
+      hide:
+        sound_mode: true
+        runtime: false
+      tts:
+        platform: yandex_station
+

@@ -1,0 +1,227 @@
+##################   Living room
+title: Гостиная
+icon: phu:rooms-living
+cards:
+
+
+############################ Колонка 1 ############################
+
+    - type: vertical-stack
+      cards:
+      
+      - type: markdown
+        style: |
+            ha-card {
+              font-size: 26px;
+            }  
+        content: >
+            **Управление**
+
+      - type: media-control
+        entity: media_player.android_tv_192_168_1_150
+        
+      - type: custom:mushroom-media-player-card
+        entity: media_player.android_tv_192_168_1_150
+        name: Tox
+        icon: phu:telnet
+        use_media_info: true
+        show_volume_level: true
+        media_controls:
+          - on_off
+          - play_pause_stop
+        volume_controls:
+          - volume_set
+          - volume_mute
+          - volume_buttons
+        collapsible_controls: true
+        
+
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+
+          - type: markdown
+            style: |
+                 ha-card {
+                   color: #f8ffd8;
+                   --paper-item-icon-color: #f8ffd8;
+                   --paper-item-icon-active-color: #f8ffd8;
+                   font-weight: bold;
+                   font-size: 14px;
+                 } 
+            content: >
+               **Розетки**
+
+
+          - type: custom:mushroom-chips-card
+            alignment: start
+            chips:   
+ 
+            - type: template
+              entity: switch.lr_pb_server
+              icon: phu:socket-eu
+              icon_color: |-
+                {% if is_state("switch.lr_pb_server", "on") %}
+                green
+                {% else %}
+                red
+                {% endif %}
+              content: |-
+                Розетка сервера
+              tap_action:
+                action: toggle
+              
+            - type: template
+              entity: sensor.lr_pb_server_power
+              icon: mdi:lightning-bolt-circle
+              icon_color: green
+              content: |-
+                  {{states ('sensor.lr_pb_server_power')}} Ватт
+              tap_action:
+                action: more-info
+              
+            - type: template
+              entity: sensor.lr_pb_server_voltage
+              icon: mdi:sine-wave
+              icon_color: green
+              content: |-
+                  {{states ('sensor.lr_pb_server_voltage')}} В
+              tap_action:
+                action: more-info
+              
+            - type: template
+              entity: sensor.lr_pb_server_energy
+              icon: mdi:home-lightning-bolt
+              icon_color: light-green
+              content: |-
+                  {{states ('sensor.lr_pb_server_energy')}} KВт*ч
+              tap_action:
+                action: more-info
+                
+          - type: markdown
+            content: >
+               **     **
+                  
+############################ Колонка 2 ############################
+
+
+    - type: custom:stack-in-card
+      mode: vertical
+      cards:  
+        - type: markdown
+          style: |
+               ha-card {
+                 color: #f8ffd8;
+                 --paper-item-icon-color: #f8ffd8;
+                 --paper-item-icon-active-color: #f8ffd8;
+                 font-weight: bold;
+                 font-size: 14px;
+               } 
+          content: >
+             **Освещение**
+        - type: horizontal-stack
+          cards:
+          - type: button
+            name: Лента
+            entity: switch.light_in_lr_lenta
+            tap_action:
+              action: toggle
+              
+          - type: button
+            name: Лампочки
+            entity: switch.light_in_lr_lamp
+            tap_action:
+              action: toggle
+              
+          - type: button
+            name: Настольная
+            entity: light.lamp_1s
+            tap_action:
+              action: toggle
+              
+          - type: button
+            name: Фонарики
+            entity: switch.lr_belaya
+            tap_action:
+              action: toggle
+              
+        - type: conditional
+          conditions:
+            - entity: light.lamp_1s
+              state: "on"
+          card:
+              type: custom:mushroom-light-card
+              entity: light.lamp_1s
+              name: Настольная
+              icon_type: none
+              primary_info: name
+#              secondary_info: none
+              use_light_color: true
+              show_brightness_control: true
+              show_color_temp_control: true
+              show_color_control: false
+              collapsible_controls: true
+            
+            
+            
+            
+############################ Колонка 3 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Климат**
+              
+#        - type: gauge
+#          name: Влажность
+#          unit: '%'
+#          min: 0
+#          max: 100
+#          entity: sensor.airhumidifier_humidity
+#          severity:
+#            yellow: 0
+#            red: 0
+#            blue: 100
+          
+        - type: custom:mini-humidifier
+          entity: fan.lr_humidifier
+          name: Дуся
+          model: 'xiaomi_miio_airpurifier:deerma.humidifier.mjjsq'
+          indicators:
+            status:
+              empty: Пустой
+              filled: Полный
+          
+#        - type: custom:mushroom-humidifier-card
+#          entity: fan.lr_humidifier
+#          layout: horizontal 
+#          name: Дуся
+#          fill_container: true
+#          show_target_humidity_control: true
+#          collapsible_controls: true
+          
+          
+#        - type: custom:logbook-card
+#          entity: switch.socket_pb_server
+#          max_items: 5
+#          title: Розетка сервера, лог работы
+#          duration_labels:
+#            second:  '${value} секунда'
+#            seconds: '${value} секунд'
+#            minute:  '${value} минута'
+#            minutes: '${value} минут'
+#            hour:    '${value} час'
+#            hours:   '${value} часов'
+#            day:     '${value} день'
+#            days:    '${value} дней'  
+     
+
+
+          

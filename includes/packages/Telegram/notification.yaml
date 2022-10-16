@@ -1,0 +1,123 @@
+notification:
+
+    template:
+
+      - sensor:
+
+          - name: admin_1_tg_id
+            state: !secret chat_id_romchik
+            
+          - name: admin_2_tg_id
+            state: !secret chat_id_kitka
+            
+#          - name: user_tg_id
+#            state: !secret chat_id_user
+
+
+    automation:
+
+      - id: Стартовое уведомление
+        alias: start_notification    
+#        initial_state: true
+        trigger:
+          - platform: homeassistant
+            event: start
+        action:  
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                  - !secret chat_id_romchik
+              message: | 
+                   {{"\U0001F4AC"}} pb-server
+                   {{"\U0001F567"}} Запущен в {{ states('sensor.time_date') }} 
+                   {{"\U0001F4C3"}} Отчет о состоянии будет через 1 минуту 
+          - delay: 00:01:05
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                  - !secret chat_id_romchik
+              message: | 
+                   {{"\U0001F4AC"}} pb-server 
+                   {{"\U0001F567"}} Отчет за {{ states('sensor.time_date') }}
+                   {{"\U0001F321"}} Сенсоров недоступно - {{ states('sensor.count_sensor_unavailable') }} 
+                   {{"\U0001F51F"}} Бинарных сенсоров недоступно - {{ states('sensor.count_binary_sensor_unavailable') }}
+                   {{"\U0001F4A1"}} Светильников недоступно - {{ states('sensor.count_light_unavailable') }} 
+                   {{"\U0001F50C"}} Реле недоступно - {{ states('sensor.count_switch_unavailable') }} 
+#                   {{"\U00002668"}} Термоголовок недоступно - {{ states('sensor.count_climate_unavailable') }} 
+
+
+    ## Запрос состояния
+      - id: Запрос состояния системы
+        alias: system_status_query
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text in ["Как дела", "как дела", "Отчет", "отчет", "Статус", "статус"] }}
+        action:
+          - service: telegram_bot.send_message
+            data:
+              target: "{{ trigger.event.data.user_id }}"
+              message: | 
+                   {{"\U0001F4AC"}} pb-server
+                   {{"\U0001F567"}} Отчет за {{ states('sensor.time_date') }}
+                   {{"\U0001F4A1"}} Светильников недоступно - {{ states('sensor.count_light_unavailable') }} 
+                   {{"\U0001F50C"}} Реле недоступно - {{ states('sensor.count_switch_unavailable') }} 
+                   {{"\U0001F321"}} Сенсоров недоступно - {{ states('sensor.count_sensor_unavailable') }} 
+                   {{"\U0001F51F"}} Бинарных сенсоров недоступно - {{ states('sensor.count_binary_sensor_unavailable') }}
+            
+      - id: Определение ID
+        alias: telegram_id
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text in ["whoami"] }}
+        action:
+          - service: telegram_bot.send_message
+            data_template:
+              target: "{{ trigger.event.data.chat_id }}"
+              message: |
+                Твой ID {{ trigger.event.data.user_id }}
+                
+    ## Узнать права доступа
+      - id: Кто я
+        alias: whoami
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        action:
+          - choose:
+              - conditions:      
+                  - condition: template
+                    value_template: >-
+                      {{ trigger.event.data.text in ["Кто я?",] }}
+                  - condition: template
+                    value_template: >
+                       {{ trigger.event.data.user_id == (states('sensor.admin_1_tg_id')|int) or trigger.event.data.user_id == (states('sensor.admin_2_tg_id')|int) }}
+                sequence:
+                  - service: telegram_bot.send_message
+                    data:
+                      target: "{{ trigger.event.data.user_id }}"
+                      message: | 
+                           {{"\U0000270B"}} Привет, я тебя узнал, твой ID - {{ trigger.event.data.user_id }}, статус - Администратор, доступ - полный
+              - conditions:      
+                  - condition: template
+                    value_template: >-
+                      {{ trigger.event.data.text in ["Кто я?",] }}
+                  - condition: template
+                    value_template: >
+                       {{ trigger.event.data.user_id == (states('sensor.user_tg_id')|int) }}
+                sequence:
+                  - service: telegram_bot.send_message
+                    data:
+                      target: "{{ trigger.event.data.user_id }}"
+                      message: | 
+                           {{"\U0000270B"}} Привет, я тебя узнал, твой ID - {{ trigger.event.data.user_id }}, статус - Пользователь, доступ - ограничен

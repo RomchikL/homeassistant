@@ -1,0 +1,304 @@
+############################ Логика ############################
+title: Логика
+icon: mdi:format-list-bulleted
+cards:
+
+############################ Колонка 1 ############################
+    - type: vertical-stack
+      cards:
+
+################# Контроль #################
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #009933;
+                     font-weight: bold;
+                     font-size: 20px;
+                   }          
+              content: >
+                 **Контроль**
+                 
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.control*
+                #   state: 'unavailable'
+                   options:
+                      secondary_info: last-changed
+                      state_color: true  
+
+################# Камеры #################
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #009933;
+                     font-weight: bold;
+                     font-size: 20px;
+                   }          
+              content: >
+                 **Камеры**
+                 
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.cam_*
+                #   state: 'unavailable'
+                   options:
+                      secondary_info: last-changed
+                      state_color: true           
+                      
+
+
+################# Кухня #################
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #009933;
+                     font-weight: bold;
+                     font-size: 20px;
+                   }          
+              content: >
+                 **Кухня**
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Освещение**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.kn_ceiling_*
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Ночник**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.kn_gateway_*
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                      
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.kn_*
+                #   state: 'unavailable'
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                exclude:
+                 - entity_id: automation.kn_ceiling_*
+                 - entity_id: automation.kn_gateway_*
+                 
+
+################# Гостиная #################
+
+    - type: vertical-stack
+      cards:
+
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #009933;
+                     font-weight: bold;
+                     font-size: 20px;
+                   }          
+              content: >
+                 **Гостиная**
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Освещение**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.lr_ceiling_*
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Телевизор**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.lr_tox*
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Дуся**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.lr_hum*
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                      
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - entity_id: automation.lr_*
+                #   state: 'unavailable'
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                exclude:
+                 - entity_id: automation.lr_ceiling_*
+                 - entity_id: automation.lr_tox*
+                 - entity_id: automation.lr_hum*
+                      
+
+################# Все #################
+    - type: vertical-stack
+      cards:
+
+
+        - type: markdown
+          style: |
+               ha-card {
+                 color: #f8ffd8;
+                 --paper-item-icon-color: #f8ffd8;
+                 --paper-item-icon-active-color: #009933;
+                 font-weight: bold;
+                 font-size: 26px;
+               }          
+          content: >
+             **Все подряд**
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+      
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 16px;
+                   }          
+              content: >
+                 **Автоматизации**
+            - type: custom:auto-entities
+              show_empty: false
+              card:
+                type: entities
+                show_header_toggle: false
+              filter:
+                include:
+                 - domain: automation
+                #   state: 'unavailable'
+                   options:
+                      secondary_info: last-changed
+                      state_color: true
+                exclude:
+                 - entity_id: automation.lr_*
+#                 - entity_id: automation.cr_*
+                 - entity_id: automation.cam_*
+                 - entity_id: automation.control*
+                 - entity_id: automation.kn_*

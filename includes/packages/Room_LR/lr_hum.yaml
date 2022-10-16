@@ -1,0 +1,232 @@
+lr_hum:
+
+    recorder:
+      include:
+        entities:
+           - fan.lr_humidifier
+           - sensor.lr_humidifier_temperature
+           - sensor.lr_humidifier_humidity
+           
+    homeassistant:
+      customize:
+      
+        fan.lr_hum_dusya:
+          friendly_name: Дуся
+          
+        automation.lr_hum_select_operation_mode_by_input_select:
+          friendly_name: Гостиная - ...1
+          icon: mdi:help
+          
+        automation.lr_hum_select_target_humidity:
+          friendly_name: Гостиная - выбор целевой влажности на Дусе
+          icon: mdi:help
+          
+        automation.lr_hum_monitor_target_humidity_and_update_slider:
+          friendly_name: Гостиная - ...3
+          icon: mdi:help
+          
+        automation.lr_hum_monitor_operation_mode_and_update_input_select:
+          friendly_name: Гостиная - ...4
+          icon: mdi:help
+          
+        automation.lr_hum_water_warning:
+          friendly_name: Гостиная - предупреждение о нехватке воды в Дусе в Телеграм
+          icon: mdi:help
+
+          
+
+    fan:
+        - platform: xiaomi_miio_airpurifier
+          name: lr_humidifier
+          host: 192.168.2.13
+          token: !secret smartmi_hum_token  
+          model: deerma.humidifier.jsq
+          
+    # Контроль уровня воды и снятия бака увлажнителя
+    binary_sensor:
+        - platform: template
+          sensors:
+            lr_humidifier_water:
+              friendly_name: Уровень воды
+              value_template: '{{ states.fan.lr_humidifier.attributes.no_water }}'
+            lr_humidifier_water_tank:
+              friendly_name: Бак с водой
+              value_template: '{{ states.fan.lr_humidifier.attributes.water_tank_detached }}'
+              
+    input_number:
+        lr_humidifier_target_humidity:
+          name: Уровень влажности
+          initial: 50
+          min: 30
+          max: 60
+          step: 1
+            
+    input_select:
+        lr_humidifier_mode:
+          name: "Режим работы:"
+          options:
+            - Low
+            - Medium
+            - High
+            - Humidity
+          icon: "mdi:animation-outline"
+            
+    sensor:
+        - platform: template
+          sensors:
+            lr_humidifier_temperature:
+                friendly_name: Температура на увлажнителе
+                value_template: '{{ states.fan.lr_humidifier.attributes.temperature }}'
+                unit_of_measurement: '°C'
+            lr_humidifier_humidity:
+                friendly_name: Влажность на увлажнителе
+                value_template: '{{ states.fan.lr_humidifier.attributes.humidity }}'
+                unit_of_measurement: '%'
+                icon_template: mdi:water-percent
+            lr_humidifier_target_humidity:
+                friendly_name: Желаемая влажность
+                value_template: '{{ states.fan.lr_humidifier.attributes.target_humidity }}'
+                unit_of_measurement: '%'
+                icon_template: mdi:water-percent
+            lr_humidifier_mode:
+                friendly_name: Air Humidifier Mode
+                value_template: '{{ states.fan.lr_humidifier.attributes.mode }}'
+      
+    switch:
+        - platform: template
+          switches:
+            lr_humidifier_buzzer:
+              friendly_name: "Звук"
+              value_template: "{{ is_state_attr('fan.lr_humidifier', 'buzzer', True) }}"
+              turn_on:
+                service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+                data:
+                  entity_id: fan.lr_humidifier
+              turn_off:
+                service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+                data:
+                  entity_id: fan.lr_humidifier
+              icon_template: "mdi:volume-off"
+              
+            lr_humidifier_led:
+                friendly_name: "LED"
+                value_template: "{{ is_state_attr('fan.lr_humidifier', 'led', True) }}"
+                turn_on:
+                  service: xiaomi_miio_airpurifier.fan_set_led_on
+                  data:
+                    entity_id: fan.lr_humidifier
+                turn_off:
+                  service: xiaomi_miio_airpurifier.fan_set_led_off
+                  data:
+                    entity_id: fan.lr_humidifier
+                icon_template: "mdi:lightbulb-outline"
+                
+            lr_humidifier_on:
+                friendly_name: "Питание"
+                value_template: "{{ is_state('fan.lr_humidifier', 'on') }}"
+                turn_on:
+                  service: fan.turn_on
+                  data:
+                    entity_id: fan.lr_humidifier
+                turn_off:
+                  service: fan.turn_off
+                  data:
+                    entity_id: fan.lr_humidifier
+                icon_template: "mdi:air-humidifier"
+                
+        
+    automation:
+    
+        - alias: lr_hum_select_operation_mode_by_input_select
+          description: Гостиная - выбор режима работы Дуси по Input Select
+          initial_state: true
+          trigger:
+            platform: state
+            entity_id: input_select.lr_humidifier_mode
+          action:
+            service: fan.set_preset_mode
+            data_template:
+              entity_id: fan.lr_humidifier
+              preset_mode: '{{ states.input_select.airhumidifier_mode.state }}' 
+              
+        - alias: lr_hum_select_target_humidity
+          description: Гостиная - выбор целевой влажности на Дусе
+          initial_state: true
+          trigger:
+            platform: state
+            entity_id: input_number.lr_humidifier_target_humidity
+          action:
+            service: xiaomi_miio_airpurifier.fan_set_target_humidity
+            data_template:
+              entity_id: fan.lr_humidifier
+              humidity: '{{ states.input_number.airhumidifier_target_humidity.state|int }}'
+              
+        - alias: lr_hum_monitor_target_humidity_and_update_slider
+          description: Гостиная - ...1
+          initial_state: true
+          trigger:
+            platform: state
+            entity_id: sensor.lr_humidifier_target_humidity
+          action:
+            service: input_number.set_value
+            entity_id: input_number.lr_humidifier_target_humidity
+            data_template:
+              value: '{{ states.fan.lr_humidifier.attributes.target_humidity }}'
+              
+        - alias: lr_hum_monitor_operation_mode_and_update_input_select
+          description: Гостиная - ...2
+          initial_state: true
+          trigger:
+            platform: state
+            entity_id: fan.lr_humidifier
+          action:
+            service: input_select.select_option
+            entity_id: input_select.lr_humidifier_mode
+            data_template:
+              option: '{{ states.fan.lr_humidifier.attributes.preset_mode }}' 
+              
+        - alias: lr_hum_water_warning
+          description: Гостиная - предупреждение о нехватке воды в Дусе в Телеграм
+          initial_state: true
+          trigger:
+           - platform: state
+             entity_id: binary_sensor.lr_humidifier_water
+             to: 'on'
+          condition:
+        ## Увлажнитель включен
+#           - condition: state
+#             entity_id: switch.lr_humidifier_on
+#             state: 'on'
+          action:
+             - service: telegram_bot.send_message
+               data_template:
+                 target:
+                     - !secret chat_id_romchik
+                 message: | 
+                      {{"\U0001F6B1"}} Закончилась вода в Дусе {{ states('sensor.time_date') }}               
+              
+              
+              
+              
+
+              
+              
+              
+
+ 
+           
+    
+    
+    
+
+        
+        
+        
+        
+        
+        
+
+
+
+        
+        

@@ -1,0 +1,11 @@
+lr_light:
+
+    homeassistant:
+      customize:
+
+        light.lamp_1s:
+          friendly_name: Настольная лампа
+          icon: phu:smart-desk-lamp 
+          
+
+             

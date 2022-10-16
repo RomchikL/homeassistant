@@ -1,0 +1,350 @@
+telegram_telemetry:
+
+
+    input_button:
+
+      telemetry_reload:
+        name: Обновление телеметрии
+        icon: mdi:reload
+
+    template:
+
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor:
+          - name: all_light_on
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.light if is_state(entity.entity_id, 'on')   
+                  and not (entity.entity_id.endswith("_virtual"))  %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.light if is_state(entity.entity_id, 'on')   
+                  and not (entity.entity_id.endswith("_virtual"))  %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+                
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor:
+          - name: all_light_unavailable
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.light if is_state(entity.entity_id, 'unavailable')   
+                   and not (entity.entity_id.endswith("_virtual")) %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.light if is_state(entity.entity_id, 'unavailable')   
+                   and not (entity.entity_id.endswith("_virtual")) %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+                
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor:
+          - name: all_switch_on_10
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.switch if is_state(entity.entity_id, 'on')   
+                   and state_attr(entity.entity_id, 'power') |int(0) > 10 %}
+                   {% set variable.value = dict(variable.value, **{entity.name: state_attr(entity.entity_id, 'power') }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.switch if is_state(entity.entity_id, 'on')   
+                   and state_attr(entity.entity_id, 'power') |int(0) > 10 %}
+                   {% set variable.value = dict(variable.value, **{entity.name: state_attr(entity.entity_id, 'power') }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+                
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor:                
+          - name: all_switch_unavailable
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.switch if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.switch if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor: 
+          - name: all_binary_sensor_unavailable
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.binary_sensor if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.binary_sensor if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+      - trigger:
+          - platform: state
+            entity_id: input_button.telemetry_reload
+        sensor: 
+          - name: all_sensor_unavailable
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.sensor if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.sensor if is_state(entity.entity_id, 'unavailable')   %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+                
+
+    automation:
+
+    ## Телеметрия
+      - id: Телеметрия телеграм
+        alias: telegram_telemetry
+        initial_state: true
+        trigger: 
+          - platform: event
+            event_type: telegram_callback
+            event_data: {}
+        action:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/telemetry'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      message: &msg_tlmtr |
+                        {{'\U00002328'}} *Телеметрия:*
+                        * *
+                        {{'\U0001F552'}} *Обновлено в {{ states('sensor.custom_time') }} {{ states('sensor.date') }}*
+                        * *
+                        {{'\U0001F527'}} *Объекты*
+                        {{'\U0001F4A1'}} *Светильники* - {% if (states('sensor.all_light_on') | int) > 0 %} включено {{ states('sensor.all_light_on') }} {% else %} все выключены {% endif %}, {% if (states('sensor.all_light_unavailable') | int) > 0 %} Недоступно - {{ states('sensor.all_light_unavailable') }} {% else %} {{'\U0001F197'}} {% endif %}
+                        {{'\U0001F50C'}} *Реле > 10 Ватт* - {% if (states('sensor.all_switch_on_10') | int) > 0 %} активно {{ states('sensor.all_switch_on_10') }} {% else %} нет активных {% endif %}, {% if (states('sensor.all_switch_unavailable') | int) > 0 %} Недоступно - {{ states('sensor.all_light_unavailable') }} {% else %} {{'\U0001F197'}} {% endif %}
+                        {{'\U0001F51F'}} *Бинарные сенсоры* - {% if (states('sensor.all_binary_sensor_unavailable') | int) > 0 %}недоступно {{ states('sensor.all_binary_sensor_unavailable') }} {% else %} {{'\U0001F197'}} {% endif %}
+                        {{'\U0001F520'}} *Сенсоры* - {% if (states('sensor.all_sensor_unavailable') | int) > 0 %}недоступно - {{ states('sensor.all_sensor_unavailable') }} {% else %} {{'\U0001F197'}} {% endif %}
+                      inline_keyboard: &keyb_tlmtr
+                        - '{{''\U0001F4A1''}} Включенные :/list_light_on , {{''\U000026A0''}} Недоступные :/list_light_unavailable'
+                        - '{{''\U000026A1''}} > 10 Ватт :/list_all_switch_on_10 , {{''\U0001F50C''}} Недоступные :/all_switch_unavailable'
+                        - '{{''\U0001F51F''}} Бинарные сенсоры :/list_all_binary_sensor_unavailable , {{''\U0001F520''}} Сенсоры :/list_all_sensor_unavailable'
+                        - '{{''\U000021A9''}} Вернуться:/menu_back , {{''\U000021AA''}} Обновить:/telemetry' 
+
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/list_light_on'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_light_on') | int) > 0 %} {{"\U0001F4A1"}} *Включенные светильники: * {% else %} *Все светильники выключены* {% endif %}
+                         * *
+                         *{% for entity_name, entity_state in state_attr('sensor.all_light_on', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                      inline_keyboard: *keyb_tlmtr
+
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/list_light_unavailable'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_light_unavailable') | int) > 0 %} {{"\U000026A0"}} *Недоступные светильники: * {% else %} *Все светильники доступны* {% endif %}
+                         * *
+                         *{% for entity_name, entity_state in state_attr('sensor.all_light_unavailable', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                      inline_keyboard: *keyb_tlmtr
+                      
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/list_all_switch_on_10'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_switch_on_10') | int) > 0 %} {{"\U000026A1"}} *Потребление более 10 Ватт:* {% else %} *Потребление на всех реле менее 10 Ватт* {% endif %}
+                         * *
+                         *{% for entity_name, entity_state in state_attr('sensor.all_switch_on_10', 'list_entities')-%} {{ entity_name }} {{ '-' }} {{ entity_state }} {{ 'Ватт' }} {{ '\n' -}} {% endfor %}*
+                      inline_keyboard: *keyb_tlmtr
+
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/all_switch_unavailable'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_switch_unavailable') | int) > 0 %} {{"\U0001F50C"}} *Недоступные реле: * {% else %} *Все реле доступны* {% endif %}
+                         *{% for entity_name, entity_state in state_attr('sensor.all_switch_unavailable', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                         * *
+                      inline_keyboard: *keyb_tlmtr
+
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/list_all_binary_sensor_unavailable'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_binary_sensor_unavailable') | int) > 0 %} {{"\U0001F50C"}} *Недоступные бинарные сенсоры: * {% else %} *Все бинарные сенсоры доступны* {% endif %}
+                         *{% for entity_name, entity_state in state_attr('sensor.all_binary_sensor_unavailable', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                         * *
+                      inline_keyboard: *keyb_tlmtr
+
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.event.data.command == ''/list_all_sensor_unavailable'' }}'
+                sequence:
+                  - service: input_button.press
+                    target:
+                        entity_id: input_button.telemetry_reload
+                  - delay:
+                      milliseconds: 500
+                  - service: telegram_bot.delete_message
+                    data_template:
+                      message_id: '{{ trigger.event.data.message.message_id }}'
+                      chat_id: '{{ trigger.event.data.chat_id }}'
+                  - service: telegram_bot.send_message
+                    data:
+                      target: '{{ trigger.event.data.chat_id }}'
+                      title: *msg_tlmtr
+                      message: |
+                         * *
+                         {% if (states('sensor.all_sensor_unavailable') | int) > 0 %} {{"\U0001F50C"}} *Недоступные сенсоры: * {% else %} *Все сенсоры доступны* {% endif %}
+                         *{% for entity_name, entity_state in state_attr('sensor.all_sensor_unavailable', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                         * *
+                      inline_keyboard: *keyb_tlmtr
+
+
+
+
+
+
+
+
+        

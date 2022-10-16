@@ -1,0 +1,141 @@
+kn_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.kn_led_flower
+           - sensor.kn_led_flower_energy
+           - sensor.kn_led_flower_voltage
+           - sensor.kn_led_flower_power
+           - switch.kn_fir
+           - sensor.kn_fir_energy
+           - sensor.kn_fir_voltage
+           - sensor.kn_fir_power
+           - switch.light_in_kn_lamps
+           - switch.light_in_kn_lenta
+
+           
+
+    homeassistant:
+        customize:
+            switch.kn_led_flower:
+                friendly_name: Лента для цветов
+                device_class: light  
+                icon: mdi:flower
+                
+            switch.light_in_kn_lamps:
+                friendly_name: Лампочки
+                icon: phu:bulb-group-ceiling-round
+                
+            switch.light_in_kn_lenta:
+                friendly_name: Лента
+                icon: phu:light-strip
+                
+            switch.kn_fir:
+                friendly_name: Ёлочки
+                icon: mdi:string-lights                
+
+            automation.kn_ceiling_flowers_on_morning:
+                friendly_name: Кухня - включение ленты для цветов утром
+                icon: phu:light-strip
+            automation.kn_ceiling_flowers_off_morning:
+                friendly_name: Кухня - выключение ленты для цветов утром
+                icon: phu:lightstrip-off
+            automation.kn_ceiling_flowers_on_evening:
+                friendly_name: Кухня - включение ленты для цветов вечером
+                icon: phu:light-strip
+            automation.kn_ceiling_flowers_off_evening:
+                friendly_name: Кухня - выключение ленты для цветов вечером
+                icon: phu:lightstrip-off
+
+ 
+ 
+    automation:
+
+      - alias: kn_ceiling_flowers_on_morning
+        description: Кухня - включение ленты для цветов утром
+        initial_state: true
+        trigger:
+    # Утром в 6:00
+        - platform: time
+          at: '06:00:00'
+        condition:
+    # Если выключена
+        - condition: device
+          type: is_off
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        action:
+        - type: turn_on
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        mode: single
+        
+        
+      - alias: kn_ceiling_flowers_off_morning
+        description: Кухня - выключение ленты для цветов утром
+        initial_state: true
+        trigger:
+    # Утром в 8:30
+        - platform: time
+          at: '08:30:00'
+        condition:
+    # Если выключена
+        - condition: device
+          type: is_on
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        action:
+        - type: turn_off
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        mode: single
+        
+        
+      - alias: kn_ceiling_flowers_on_evening
+        description: Кухня - включение ленты для цветов вечером
+        initial_state: true
+        trigger:
+    # Вечером в 19:30
+        - platform: time
+          at: '19:30:00'
+        condition:
+    # Если включена
+        - condition: device
+          type: is_off
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        action:
+        - type: turn_on
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        mode: single
+        
+        
+      - alias: kn_ceiling_flowers_off_evening
+        description: Кухня - выключение ленты для цветов вечером
+        initial_state: true
+        trigger:
+    # Вечером в 23:00
+        - platform: time
+          at: '23:00:00'
+        condition:
+    # Если включена
+        - condition: device
+          type: is_on
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        action:
+        - type: turn_off
+          device_id: 9e64299ff7eb758323306fe290326412
+          entity_id: switch.kn_led_flower
+          domain: switch
+        mode: single
+        

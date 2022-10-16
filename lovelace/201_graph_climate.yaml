@@ -1,0 +1,28 @@
+title: Климат
+panel: true
+icon: mdi:thermometer-water
+cards:
+
+    - type: custom:history-explorer-card
+      header: Климат
+      defaultTimeRange: 4h
+      lineMode: curves
+      decimation: true
+      uimode: dark
+      recordedEntitiesOnly: true
+      labelsVisible: false
+      uiColors:
+        gridlines: rgb(100,100,100)
+      uiLayout:
+        toolbar: top
+        selector: hide
+      graphs:
+      - type: line
+        # title: Увлажнитель
+        entities:
+          - entity: sensor.lr_humidifier_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.lr_humidifier_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)

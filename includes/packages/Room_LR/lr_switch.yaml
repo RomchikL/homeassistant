@@ -1,0 +1,28 @@
+lr_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.lr_pb_server
+           - sensor.lr_pb_server_energy
+           - sensor.lr_pb_server_voltage
+           - sensor.lr_pb_server_power
+           - switch.light_in_lr_lenta
+           - switch.light_in_lr_lamp
+           - switch.lr_belaya
+           
+    homeassistant:
+      customize:
+        
+        switch.lr_pb_server:
+          friendly_name: Розетка сервера
+          icon: mdi:power-socket-eu
+        switch.light_in_lr_lenta:
+          friendly_name: Лента
+          icon: phu:light-strip
+        switch.light_in_lr_lamp:
+          friendly_name: Лампочки
+          icon: phu:ceiling-adore-alt-flush
+        switch.lr_belaya:
+          friendly_name: Фонарики
+          icon: mdi:string-lights
