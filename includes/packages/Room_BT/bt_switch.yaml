@@ -1,0 +1,13 @@
+bt_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.0xa4c138850066f7cd_right
+ 
+           
+
+#    homeassistant:
+#        customize:
+#            switch.0xa4c138850066f7cd_right:
+#                friendly_name: Лента для цветов

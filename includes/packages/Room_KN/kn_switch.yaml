@@ -13,7 +13,8 @@ kn_switch:
            - sensor.kn_fir_power
            - switch.light_in_kn_lamps
            - switch.light_in_kn_lenta
-
+           - switch.0xa4c138850066f7cd_left
+ 
            
 
     homeassistant:
@@ -22,18 +23,22 @@ kn_switch:
                 friendly_name: Лента для цветов
                 device_class: light  
                 icon: mdi:flower
+                integration: localtuya
                 
             switch.light_in_kn_lamps:
                 friendly_name: Лампочки
                 icon: phu:bulb-group-ceiling-round
+                integration: tuyaonline
                 
             switch.light_in_kn_lenta:
                 friendly_name: Лента
                 icon: phu:light-strip
+                integration: tuyaonline
                 
             switch.kn_fir:
                 friendly_name: Ёлочки
-                icon: mdi:string-lights                
+                icon: phu:christmas-lights
+                integration: localtuya
 
             automation.kn_ceiling_flowers_on_morning:
                 friendly_name: Кухня - включение ленты для цветов утром
@@ -78,9 +83,14 @@ kn_switch:
         description: Кухня - выключение ленты для цветов утром
         initial_state: true
         trigger:
+        - platform: sun
+          # Possible values: sunset, sunrise
+          event: sunrise
+          # Optional time offset. This example will trigger 45 minutes before sunset.
+          #offset: "-00:45:00"
     # Утром в 8:30
-        - platform: time
-          at: '08:30:00'
+#        - platform: time
+#          at: '08:30:00'
         condition:
     # Если выключена
         - condition: device
@@ -100,9 +110,14 @@ kn_switch:
         description: Кухня - включение ленты для цветов вечером
         initial_state: true
         trigger:
+        - platform: sun
+          # Possible values: sunset, sunrise
+          event: sunset
+          # Optional time offset. This example will trigger 45 minutes before sunset.
+          #offset: "-00:45:00"
     # Вечером в 19:30
-        - platform: time
-          at: '19:30:00'
+#        - platform: time
+#          at: '19:30:00'
         condition:
     # Если включена
         - condition: device

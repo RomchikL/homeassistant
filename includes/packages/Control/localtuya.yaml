@@ -1,0 +1,40 @@
+localtuya:
+
+    homeassistant:
+
+      customize:
+        automation.control_local_tuya_reload:
+          friendly_name: Контроль - перезагрузка Local Tuya
+          icon: mdi:reload
+
+
+    automation:
+    
+      - alias: control_local_tuya_reload
+        description: Контроль - перезагрузка Local Tuya
+        initial_state: true
+        trigger:
+         - event: start
+           platform: homeassistant
+        condition: []
+        action: 
+          - delay: '00:01:00'
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: switch.kn_balcony_curtain
+                state: unavailable
+              - condition: state
+                entity_id: switch.kn_fir
+                state: unavailable
+              - condition: state
+                entity_id: switch.kn_led_flower
+                state: unavailable
+              - condition: state
+                entity_id: switch.lr_pb_server
+                state: unavailable
+          - service: localtuya.reload
+            data: {}
+        mode: single
+    
+  

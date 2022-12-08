@@ -24,16 +24,32 @@ cards:
               content: >
                  **Освещение**
             - type: horizontal-stack
-              cards:        
-                - type: button
-                  entity: switch.kn_led_flower
-                  name: Цветы
+              cards:  
+              
+                - type: custom:mushroom-template-card
+                  primary: Лампочки
+                  secondary: |-
+                    {% if is_state("switch.0xa4c138850066f7cd_left", "off") %}
+                    Включить
+                    {% else %}
+                    Выключить
+                    {% endif %}
+                  layout: vertical
                   tap_action:
                     action: toggle
+                  entity: switch.0xa4c138850066f7cd_left
+                  icon: phu:wall-econic
+                  multiline_secondary: true
+                  icon_color: |-
+                    {% if is_state("switch.0xa4c138850066f7cd_left", "off") %}
+                    grey
+                    {% else %}
+                    amber
+                    {% endif %}               
                     
                 - type: button
                   entity: switch.light_in_kn_lamps
-                  name: Лампочки
+                  name: Подсветка
                   tap_action:
                     action: toggle                    
                     
@@ -43,11 +59,32 @@ cards:
                   tap_action:
                     action: toggle
                     
+                    
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              content: >
+                 **Гирлянды и ленты**
+            - type: horizontal-stack
+              cards:        
+                - type: button
+                  entity: switch.kn_led_flower
+                  name: Цветы
+                  tap_action:
+                    action: toggle
+                    
                 - type: button
                   entity: switch.kn_fir
                   name: Ёлочки
                   tap_action:
                     action: toggle
+                    
+                - type: button
+                  entity: switch.kn_balcony_curtain
+                  name: Штора на балконе
+                  tap_action:
+                    action: toggle               
                     
                     
         - type: custom:stack-in-card
@@ -169,6 +206,157 @@ cards:
 
 ############################ Колонка 2 ############################
 
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Климат**
+             
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Датчики и сенсоры**
+                
+            - type: horizontal-stack
+              cards:
+
+              - type: custom:mushroom-template-card
+                primary: Температура кухня
+                secondary: |-
+                      {{states ('sensor.0xa4c1383117449f5c_temperature')}} С°
+                layout: vertical
+                entity: sensor.0xa4c1383117449f5c_temperature
+                icon_color: |-
+                  {% if states("sensor.0xa4c1383117449f5c_temperature")|float <= -10 %}
+                  indigo
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 0 %}
+                  blue
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 10 %}
+                  light-blue
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 20 %}
+                  cyan
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 25 %}
+                  yellow
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 30 %}
+                  amber
+                  {% elif states("sensor.0xa4c1383117449f5c_temperature")|float <= 40 %}
+                  orange
+                  {% endif %}
+                icon: mdi:temperature-celsius
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Влажность кухня
+                secondary: |-
+                      {{states ('sensor.0xa4c1383117449f5c_humidity')}} %
+                layout: vertical
+                entity: sensor.0xa4c1383117449f5c_humidity
+                icon_color: |-
+                  {% if states("sensor.0xa4c1383117449f5c_humidity")|float <= 30 %}
+                  deep-orange
+                  {% elif states("sensor.0xa4c1383117449f5c_humidity")|float <= 40 %}
+                  yellow
+                  {% elif states("sensor.0xa4c1383117449f5c_humidity")|float <= 50 %}
+                  light-blue
+                  {% elif states("sensor.0xa4c1383117449f5c_humidity")|float <= 60 %}
+                  blue
+                  {% elif states("sensor.0xa4c1383117449f5c_humidity")|float > 60 %}
+                  indigo
+                  {% endif %}
+                icon: mdi:water-percent
+                tap_action:
+                  action: more-info               
+                 
+            - type: horizontal-stack
+              cards:
+
+              - type: custom:mushroom-template-card
+                primary: Температура балкон
+                secondary: |-
+                      {{states ('sensor.0x00158d0008cafd13_temperature')}} С°
+                layout: vertical
+                entity: sensor.0x00158d0008cafd13_temperature
+                icon_color: |-
+                  {% if states("sensor.0x00158d0008cafd13_temperature")|float <= -10 %}
+                  indigo
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 0 %}
+                  blue
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 10 %}
+                  light-blue
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 20 %}
+                  cyan
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 25 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 30 %}
+                  amber
+                  {% elif states("sensor.0x00158d0008cafd13_temperature")|float <= 40 %}
+                  orange
+                  {% endif %}
+                icon: mdi:temperature-celsius
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Влажность балкон
+                secondary: |-
+                      {{states ('sensor.0x00158d0008cafd13_humidity')}} %
+                layout: vertical
+                entity: sensor.0x00158d0008cafd13_humidity
+                icon_color: |-
+                  {% if states("sensor.0x00158d0008cafd13_humidity")|float <= 30 %}
+                  deep-orange
+                  {% elif states("sensor.0x00158d0008cafd13_humidity")|float <= 40 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008cafd13_humidity")|float <= 50 %}
+                  light-blue
+                  {% elif states("sensor.0x00158d0008cafd13_humidity")|float <= 60 %}
+                  blue
+                  {% elif states("sensor.0x00158d0008cafd13_humidity")|float > 60 %}
+                  indigo
+                  {% endif %}
+                icon: mdi:water-percent
+                tap_action:
+                  action: more-info               
+
+              - type: custom:mushroom-template-card
+                primary: Давление балкон
+                secondary: |-
+                      {{states ('sensor.0x00158d0008cafd13_mmhg_pressure')}} мм рт. ст.
+                layout: vertical
+                entity: sensor.0x00158d0008cafd13_mmhg_pressure
+                icon_color: |-
+                  {% if states("sensor.0x00158d0008cafd13_mmhg_pressure")|float <= 710 %}
+                  orange
+                  {% elif states("sensor.0x00158d0008cafd13_mmhg_pressure")|float <= 730 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008cafd13_mmhg_pressure")|float <= 750 %}
+                  lime
+                  {% elif states("sensor.0x00158d0008cafd13_mmhg_pressure")|float <= 760 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008cafd13_mmhg_pressure")|float <= 770 %}
+                  orange
+                  {% elif states("sensor.0x00158d0008cafd13_mmhg_pressure")|float > 770 %}
+                  red
+                  {% endif %}
+                icon: mdi:gauge
+                tap_action:
+                  action: more-info 
         
     - type: custom:mini-media-player
       entity: media_player.kn_yandex_station_mini

@@ -12,20 +12,44 @@ notifier:
 #      skill_id: xxxxxxxx-xxxx-xxxx-xxxxxxxxxxxx
 #      user_id: yyyyyyyyyyyyyyyyyyyyyyyyyyyy
 
+#color_profile:
+#  profile_lamp_1s:
+#      soft_white: 2600
+#      warm_white: 3500
+      
 
 filter:
   include_entities:
 ################# Зал ######################
     - fan.lr_humidifier
     - switch.lr_pb_server
-    - switch.lr_belaya
+    - switch.lr_lanterns
+    - switch.lr_garland_long
     - light.lamp_1s
     - media_player.android_tv_192_168_1_150
+    - media_player.lr_samsung_tv
+    - media_player.mpd
+    - sensor.0x00158d0008ce3df9_temperature
+    - sensor.0x00158d0008ce3df9_humidity
+    - binary_sensor.0x00158d0008e1c64f_contact
 ################# Кухня ######################
     - switch.kn_led_flower
     - switch.kn_fir
+    - sensor.0xa4c1383117449f5c_temperature
+    - sensor.0xa4c1383117449f5c_humidity
+    - switch.0xa4c138850066f7cd_left
+################# Балкон ######################
+    - switch.kn_balcony_curtain
+    - sensor.0x00158d0008cafd13_temperature
+    - sensor.0x00158d0008cafd13_humidity
+    - sensor.0x00158d0008cafd13_mmhg_pressure
 ################# Коридор ######################
     - camera.laxicam_mini7s
+    - binary_sensor.0x00158d0008d93f0d_contact
+################# Ванная ######################
+    - sensor.0x00158d0008ce3dca_temperature
+    - sensor.0x00158d0008ce3dca_humidity
+    - switch.0xa4c138850066f7cd_right
 ################# Разобрать ######################
     - switch.light_in_kn_lamps
     - switch.light_in_kn_lenta
@@ -67,16 +91,39 @@ entity_config:
         
   media_player.android_tv_192_168_1_150:
     type: devices.types.media_device.tv_box
-    name: Телевизор
+    name: Приставка
     room: Зал
+
+  media_player.mpd:
+    type: devices.types.media_device
+    name: Галя
+    room: Зал    
+    
+  media_media_player.lr_samsung_tv:
+    type: devices.types.media_device.tv
+    name: Телевизор
+    room: Зал 
     
   light.lamp_1s:
     name: Настольная лампа
     room: Зал
     
-  switch.lr_belaya:
+  switch.lr_lanterns:
     type: devices.types.light
     name: Фонарики
+    room: Зал
+    
+  switch.lr_garland_long:
+    type: devices.types.light
+    name: Длинная
+    room: Зал
+    
+  sensor.0x00158d0008ce3df9_temperature:
+    room: Зал  
+  sensor.0x00158d0008ce3df9_humidity:
+    room: Зал 
+    
+  binary_sensor.0x00158d0008e1c64f_contact:
     room: Зал
     
 ################# Кухня ######################
@@ -103,6 +150,29 @@ entity_config:
         entity: sensor.kn_fir_amperage
       - type: power
         entity: sensor.kn_fir_power 
+        
+  sensor.0xa4c1383117449f5c_temperature:
+    room: Кухня  
+  sensor.0xa4c1383117449f5c_humidity:
+    room: Кухня      
+    
+  switch.0xa4c138850066f7cd_left:
+    type: devices.types.light
+    name: Лампочки
+    room: Кухня
+
+################# Балкон ######################
+  switch.kn_balcony_curtain:
+    type: devices.types.light
+    name: Штора
+    room: Балкон
+
+  sensor.0x00158d0008cafd13_temperature:
+    room: Балкон  
+  sensor.0x00158d0008cafd13_humidity:
+    room: Балкон 
+  sensor.0x00158d0008cafd13_mmhg_pressure:
+    room: Балкон 
 
 ################# Коридор ######################
   camera.laxicam_mini7s:
@@ -110,10 +180,27 @@ entity_config:
     name: Камера в коридоре
     room: Коридор
     
+  binary_sensor.0x00158d0008d93f0d_contact:
+#    name: Камера в коридоре
+    room: Коридор    
+    
+################# Ванная ######################
+
+  sensor.0x00158d0008ce3dca_temperature:
+    room: Ванная  
+  sensor.0x00158d0008ce3dca_humidity:
+    room: Ванная 
+    
+  switch.0xa4c138850066f7cd_right:
+    type: devices.types.light
+    name: Лампочки
+    room: Ванная
+    
+    
 ################# Разобрать ######################
   switch.light_in_kn_lamps:
     type: devices.types.light #light
-    name: Лампочки
+    name: Подсветка
     room: Кухня
   switch.light_in_kn_lenta:
     type: devices.types.light #light
@@ -122,11 +209,11 @@ entity_config:
   switch.light_in_lr_lenta:
     type: devices.types.light
     name: Лента
-    room: Гостиная
+    room: Зал
   switch.light_in_lr_lamp:
     type: devices.types.light
     name: Лампочки
-    room: Гостиная
+    room: Зал
 
 
 

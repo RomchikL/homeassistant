@@ -1,0 +1,134 @@
+alice:
+
+    homeassistant:
+        
+      customize:
+
+        automation.alice_sleep_all:
+          friendly_name: Алиса - Всем спать
+          icon: yandex:alisa
+          
+        automation.alice_go_away:
+          friendly_name: Алиса - Мы уходим
+          icon: yandex:alisa
+
+        automation.alice_lr_all_ceiling:
+          friendly_name: Включи весь свет в зале
+          icon: yandex:alisa
+          
+        
+    automation:
+    
+    # Алиса - Всем спать - выключить везде свет
+      - alias: alice_sleep_all
+        description: Алиса - Всем спать
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Всем спать
+        action:
+          - service: homeassistant.turn_off
+            data:
+              entity_id: >-
+                {% set domains = ['light','switch'] %}
+                {% set exclude = ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.lr_pb_server_switch_overcharge'] %}
+                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|selectattr('state','in','on') %}
+                  {%- if loop.first %}{%- else %},{% endif %}
+                  {{device.entity_id }}
+                  {%- if loop.last %}{% endif %}
+                {%- endfor  %}  
+          - service: media_player.turn_off
+            data:
+              entity_id: >-
+                {% if states("media_player.mpd") in ["on", "playing"] %}
+                media_player.mpd
+                {%- else -%}
+                {%- endif %}
+          - service: media_player.media_pause
+            data:
+              entity_id: >-
+                {% set domains = ['media_player'] %}
+                {% set exclude = ['media_player.mpd'] %}
+                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|rejectattr('state','in','(paused|off)') %}
+                  {%- if loop.first %}{%- else %},{% endif %}
+                  {{device.entity_id }}
+                  {%- if loop.last %}{% endif %}
+                {%- endfor  %}
+              
+    # Алиса - Мы уходим - выключить везде свет, кроме гирлянд; выключить медиаплееры; включить сигнализацию (Дуся выключится автоматически по датчику аэрации)
+      - alias: alice_go_away
+        description: Алиса - Мы уходим
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Мы уходим
+        action:
+          - service: homeassistant.turn_off
+            data:
+              entity_id: >-
+                {% set domains = ['light','switch'] %}
+                {% set exclude = ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.kn_led_flower', 'switch.lr_pb_server_switch_overcharge'] %}
+                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|selectattr('state','in','on') %}
+                  {%- if loop.first %}{%- else %},{% endif %}
+                  {{device.entity_id }}
+                  {%- if loop.last %}{% endif %}
+                {%- endfor  %}
+          - service: media_player.turn_off
+            data:
+              entity_id: >-
+                {% if states("media_player.mpd") in ["on", "playing"] %}
+                media_player.mpd
+                {%- else -%}
+                {%- endif %}
+          - service: media_player.media_pause
+            data:
+              entity_id: >-
+                {% set domains = ['media_player'] %}
+                {% set exclude = ['media_player.mpd'] %}
+                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|rejectattr('state','in','(paused|off)') %}
+                  {%- if loop.first %}{%- else %},{% endif %}
+                  {{device.entity_id }}
+                  {%- if loop.last %}{% endif %}
+                {%- endfor  %}
+          - delay: 00:02:00
+          - service: alarm_control_panel.alarm_arm_away
+            data:
+              entity_id: alarm_control_panel.home_alarm
+              code: !secret alarm_code                
+# {% if (not is_state("media_player.mpd", "playing")) -%}
+                
+    # Алиса - Включи весь свет в зале - включить полный свет на лампочках в зале
+      - alias: alice_lr_all_ceiling
+        description: Алиса - Включи весь свет в зале
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Включи весь свет в зале
+        action:
+          - service_template: >
+              {% if (is_state("switch.light_in_lr_lamp", "on")) -%}
+              switch.toggle
+              {%- else -%}
+              {%- endif %}
+            data_template:
+              entity_id: >
+                {% if (is_state("switch.light_in_lr_lamp", "on")) -%}
+                switch.light_in_lr_lamp
+                {%- else -%}
+                {%- endif %}        
+          - delay: 00:00:01       
+          - repeat:
+              count: 7
+              sequence:
+                - service: switch.toggle
+                  entity_id: switch.light_in_lr_lamp
+                - delay:
+                    milliseconds: 999
+        mode: single        
+   

@@ -1,0 +1,18 @@
+sensors:
+
+    recorder:
+      include:
+        entities:
+           - device_tracker.phone_roma
+           - device_tracker.phone_kitka
+           
+    homeassistant:
+      customize:
+   
+
+        device_tracker.phone_roma:
+          friendly_name: Рома, терефон
+          icon: mdi:face-man
+        device_tracker.phone_kitka:
+          friendly_name: Кристина, телефон
+          icon: mdi:face-woman

@@ -1,0 +1,57 @@
+##################   Alarm paper
+title: Сигнализации
+icon: mdi:shield-home
+cards:
+
+
+############################ Колонка 1 ############################
+
+    - type: vertical-stack
+      cards:
+      
+      - type: markdown
+        style: |
+            ha-card {
+              font-size: 26px;
+            }  
+        content: >
+            **Управление**
+
+      - type: custom:mushroom-alarm-control-panel-card
+        entity: alarm_control_panel.home_alarm
+        name: Сигнализация
+        icon: mdi:alarm-light
+        primary_info: name
+        secondary_info: state 
+        icon_type: icon 
+        states: ["armed_home", "armed_away", "armed_night", "armed_vacation"]
+        show_keypad: true
+        
+############################ Колонка 2 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Датчики и сенсоры**
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: horizontal-stack
+              cards:
+              
+              - type: custom:mushroom-person-card
+                entity: device_tracker.phone_roma
+                name: Рома
+                icon: mdi:face-man
+              
+              - type: custom:mushroom-person-card
+                entity: device_tracker.phone_kitka
+                name: Кристина
+                icon: mdi:face-woman
+

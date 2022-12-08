@@ -1,13 +1,13 @@
 homeassistant:
   name: My Home
+  country: RU
   latitude: !secret latitude_coord
   longitude: !secret longitude_coord
   elevation: 5
   unit_system: metric
   time_zone: Europe/Moscow
-# Customization file
-#   customize: !include customize.yaml
-  customize: !include_dir_merge_named includes/customize
+  # Customization file
+#  customize: !include_dir_merge_named includes/customize
   packages: !include_dir_merge_named includes/packages
   
 # Loads default set of integrations. Do not remove.
@@ -18,6 +18,13 @@ homeassistant:
 config:
 #Сканирование доступных устройств в сети
 ssdp:
+
+# блютус
+#bluetooth:
+#device_tracker:
+#  - platform: bluetooth_le_tracker
+#    track_new_devices: true
+
 # Включение официального интерфейса
 frontend:
   themes: !include_dir_merge_named themes
@@ -38,29 +45,14 @@ system_health:
 # Stream from camera
 stream:
 history:
-
-alarm_control_panel:
-  - platform: manual
-    name: Home Alarm
-    code: !secret alarm_code
-#    pending_time: 20
-#    delay_time: 20
-#    trigger_time: 4
-#    disarmed:
-#      trigger_time: 0
-#    armed_home:
-#      pending_time: 0
-#      delay_time: 0
-#    disarm_after_trigger: false
     
 
 # Reverse Proxy
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-  - 172.19.0.1
-  - 192.168.1.0/24
-  - 172.19.0.0/24
+  - 172.21.0.0/24
+  - 192.168.10.0/24
   ip_ban_enabled: true
   login_attempts_threshold: 5
 #  api_password: !secret http_api_password
@@ -69,12 +61,17 @@ panel_iframe:
   configurator:
     title: Configurator
     icon: mdi:wrench
-    url: http://192.168.1.100:3218
+    url: https://ha-conf.romchik.keenetic.pro/
     require_admin: true
   duplicati:
     title: "Duplicati"
     icon: mdi:backup-restore
     url: http://192.168.1.100:8201
+    require_admin: true
+  zigbee2mqtt:
+    title: "Zigbee2mqtt"
+    url: "https://z2m.romchik.keenetic.pro/#/"
+    icon: mdi:zigbee
     require_admin: true
 
 
@@ -109,6 +106,8 @@ lovelace:
     - url: /hacsfiles/lovelace-mushroom/mushroom.js
       type: module
     - url: /hacsfiles/logbook-card/logbook-card.js
+      type: module
+    - url: /hacsfiles/home-assistant-jukebox/jukebox-card.js
       type: module
 #    - url: /hacsfiles/lovelace-card-mod/card-mod.js
 #      type: module
@@ -148,6 +147,7 @@ lovelace:
 telegram_bot:
   - platform: polling
     api_key: !secret api_key_bot
+#    parse_mode: html # иначе ошибка с подчеркиваниями _
     allowed_chat_ids:
       - !secret chat_id_romchik
       - !secret chat_id_kitka
@@ -157,20 +157,39 @@ telegram_bot:
 
 # Включение кнопок ввода
 input_button:
-input_datetime:
+#input_datetime:
 #Включение записи в mariaDB
-recorder:
+#recorder:
 #Локальный режим для Яндекс станции
 yandex_station:
   devices:
-    !secret ya_mini_id:  # device_id вашей колонки
-      host: 192.168.2.44
+    !secret ya_mini_id :  # device_id вашей колонки
+      host: 192.168.3.4
+    !secret ya_max_id :
+      host: 192.168.3.20    
+
+  media_players:
+    - entity_id: media_player.lr_samsung_tv
+      name: SamsungTV
+      media_content_type: url  # важно для интеграции SamsungTV из HACS
+    - entity_id: media_player.tox1_150
+      name: Tox
+    - entity_id: media_player.tox1_150_ap
+      name: Tox Apple     
+#      sync_volume: False  # опциональное отключение синхронизации громкости звука
+
+media_player:
+  - platform: mpd
+    host: 192.168.1.100
+    name: mpd
 
 #Вынос в файлы
 script: !include includes/scripts.yaml
 scene: !include includes/scenes.yaml
 #automation: !include includes/automations.yaml
 yandex_smart_home: !include includes/yandex_smart_home.yaml
+yandex_station_intents: !include includes/yandex_station_intents.yaml
+yandex_music_browser: !include includes/yandex_music_browser.yaml
 automation: !include includes/automations.yaml
 
 #Вынос в папки

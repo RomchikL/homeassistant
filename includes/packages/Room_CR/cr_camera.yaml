@@ -11,12 +11,15 @@ cr_camera:
           friendly_name: Коридор - фото и отправка в телеграмм при триггере
           icon: mdi:camera
           
+        automation.cam_laxi_mini7s_remove_old_alarm:
+          friendly_name: Mini 7s - удаление старых видео
+          icon: mdi:camera
           
     shell_command:
       play_wav_laxicam_mini7s: !secret laxicam_mini_7s_dingdong
-
-
+      removemini7salarmvideo: 'find /config/www/cam_captures/alarm_videos/* -mtime +15 -exec rm {} \;'
           
+  
     automation:
 
 # https://github.com/guino/BazzDoorbell/issues/8#issuecomment-745198782    
@@ -36,9 +39,15 @@ cr_camera:
 #      entity_id: camera.{id} << ADD ID
 #      media_player: media_player.{id} << ADD ID
 
+      - alias: cam_laxi_mini7s_remove_old_alarm
+        description: Mini 7s - удаление старых видео
+        initial_state: true
+        trigger:
+        - platform: time
+          at: 03:00:00
+        action:
+         - service: shell_command.removemini7salarmvideo
 
-  
-    
       - alias: cam_laxi_mini7s_photo
         initial_state: true
         trigger:
@@ -128,7 +137,45 @@ cr_camera:
             data:
               media_content_id: <speaker is_whisper="true">Хозяин, пора бы спать 
               media_content_type: text:Умный дом
-
+              extra:
+                volume_level: 0.9
+                
+      - alias: test_cast
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: switch.lr_belaya
+          to: 'on'
+        action:
+#        - service: camera.play_stream
+#          data:
+#            media_player: media_player.tox1_150_ap
+#          target:
+#            entity_id: camera.laxicam_mini7s
+        - service: cast.show_lovelace_view
+          data:
+            entity_id: media_player.tox1_150_ap
+            dashboard_path: lovelace
+            view_path: "0"
+            
+    # еще тест
+      - alias: test-alice_telik
+        description: Test telik
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Цветок живет
+        action:
+          - service: media_player.select_source
+            entity_id: media_player.lr_yandex_station_lite
+            data:
+              source: SamsungTV
+          - service: media_player.play_media
+            entity_id: media_player.lr_yandex_station_lite  # замените на вашу колонку
+            data:
+              media_content_id: Включи мою любимую музыку вперемешку
+              media_content_type: command
           
 #          - service: tts.yandex_station
 #            entity_id: 

@@ -1,0 +1,15 @@
+cr_sensors:
+
+    recorder:
+      include:
+        entities:
+           - binary_sensor.0x00158d0008d93f0d_contact
+           
+#    homeassistant:
+#      customize:
+   
+
+#        sensor.0x00158d0008ce3df9_humidity:
+#          friendly_name: Гостиная влажность
+#          icon: mdi:water-percent
+        

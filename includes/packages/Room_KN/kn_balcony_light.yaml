@@ -1,0 +1,15 @@
+kn_balcony_light:
+
+    recorder:
+      include:
+        entities:
+           - switch.kn_balcony_curtain
+
+    homeassistant:
+      customize:
+
+        switch.kn_balcony_curtain:
+          friendly_name: Штора на балконе
+          icon: phu:vert-blind-open
+          integration: localtuya
+          

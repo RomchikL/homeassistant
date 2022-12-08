@@ -9,7 +9,9 @@ lr_switch:
            - sensor.lr_pb_server_power
            - switch.light_in_lr_lenta
            - switch.light_in_lr_lamp
-           - switch.lr_belaya
+           - switch.lr_lanterns
+           - switch.lr_garland_long
+#           - switch.lr_belaya
            
     homeassistant:
       customize:
@@ -17,12 +19,25 @@ lr_switch:
         switch.lr_pb_server:
           friendly_name: Розетка сервера
           icon: mdi:power-socket-eu
+          integration: localtuya
         switch.light_in_lr_lenta:
           friendly_name: Лента
           icon: phu:light-strip
+          integration: ltuyaonline
         switch.light_in_lr_lamp:
           friendly_name: Лампочки
           icon: phu:ceiling-adore-alt-flush
-        switch.lr_belaya:
+          integration: tuyaonline
+          
+        switch.lr_lanterns:
           friendly_name: Фонарики
-          icon: mdi:string-lights
+          icon: phu:light-string
+          integration: tuyaonline
+        
+        switch.lr_garland_long:
+          friendly_name: Длинная
+          icon: phu:light-strip
+          integration: tuyaonline
+          
+        sensor.lr_pb_server_energy:
+          integration: localtuya

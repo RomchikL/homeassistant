@@ -18,11 +18,27 @@ cards:
         selector: hide
       graphs:
       - type: line
-        # title: Увлажнитель
+        # title: Зал
         entities:
-          - entity: sensor.lr_humidifier_temperature
+          - entity: sensor.0x00158d0008ce3df9_temperature
             color: rgb(255,239,97)
             fill: rgba(255,239,97,0.05)
-          - entity: sensor.lr_humidifier_humidity
+          - entity: sensor.0x00158d0008ce3df9_humidity
             color: rgb(0,250,255)
             fill: rgba(0,250,255,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008cafd13_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008cafd13_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008ce3dca_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008ce3dca_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)        
