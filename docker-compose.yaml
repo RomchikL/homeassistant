@@ -1,0 +1,126 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+#    expose:
+ #     - "8123"
+    ports:
+      - "8123:8123"
+    volumes:
+      - /etc/docker-romchik/configs/home-assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+#      - /run/dbus:/run/dbus:ro #для блютуса
+    restart: unless-stopped
+    networks: 
+      frontend:
+        ipv4_address: 172.21.0.3
+#    network_mode: host
+    environment:
+      TZ: 'Europe/Moscow'
+      VIRTUAL_HOST: "URL"
+      VIRTUAL_PORT: "8123"
+      HTTPS_METHOD: "noredirect" #для работы прокси кинетика и прокси сервера
+     
+
+  avahi: #Для включения mDNS
+    image: ghcr.io/kmlucy/docker-avahi
+    container_name: avahi-HA
+    network_mode: host
+    restart: unless-stopped
+
+        
+  mariadb:
+    image: linuxserver/mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "PASS"
+      MYSQL_DATABASE: HA
+      MYSQL_USER: HA
+      MYSQL_PASSWORD: "PASS"
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - /etc/docker-romchik/configs/mariadb:/config
+    ports:
+      - "3306:3306"
+    networks: 
+      frontend:
+        ipv4_address: 172.21.0.4
+      
+  hass-configurator:
+    container_name: "ha-config"
+    image: "causticlab/hass-configurator-docker:latest"
+    restart: always
+    networks: 
+      frontend:
+        ipv4_address: 172.21.0.5
+#    network_mode: host
+    ports:
+      - "3218:3218"
+    depends_on:
+      - homeassistant
+    volumes:
+      - /etc/docker-romchik/configs/home-assistant:/config
+#      - /etc/docker-romchik/configs/hass-configurator:/config
+    environment:
+      TZ: 'Europe/Moscow'
+      VIRTUAL_HOST: "URL"
+      VIRTUAL_PORT: "3218"
+      HTTPS_METHOD: "noredirect" #для работы прокси кинетика и прокси сервера
+      
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    restart: always
+    volumes:
+      - /etc/docker-romchik/configs/zigbee2mqtt/data:/app/data
+      - /run/udev:/run/udev:ro
+    depends_on:
+      - mosquitto
+    ports:
+      # Frontend port
+      - 8088:8080
+    environment:
+      TZ: 'Europe/Moscow'
+      VIRTUAL_HOST: "URL"
+      VIRTUAL_PORT: "8080"
+      HTTPS_METHOD: "noredirect"
+ #   device:
+ #     - /dev/ttyUSB0:/dev/ttyUSB0
+    networks: 
+      frontend:
+        ipv4_address: 172.21.0.6
+        
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - "1883"
+      - "9001"
+    volumes:
+      - /etc/docker-romchik/configs/mosquitto/config:/mosquitto/config
+      - /etc/docker-romchik/configs/mosquitto/data:/mosquitto/data
+      - /etc/docker-romchik/configs/mosquitto/log:/mosquitto/log
+     
+  lsyncd:
+    container_name: "lsyncd-HA-LAN"
+    restart: always
+    image: minimum/lsyncd
+    environment:
+    - CONFIG=/root/lsyncd.lua
+    volumes:
+    - /etc/docker-romchik/configs/lsyncd-HA-LAN/lsyncd.lua:/root/lsyncd.lua
+    - /etc/docker-romchik/configs/home-assistant/www/cam_captures/alarm_videos:/source
+    - /mnt/LAN/pb-server/alarm_videos:/destination
+    networks: 
+      frontend:
+        ipv4_address: 172.21.0.7
+        
+networks: 
+  frontend: 
+    external: 
+      name: "home-assistant" 
