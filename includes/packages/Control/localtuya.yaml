@@ -7,6 +7,29 @@ localtuya:
           friendly_name: Контроль - перезагрузка Local Tuya
           icon: mdi:reload
 
+    input_boolean:
+    
+     control_local_tuya:
+        name: Предохранитель, local_tuya
+        icon: mdi:qustion
+
+    template:
+    
+      - trigger:
+        - platform: time_pattern
+          seconds: '/59'
+        sensor:
+          - name: control_local_tuya
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(integration_entities('localtuya')) |selectattr('domain','in', 'switch')| selectattr('state','in', ['unavailable', 'unknown' ] ) | map(attribute='entity_id') | list | count %}
+                {% if (variable.value ) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                 0
+                {% endif %} 
+#             {% expand(integration_entities('localtuya')) |selectattr('domain','in', 'switch')| selectattr('state','in', ['unavailable', 'unknown' ] ) | map(attribute='entity_id') | list | count %}
+ 
 
     automation:
     
@@ -14,27 +37,24 @@ localtuya:
         description: Контроль - перезагрузка Local Tuya
         initial_state: true
         trigger:
-         - event: start
-           platform: homeassistant
-        condition: []
+         - platform: template
+           value_template: "{{ (states('sensor.control_local_tuya')|int) > 0 }}"
+           for: "00:00:65" # Сенсор обновялется раз в 60 секунд
         action: 
-          - delay: '00:01:00'
-          - condition: or
-            conditions:
-              - condition: state
-                entity_id: switch.kn_balcony_curtain
-                state: unavailable
-              - condition: state
-                entity_id: switch.kn_fir
-                state: unavailable
-              - condition: state
-                entity_id: switch.kn_led_flower
-                state: unavailable
-              - condition: state
-                entity_id: switch.lr_pb_server
-                state: unavailable
           - service: localtuya.reload
             data: {}
+          ## Ожидание восстановления работы
+#          - wait_template: "{{ (states('sensor.control_local_tuya')|int) < 1 }}"
+#            timeout: 60
+#          ## Сообщение если не сработало
+#          - if:
+#             - "{{ not wait.completed }}"
+#            then:
+#             - service: telegram_bot.send_message
+#               data_template:
+#                 target:
+#                     - !secret chat_id_romchik
+#                 message: | 
+#                      Внимание!
+#                      Интеграция Local Tuya недоступна, перезагрузка не имела успеха
         mode: single
-    
-  

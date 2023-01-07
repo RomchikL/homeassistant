@@ -21,3 +21,11 @@ cards:
         entities:
           - entity: alarm_control_panel.home_alarm
             name: Сигнализация
+      - type: timeline
+        entities:
+          - entity: binary_sensor.0x00158d0008f1142d_occupancy
+            name: Коридор
+      - type: timeline
+        entities:
+          - entity: binary_sensor.0x00158d0008d90dbd_occupancy
+            name: Ванная

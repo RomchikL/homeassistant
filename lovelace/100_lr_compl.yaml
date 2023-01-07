@@ -402,22 +402,77 @@ cards:
         - media_player.mpd
         
 
-          
-          
-#        - type: custom:logbook-card
-#          entity: switch.socket_pb_server
-#          max_items: 5
-#          title: Розетка сервера, лог работы
-#          duration_labels:
-#            second:  '${value} секунда'
-#            seconds: '${value} секунд'
-#            minute:  '${value} минута'
-#            minutes: '${value} минут'
-#            hour:    '${value} час'
-#            hours:   '${value} часов'
-#            day:     '${value} день'
-#            days:    '${value} дней'  
-     
+############################ Колонка New ############################
 
 
-          
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                color: #f8ffd8;
+                --paper-item-icon-color: #f8ffd8;
+                --paper-item-icon-active-color: #f8ffd8;
+                font-weight: bold;
+                font-size: 26px;
+              }     
+          content: >
+              **Телеметрия** 
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Состояние датчиков гостиная**
+            - type: entities
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              show_header_toggle: false
+              entities:
+                - type: divider
+                - entity: sensor.battery
+                  type: custom:multiple-entity-row
+                  state_color: true
+                  name: Батарея сервера
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: status
+                    name: Статус
+                - type: divider
+                - entity: sensor.0x00158d0008ce3df9_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-temperature
+                  state_color: true
+                  name: Датчик климата
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider
+                - entity: sensor.0x00158d0008e1c64f_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-contact
+                  state_color: true
+                  name: Датчик открытия, окно
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал

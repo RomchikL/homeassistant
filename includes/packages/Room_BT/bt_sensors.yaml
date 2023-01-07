@@ -5,6 +5,9 @@ bt_sensors:
         entities:
            - sensor.0x00158d0008ce3dca_temperature
            - sensor.0x00158d0008ce3dca_humidity
+           - binary_sensor.0xa4c138dc68586d06_contact
+           - binary_sensor.0x00158d0008d90dbd_occupancy
+           - sensor.0x00158d0008d90dbd_illuminance_lux
 #           - sensor.0x00158d0008ce3dca_mmhg_pressure
            
     homeassistant:
@@ -17,6 +20,12 @@ bt_sensors:
         sensor.0x00158d0008ce3dca_temperature:
           friendly_name: Ванная температура
           icon: mdi:temperature-celsius
+          
+        binary_sensor.0x00158d0008d90dbd_occupancy:
+          friendly_name: Ванная, движение
+        sensor.0x00158d0008d90dbd_illuminance_lux:
+          friendly_name: Ванная, освещенность
+          
 #        sensor.0x00158d0008ce3dca_mmhg_pressure:
 #          friendly_name: Ванная давление мм рт. ст.
 #          device_class: pressure

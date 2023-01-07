@@ -9,10 +9,16 @@ telegram_dialog:
         trigger:
           - platform: event
             event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
         condition:
           - condition: template
             value_template: >-
-              {{ trigger.event.data.text in ["куку", "Куку", "Rere", "rere", "Привет", "привет", "Ghbdtn", "ghbdtn"] }}
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["куку", "Куку", "Rere", "rere", "Привет", "привет", "Ghbdtn", "ghbdtn"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/go"] }} 
+              {%- endif -%}
         action:
           - choose:
               - conditions:
@@ -27,13 +33,12 @@ telegram_dialog:
                         {{'\U0001F527'}} *Управление умным домом*
                         * *
                         {{'\U0001F4BB'}} *CPU* - {{ states('sensor.processor_use') }} %, {{'\U0001F321'}} - {{ states('sensor.processor_temperature') }} °C
-                        {{'\U0001F6CE'}} - {{ states('alarm_control_panel.home_alarm') }}
+                        {{'\U0001F6CE'}} - {{ states('alarm_control_panel.home_alarm')|replace('_', ' ') }}
                       inline_keyboard:
                       - '{{''\U00002328''}} Телеметрия:/telemetry'
-#                      - '{{''\U0001F6B6''}} Вход:/en_control , {{''\U0001F6C0''}} Санузел:/bt_control'
                       - '{{''\U0001F3E2''}} Гостиная:/lr_control , {{''\U0001F374''}} Кухня:/kn_control'
-                      - '{{''\U0001F6B6''}} Коридор:/cr_control, {{''\U0001F4A1''}} Гирлянды:/gl_control'
-                      - '{{''\U0001F511''}} Быстрые команды:/hotkeys'
+                      - '{{''\U0001F6B6''}} Коридор:/cr_control, {{''\U0001F6C0''}} Санузел:/bt_control'
+                      - '{{''\U0001F9EA''}} Быстрые команды:/hotkeys, {{''\U0001F4A1''}} Гирлянды:/gl_control'
                       - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
 #              - conditions:
 #                  - condition: template
@@ -53,10 +58,16 @@ telegram_dialog:
         trigger:
           - platform: event
             event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
         condition:
           - condition: template
             value_template: >-
-              {{ trigger.event.data.text in ["sos", "Sos", "сос", "Сос"] }}
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["sos", "Sos", "сос", "Сос"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/sos"] }} 
+              {%- endif -%}
         action:
           - service: media_player.play_media
             entity_id: media_player.kn_yandex_station_mini  # замените на вашу колонку
@@ -83,22 +94,22 @@ telegram_dialog:
         trigger:
           - platform: event
             event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+#            event_data:
+#              command: '/sleep_all'
         condition:
           - condition: template
             value_template: >-
-              {{ trigger.event.data.text in ["Всем спать", "всем спать"] }}
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["Всем спать", "всем спать"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/sleep_all"] }} 
+              {%- endif -%}
         action:
-          - service: homeassistant.turn_off
-            data:
-              entity_id: >-
-                {% set domains = ['light','switch'] %}
-                {% set exclude = ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led'] %}
-                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|selectattr('state','in','on') %}
-                  {%- if loop.first %}{%- else %},{% endif %}
-                  {{device.entity_id }}
-                  {%- if loop.last %}{% endif %}
-                {%- endfor  %}  
-              
+          - service: automation.trigger
+            entity_id:
+              - automation.alice_sleep_all
 
 
     ## Тест для запуска через кнопку --- Кнопка слишком большая, размер не меняется, неудобно

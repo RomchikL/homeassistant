@@ -18,9 +18,55 @@ cr_camera:
     shell_command:
       play_wav_laxicam_mini7s: !secret laxicam_mini_7s_dingdong
       removemini7salarmvideo: 'find /config/www/cam_captures/alarm_videos/* -mtime +15 -exec rm {} \;'
+       
           
-  
+    input_button:
+
+      laxicam_mini7s_photo:
+        name: Фото Mini 7s
+        icon: mdi:camera
+
+      laxicam_mini7s_cast:
+        name: Каст Mini 7s
+        icon: mdi:cast-connected
+        
     automation:
+    
+      - alias: cam_hikvision1_cast
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.laxicam_mini7s_cast
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.tox1_150_ap
+                    state: 'idle'
+                sequence:
+#                  - service: media_player.play_media
+#                    data:
+#                      entity_id: media_player.tox1_150_ap
+#                      media_content_type: "url"
+#                      media_content_id: "http://192.168.1.100:1984/stream.html?src=laxi_camera"
+
+                  - service: camera.play_stream
+                    target:
+                      entity_id: camera.laxicam_mini7s
+                    data:
+                      media_player: media_player.tox1_150_ap
+    
+    
+#                  - service: media_player.play_media
+#                    target:
+#                      entity_id: media_player.tox1_150_ap
+#                    data:
+#                      media_content_type: "video"
+#                      media_content_id: "rtsp://192.168.1.100:8554/laxi_camera"
+#                      "http://192.168.1.100:1984/stream.html?src=laxi_camera"
+                      
+
 
 # https://github.com/guino/BazzDoorbell/issues/8#issuecomment-745198782    
 #    **Trigger:**

@@ -42,3 +42,11 @@ cards:
           - entity: sensor.0x00158d0008ce3dca_humidity
             color: rgb(0,250,255)
             fill: rgba(0,250,255,0.05)        
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008c12daf_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008c12daf_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)  

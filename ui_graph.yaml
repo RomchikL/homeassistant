@@ -4,3 +4,4 @@ views:
   - !include lovelace/201_graph_climate.yaml
   - !include lovelace/203_graph_power.yaml
   - !include lovelace/202_graph_occupancy.yaml
+  - !include lovelace/204_graph_environment.yaml

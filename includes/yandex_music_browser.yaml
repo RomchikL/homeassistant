@@ -2,13 +2,14 @@
 language: ru
 
 menu_options:
+  - !secret yandex_user_liked_tracks_Roma
   # Предустановка: Новые релизы
   - new_releases
-  
 
   # Создание папки в корне:
   - title: "Юзвери"
     image: "http://www.pngall.com/wp-content/uploads/2016/06/Nyan-Cat-Free-Download-PNG.png"
+    items:
 
   # Иерархия многоуровневая и многотипная.
       - title: "И их любимые альбомы"

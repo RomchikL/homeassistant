@@ -337,3 +337,15 @@ telemetry:
           - name: count_camera_unavailable
             state: "{{states.camera | selectattr ('state', 'equalto', 'unavailable') | list | length}}"
             icon: mdi:alert-circle
+            
+            
+################# Дополнения #################            
+    light:
+      - platform: template
+        lights:
+          nullen:
+            friendly_name: "Фейковый"
+            icon_template: phu:ceiling-devere
+            turn_on:
+            turn_off:
+

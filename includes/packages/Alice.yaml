@@ -4,6 +4,14 @@ alice:
         
       customize:
 
+        automation.alice_telegram_communication_in:
+          friendly_name: Алиса - Общение в Телеграм in
+          icon: yandex:alisa
+
+        automation.alice_telegram_communication_out:
+          friendly_name: Алиса - Общение в Телеграм out
+          icon: yandex:alisa
+
         automation.alice_sleep_all:
           friendly_name: Алиса - Всем спать
           icon: yandex:alisa
@@ -15,10 +23,97 @@ alice:
         automation.alice_lr_all_ceiling:
           friendly_name: Включи весь свет в зале
           icon: yandex:alisa
-          
+
+        automation.alice_broadcast:
+          friendly_name: Алиса - broadcast
+          icon: yandex:alisa
+
+        automation.alice_dialog_all_home:
+          friendly_name: Алиса - Навык "Всем домашним"
+          icon: yandex:alisa
+
+    notify:
+      - name: alice_mini_alert  # любое название
+        platform: yandex_station
+        data:
+          entity_id: media_player.kn_yandex_station_mini  # замените на вашу колонку
+          media_content_id: >-
+            {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
+#          media_content_type: dialog
+
+    timer:
+      alarm_pending:
+        duration: '00:05:00'
         
+    template:
+    
+#      - trigger:
+#        - platform: time
+#          at: '00:00'
+#        - platform: time_pattern
+#          seconds: '/2'
+        - sensor:
+          - name: alarm_pending_remaining_time
+            state: >-
+                {% set f = state_attr('timer.alarm_pending', 'finishes_at') %}
+                {{ '00:00' if f == None else
+                  (as_datetime(f) - now()).total_seconds() | timestamp_custom('%M:%S', false) }}
+                  
+          - name: alice_state_Max
+            state: "{{ state_attr('media_player.lr_yandex_station_max', 'alice_state') }}"
+            
+          - name: alice_state_mini
+            state: "{{ state_attr('media_player.kn_yandex_station_mini', 'alice_state') }}"
+                  
     automation:
     
+    # Сигнализация - обновление таймера pending
+      - alias: alarm_timer_update
+        description: Сигн. - обновление таймера
+        initial_state: true
+        trigger:
+          - platform: time_pattern
+            seconds: '*'
+        condition:
+          - condition: state
+            entity_id: timer.alarm_pending
+            state: active
+        action:
+          service: homeassistant.update_entity
+          target:
+            entity_id: sensor.alarm_pending_remaining_time
+
+    # Алиса - Общение в Телеграм - принятие сообщений
+      - alias: alice_telegram_communication_in
+        description: Алиса - Общение в Телеграм in
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text not in ["Всем спать", "всем спать", "куку", "Куку", "Rere", "rere", "Привет", "привет", "Ghbdtn", "ghbdtn", "sos", "Sos", "сос", "Сос"] }}
+        action:
+          service: media_player.play_media
+          entity_id: media_player.kn_yandex_station_mini
+          data:
+            media_content_id: "{{ trigger.event.data.text }}"
+            media_content_type: "question:{{ trigger.event.data.chat_id }}"
+
+    # Алиса - Общение в Телеграм - отправка сообщений
+      - alias: alice_telegram_communication_out
+        description: Алиса - Общение в Телеграм out
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_station_response
+        action:
+          service: telegram_bot.send_message
+          data:
+            target: "{{ trigger.event.data.request_id }}"
+            message: "{{ trigger.event.data.text }}"
+
     # Алиса - Всем спать - выключить везде свет
       - alias: alice_sleep_all
         description: Алиса - Всем спать
@@ -29,35 +124,44 @@ alice:
             event_data:
               text: Всем спать
         action:
-          - service: homeassistant.turn_off
-            data:
+          - service: homeassistant.turn_off     # none - вызывает ошибку, см https://github.com/home-assistant/core/issues/32752
+            target:
               entity_id: >-
-                {% set domains = ['light','switch'] %}
-                {% set exclude = ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.lr_pb_server_switch_overcharge'] %}
-                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|selectattr('state','in','on') %}
-                  {%- if loop.first %}{%- else %},{% endif %}
-                  {{device.entity_id }}
-                  {%- if loop.last %}{% endif %}
-                {%- endfor  %}  
-          - service: media_player.turn_off
-            data:
-              entity_id: >-
-                {% if states("media_player.mpd") in ["on", "playing"] %}
-                media_player.mpd
-                {%- else -%}
-                {%- endif %}
-          - service: media_player.media_pause
-            data:
-              entity_id: >-
-                {% set domains = ['media_player'] %}
-                {% set exclude = ['media_player.mpd'] %}
-                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|rejectattr('state','in','(paused|off)') %}
-                  {%- if loop.first %}{%- else %},{% endif %}
-                  {{device.entity_id }}
-                  {%- if loop.last %}{% endif %}
-                {%- endfor  %}
-              
-    # Алиса - Мы уходим - выключить везде свет, кроме гирлянд; выключить медиаплееры; включить сигнализацию (Дуся выключится автоматически по датчику аэрации)
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.light, states.switch)
+                | rejectattr('entity_id', 'in',  ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.lr_pb_server_switch_overcharge'])
+                | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %} 
+          - service: homeassistant.turn_off # mpd и телевизор
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search',"(mpd|samsung_tv)")
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %}              
+          - service: media_player.media_pause # Яндекс станции
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search','yandex_station')
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                none
+                {% endif %}              
+
+    # Алиса - Мы уходим - сказать пока-пока и запустить скрипт alice_go_away_script
       - alias: alice_go_away
         description: Алиса - Мы уходим
         initial_state: true
@@ -66,40 +170,24 @@ alice:
             event_type: yandex_intent
             event_data:
               text: Мы уходим
+          - platform: tag
+            tag_id: !secret tag_id_go_away
         action:
-          - service: homeassistant.turn_off
-            data:
+          - service: media_player.play_media 
+            target:
               entity_id: >-
-                {% set domains = ['light','switch'] %}
-                {% set exclude = ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.kn_led_flower', 'switch.lr_pb_server_switch_overcharge'] %}
-                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|selectattr('state','in','on') %}
-                  {%- if loop.first %}{%- else %},{% endif %}
-                  {{device.entity_id }}
-                  {%- if loop.last %}{% endif %}
-                {%- endfor  %}
-          - service: media_player.turn_off
+                {% if trigger.event_type == 'yandex_intent' %}
+                trigger.event.data.entity_id
+                {% else %}
+                media_player.kn_yandex_station_mini
+                {% endif %}                
             data:
-              entity_id: >-
-                {% if states("media_player.mpd") in ["on", "playing"] %}
-                media_player.mpd
-                {%- else -%}
-                {%- endif %}
-          - service: media_player.media_pause
-            data:
-              entity_id: >-
-                {% set domains = ['media_player'] %}
-                {% set exclude = ['media_player.mpd'] %}
-                {%- for device in states|selectattr('domain','in', domains)|rejectattr('entity_id','in',exclude)|rejectattr('state','in','(paused|off)') %}
-                  {%- if loop.first %}{%- else %},{% endif %}
-                  {{device.entity_id }}
-                  {%- if loop.last %}{% endif %}
-                {%- endfor  %}
-          - delay: 00:02:00
-          - service: alarm_control_panel.alarm_arm_away
-            data:
-              entity_id: alarm_control_panel.home_alarm
-              code: !secret alarm_code                
-# {% if (not is_state("media_player.mpd", "playing")) -%}
+              media_content_type: text
+              media_content_id: >
+                {{ ['Пока Пока!', 'Пока Пока!']|random }}
+              extra:
+                volume_level: 0.6
+          - service: script.alice_go_away_script
                 
     # Алиса - Включи весь свет в зале - включить полный свет на лампочках в зале
       - alias: alice_lr_all_ceiling
@@ -131,4 +219,131 @@ alice:
                 - delay:
                     milliseconds: 999
         mode: single        
-   
+
+    # Алиса - broadcast
+      - alias: alice_broadcast
+        description: Алиса - broadcast
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Оповещение
+        action: 
+          - service: media_player.play_media
+            target:
+              entity_id: '{{ trigger.event.data.entity_id }}'
+            data:
+              media_content_type: dialog:Умный дом:оповещение  # укажите имя вашего Яндекс.Диалога
+              media_content_id: 'Произнесите фразу'
+          - wait_for_trigger:
+              platform: event
+              event_type: yandex_intent
+              event_data:
+                session:
+                  dialog: оповещение
+            timeout: '10'
+            continue_on_timeout: false
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.kn_yandex_station_mini  # можно указать несколько колонок
+              media_content_type: text
+              media_content_id: '{{ wait.trigger.event.data.text }}'
+        mode: single
+
+    # Алиса - Навык "Всем домашним"
+      - alias: alice_dialog_all_home
+        description: Алиса - Навык "Всем домашним"
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              intent: ANNOUNCE
+        action:
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.kn_yandex_station_mini
+              media_content_type: text
+              media_content_id: '{{ trigger.event.data.phrase }}'          
+        
+
+
+    script:     
+    
+    # Алиса - Список покупок
+        alice_update_shopping_list:
+          alias: alice_update_shopping_list
+#          description: Алиса - Список покупок
+          icon: mdi:cart-arrow-up
+          sequence:
+            - variables:
+                station: >-
+                  {{ states.media_player | selectattr('entity_id','search','yandex_station') | selectattr('attributes.alice_state', 'eq', 'IDLE') | selectattr('state', 'in', ['paused', 'idle']) | map(attribute='entity_id') | list | random }}
+            - service: media_player.volume_mute
+              data:
+                entity_id: "{{ station }}"
+                is_volume_muted: true
+            - service: media_player.play_media
+              data:
+                entity_id: "{{ station }}"
+                media_content_id: update
+                media_content_type: shopping_list
+            - delay:
+                milliseconds: 300
+            - service: media_player.play_media
+              data:
+                entity_id: "{{ station }}"
+                media_content_id: "стоп"
+                media_content_type: command
+            - service: media_player.volume_mute
+              data:
+                entity_id: "{{ station }}"
+                is_volume_muted: false        
+        
+    # Алиса - Мы уходим - выключить везде свет, кроме гирлянд; выключить медиаплееры; включить сигнализацию (Дуся выключится автоматически по датчику аэрации)
+        alice_go_away_script:
+          alias: alice_go_away_script
+          icon: yandex:alisa
+          sequence:
+          - service: homeassistant.turn_off
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.light, states.switch)
+                | rejectattr('entity_id', 'in',  ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.kn_led_flower', 'switch.lr_pb_server_switch_overcharge'])
+                | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %} 
+          - service: homeassistant.turn_off # mpd и телевизор
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search',"(mpd|samsung_tv)")
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %}              
+          - service: media_player.media_pause # Яндекс станции
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search','yandex_station')
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                none
+                {% endif %} 
+          - service: alarm_control_panel.alarm_arm_away
+            data:
+              entity_id: alarm_control_panel.home_alarm
+              code: !secret alarm_code
+# {% if (not is_state("media_player.mpd", "playing")) -%}  

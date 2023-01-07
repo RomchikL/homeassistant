@@ -40,8 +40,6 @@ mobile_app:
 sun:
 # API для предоставления информации о системе и ее компонентах
 system_health:
-# Сенсор для отображения последней версии НА
-#updater: #выпадает в ошибку
 # Stream from camera
 stream:
 history:
@@ -53,6 +51,7 @@ http:
   trusted_proxies:
   - 172.21.0.0/24
   - 192.168.10.0/24
+  - 192.168.1.0/24
   ip_ban_enabled: true
   login_attempts_threshold: 5
 #  api_password: !secret http_api_password

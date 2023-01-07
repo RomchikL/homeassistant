@@ -73,6 +73,7 @@ cards:
                 show_header_toggle: false
               filter:
                 include:
+                 - entity_id: alert.home_alarm_triggered
                  - entity_id: automation.alarm*
                 #   state: 'unavailable'
                    options:
@@ -147,29 +148,6 @@ cards:
               filter:
                 include:
                  - entity_id: automation.kn_ceiling_*
-                   options:
-                      secondary_info: last-changed
-                      state_color: true
-
-            - type: markdown
-              style: |
-                   ha-card {
-                     color: #f8ffd8;
-                     --paper-item-icon-color: #f8ffd8;
-                     --paper-item-icon-active-color: #f8ffd8;
-                     font-weight: bold;
-                     font-size: 14px;
-                   } 
-              content: >
-                 **Ночник**
-            - type: custom:auto-entities
-              show_empty: false
-              card:
-                type: entities
-                show_header_toggle: false
-              filter:
-                include:
-                 - entity_id: automation.kn_gateway_*
                    options:
                       secondary_info: last-changed
                       state_color: true

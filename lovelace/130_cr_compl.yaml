@@ -41,6 +41,49 @@ cards:
 #                - entity: switch.0x00158d0003f46bb6_l2
 
 
+######## Тест #######         
+
+        - type: horizontal-stack
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: input_button.laxicam_mini7s_photo
+            layout: horizontal
+            icon_color: blue
+            icon: mdi:camera
+            primary_info: name
+            name: Фото
+            secondary_info: last-changed
+            tap_action:
+              action: call-service
+              service: input_button.press
+              target:
+                entity_id: input_button.laxicam_mini7s_photo
+
+          - type: custom:mushroom-template-card
+            primary: Cast
+            secondary: |-
+              {% if is_state("media_player.tox1_150_ap", "off") %}
+              Готов к трансляции
+              {% else %}
+              Остановка трансляции
+              {% endif %}
+            layout: horizontal
+            entity: input_button.laxicam_mini7s_cast
+            icon: mdi:cast-connected
+            multiline_secondary: true
+            icon_color: |-
+              {% if is_state("media_player.tox1_150_ap", "off") %}
+              green
+              {% else %}
+              amber
+              {% endif %}
+            tap_action:
+              action: call-service
+              service: input_button.press
+              target:
+                entity_id: input_button.laxicam_mini7s_cast 
+
+
 ############################ Колонка 2 ############################
 
     - type: vertical-stack
@@ -76,6 +119,83 @@ cards:
               cards:
                   
               - type: custom:mushroom-template-card
+                primary: Температура
+                secondary: |-
+                      {{states ('sensor.0x00158d0008c12daf_temperature')}} С°
+                layout: vertical
+                entity: sensor.0x00158d0008c12daf_temperature
+                icon_color: |-
+                  {% if states("sensor.0x00158d0008c12daf_temperature")|float <= -10 %}
+                  indigo
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 0 %}
+                  blue
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 10 %}
+                  light-blue
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 20 %}
+                  cyan
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 25 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 30 %}
+                  amber
+                  {% elif states("sensor.0x00158d0008c12daf_temperature")|float <= 40 %}
+                  orange
+                  {% endif %}
+                icon: mdi:temperature-celsius
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Влажность
+                secondary: |-
+                      {{states ('sensor.0x00158d0008c12daf_humidity')}} %
+                layout: vertical
+                entity: sensor.0x00158d0008c12daf_humidity
+                icon_color: |-
+                  {% if states("sensor.0x00158d0008c12daf_humidity")|float <= 30 %}
+                  deep-orange
+                  {% elif states("sensor.0x00158d0008c12daf_humidity")|float <= 40 %}
+                  yellow
+                  {% elif states("sensor.0x00158d0008c12daf_humidity")|float <= 50 %}
+                  light-blue
+                  {% elif states("sensor.0x00158d0008c12daf_humidity")|float <= 60 %}
+                  blue
+                  {% elif states("sensor.0x00158d0008c12daf_humidity")|float > 60 %}
+                  indigo
+                  {% endif %}
+                icon: mdi:water-percent
+                tap_action:
+                  action: more-info          
+
+              - type: custom:mushroom-template-card
+                primary: Вход
+                secondary: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  Не обнаружено
+                  {% else %}
+                  Движение
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0x00158d0008f1142d_occupancy
+                icon: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  mdi:motion-sensor-off
+                  {% else %}
+                  mdi:motion-sensor
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
+                tap_action:
+                  action: more-info            
+                  
+            - type: horizontal-stack
+              cards:                  
+                  
+              - type: custom:mushroom-template-card
                 primary: Дверь
                 secondary: |-
                   {% if is_state("binary_sensor.0x00158d0008d93f0d_contact", "off") %}
@@ -99,4 +219,126 @@ cards:
                   amber
                   {% endif %} 
                 tap_action:
+                  action: more-info                  
+                  
+              - type: custom:mushroom-template-card
+                primary: Note 8.0
+                secondary: |-
+                  {% if is_state("device_tracker.galaxy_note_8_0", "home") %}
+                  OK
+                  {% else %}
+                  Недоступен
+                  {% endif %}
+                layout: horizontal
+                entity: device_tracker.galaxy_note_8_0
+                icon: mdi:tablet-dashboard
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("device_tracker.galaxy_note_8_0", "home") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
                   action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Esp32
+                secondary: |-
+                  {% if is_state("sensor.corridor_esp32_wi_fi", "unavailable") or is_state("sensor.corridor_esp32_wi_fi", "unknown")%}
+                  Недостепен
+                  {% else %}
+                  ОК
+                  {% endif %}
+                layout: horizontal
+                entity: sensor.corridor_esp32_wi_fi
+                icon: phu:esphome
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("sensor.corridor_esp32_wi_fi", "unavailable") or is_state("sensor.corridor_esp32_wi_fi", "unknown")%}
+                  red
+                  {% else %}
+                  green
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+############################ Колонка New ############################
+
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                color: #f8ffd8;
+                --paper-item-icon-color: #f8ffd8;
+                --paper-item-icon-active-color: #f8ffd8;
+                font-weight: bold;
+                font-size: 26px;
+              }     
+          content: >
+              **Телеметрия** 
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Состояние датчиков коридор**
+            - type: entities
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              show_header_toggle: false
+              entities:
+                - type: divider
+                - entity: sensor.0x00158d0008c12daf_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-temperature
+                  state_color: true
+                  name: Датчик климата
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider
+                - entity: sensor.0x00158d0008d93f0d_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-contact
+                  state_color: true
+                  name: Датчик открытия двери
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider
+                - entity: sensor.0x00158d0008f1142d_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-motion
+                  state_color: true
+                  name: Датчик движения
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал   
+                    
+                    
+                    
+                    

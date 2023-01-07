@@ -61,7 +61,112 @@ cards:
                   {% else %}
                   amber
                   {% endif %} 
-                    
+                  
+              - type: custom:mushroom-template-card
+                primary: Лента
+                secondary: |-
+                  {% if is_state("switch.0xa4c1381662c81b0e", "off") %}
+                  Включить
+                  {% else %}
+                  Выключить
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: switch.0xa4c1381662c81b0e
+                icon: phu:amarant
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("switch.0xa4c1381662c81b0e", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
+                  
+            - type: horizontal-stack
+              cards:
+              
+              - type: custom:mushroom-template-card
+                primary: Дверь в ванную
+                secondary: |-
+                  {% if is_state("binary_sensor.0xa4c138dc68586d06_contact", "off") %}
+                  Закрыта
+                  {% else %}
+                  Открыта
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0xa4c138dc68586d06_contact
+                icon: |-
+                  {% if is_state("binary_sensor.0xa4c138dc68586d06_contact", "off") %}
+                  phu:panel-glass-door2-close
+                  {% else %}
+                  phu:panel-glass-door2-open
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0xa4c138dc68586d06_contact", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Движение
+                secondary: |-
+                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  Нет
+                  {% else %}
+                  Есть
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0x00158d0008d90dbd_occupancy
+                icon: |-
+                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  mdi:motion-sensor-off
+                  {% else %}
+                  mdi:motion-sensor
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: Стояк
+                secondary: |-
+                  {% if is_state("binary_sensor.0x00158d0008dfa560_water_leak", "off") %}
+                  Сухо
+                  {% else %}
+                  Обнаружена протечка
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0x00158d0008dfa560_water_leak
+                icon: |-
+                  {% if is_state("binary_sensor.0x00158d0008dfa560_water_leak", "off") %}
+                  mdi:water-check
+                  {% else %}
+                  mdi:water-alert
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0x00158d0008dfa560_water_leak", "off") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %} 
+                tap_action:
+                  action: more-info
+
+            - type: horizontal-stack
+              cards:
+              
               - type: custom:mushroom-template-card
                 primary: Температура
                 secondary: |-
@@ -110,6 +215,21 @@ cards:
                 tap_action:
                   action: more-info 
 
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Графики**
+              
             - type: custom:history-explorer-card
               header: hide
               defaultTimeRange: 1d
@@ -135,3 +255,124 @@ cards:
                   - entity: sensor.0x00158d0008ce3dca_humidity
                     color: rgb(0,250,255)
                     fill: rgba(0,250,255,0.05)
+
+
+
+############################ Колонка 2 ############################
+
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                color: #f8ffd8;
+                --paper-item-icon-color: #f8ffd8;
+                --paper-item-icon-active-color: #f8ffd8;
+                font-weight: bold;
+                font-size: 26px;
+              }     
+          content: >
+              **Телеметрия** 
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Состояние датчиков ванная**
+            - type: entities
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              show_header_toggle: false
+              entities:
+                - type: divider
+                - entity: sensor.0x00158d0008ce3dca_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-temperature
+                  state_color: true
+                  name: Датчик климата
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider                    
+                - entity: switch.0xa4c1381662c81b0e
+                  type: custom:multiple-entity-row
+                  icon: phu:amarant
+                  toggle: true
+                  state_color: true
+                  name: Питание ленты
+                  secondary_info: last-changed
+                  state_header: Питание
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider                    
+                - entity: switch.0xa4c138850066f7cd_right
+                  type: custom:multiple-entity-row
+                  icon: phu:wall-econic
+                  toggle: true
+                  state_color: true
+                  name: Питание лампочек
+                  secondary_info: last-changed
+                  state_header: Питание
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал
+                - type: divider         
+                - entity: sensor.0xa4c138dc68586d06_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-contact
+                  state_color: true
+                  name: Датчик открытия, дверь
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                    
+                - type: divider
+                - entity: sensor.0x00158d0008d90dbd_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-motion
+                  state_color: true
+                  name: Датчик движения
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                     
+                - type: divider
+                - entity: sensor.0x00158d0008dfa560_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-waterleak
+                  state_color: true
+                  name: Протечка, стояк
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                           
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
