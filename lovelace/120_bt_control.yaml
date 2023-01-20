@@ -256,6 +256,71 @@ cards:
                     color: rgb(0,250,255)
                     fill: rgba(0,250,255,0.05)
 
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+
+            - type: markdown
+              style: |
+                  ha-card {
+                    color: #f8ffd8;
+                    --paper-item-icon-color: #f8ffd8;
+                    --paper-item-icon-active-color: #f8ffd8;
+                    font-weight: bold;
+                    font-size: 14px;
+                  } 
+              content: >
+                **Розетки**
+
+
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c1387beab4cd4f
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c1387beab4cd4f", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Стиралка
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_meter_day')|float + states ('sensor.0xa4c1387beab4cd4f_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
+                  
+            - type: markdown
+              content: >
+                 **     **
 
 
 ############################ Колонка 2 ############################

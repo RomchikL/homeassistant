@@ -69,13 +69,13 @@ cards:
             - type: horizontal-stack
               cards:        
                 - type: button
-                  entity: switch.kn_led_flower
+                  entity: switch.0xa4c1386f409b4ac4
                   name: Цветы
                   tap_action:
                     action: toggle
                     
                 - type: button
-                  entity: switch.kn_fir
+                  entity: switch.0xa4c138323f769290
                   name: Ёлочки
                   tap_action:
                     action: toggle
@@ -109,11 +109,11 @@ cards:
               chips:   
  
               - type: template
-                entity: switch.kn_led_flower
+                entity: switch.0xa4c1386f409b4ac4
                 icon: phu:socket-eu
                 icon_color: |-
-                  {% if is_state("switch.kn_led_flower", "on") %}
-                  green
+                  {% if is_state("switch.0xa4c1386f409b4ac4", "on") %}
+                  purple
                   {% else %}
                   red
                   {% endif %}
@@ -123,45 +123,97 @@ cards:
                   action: toggle
               
               - type: template
-                entity: sensor.kn_led_flower_power
+                entity: sensor.0xa4c1386f409b4ac4_power
                 icon: mdi:lightning-bolt-circle
                 icon_color: green
                 content: |-
-                    {{states ('sensor.kn_led_flower_power')}} Ватт
+                    {{states ('sensor.0xa4c1386f409b4ac4_power')}} Ватт
                 tap_action:
                   action: more-info
              
               - type: template
-                entity: sensor.kn_led_flower_voltage
+                entity: sensor.0xa4c1386f409b4ac4_voltage
                 icon: mdi:sine-wave
                 icon_color: green
                 content: |-
-                    {{states ('sensor.kn_led_flower_voltage')}} В
+                    {{states ('sensor.0xa4c1386f409b4ac4_voltage')}} В
                 tap_action:
                   action: more-info
               
               - type: template
-                entity: sensor.kn_led_flower_energy
+                entity: sensor.0xa4c1386f409b4ac4_energy
                 icon: mdi:home-lightning-bolt
                 icon_color: light-green
                 content: |-
-                    {{states ('sensor.kn_led_flower_energy')}} KВт*ч
+                    {{states ('sensor.0xa4c1386f409b4ac4_energy')}} KВт*ч
                 tap_action:
                   action: more-info
                 
             - type: markdown
               content: >
                  **     **
+
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c13849ef842ae5
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c13849ef842ae5", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Подсветка Цветы
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c13849ef842ae5_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c13849ef842ae5_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c13849ef842ae5_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c13849ef842ae5_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c13849ef842ae5_energy
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c13849ef842ae5_energy')}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
+
+
+
                     
             - type: custom:mushroom-chips-card
               alignment: start
               chips:   
  
               - type: template
-                entity: switch.kn_fir
+                entity: switch.0xa4c138323f769290
                 icon: phu:socket-eu
                 icon_color: |-
-                  {% if is_state("switch.kn_fir", "on") %}
+                  {% if is_state("switch.0xa4c138323f769290", "on") %}
                   green
                   {% else %}
                   red
@@ -172,29 +224,29 @@ cards:
                   action: toggle
               
               - type: template
-                entity: sensor.kn_fir_power
+                entity: sensor.0xa4c138323f769290_power
                 icon: mdi:lightning-bolt-circle
                 icon_color: green
                 content: |-
-                    {{states ('sensor.kn_fir_power')}} Ватт
+                    {{states ('sensor.0xa4c138323f769290_power')}} Ватт
                 tap_action:
                   action: more-info
              
               - type: template
-                entity: sensor.kn_fir_voltage
+                entity: sensor.0xa4c138323f769290_voltage
                 icon: mdi:sine-wave
                 icon_color: green
                 content: |-
-                    {{states ('sensor.kn_fir_voltage')}} В
+                    {{states ('sensor.0xa4c138323f769290_voltage')}} В
                 tap_action:
                   action: more-info
               
               - type: template
-                entity: sensor.kn_fir_energy
+                entity: sensor.0xa4c138323f769290_meter_day
                 icon: mdi:home-lightning-bolt
                 icon_color: light-green
                 content: |-
-                    {{states ('sensor.kn_fir_energy')}} KВт*ч
+                    {{states ('sensor.0xa4c138323f769290_meter_day')|float + states ('sensor.0xa4c138323f769290_meter_night')|float}} KВт*ч
                 tap_action:
                   action: more-info
                 
@@ -202,6 +254,54 @@ cards:
               content: >
                  **     **
 
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c138e5e488903a
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c138e5e488903a", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Холодос
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c138e5e488903a_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c138e5e488903a_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c138e5e488903a_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c138e5e488903a_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c138e5e488903a_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c138e5e488903a_meter_day')|float + states ('sensor.0xa4c138e5e488903a_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
 
 
 ############################ Колонка 2 ############################

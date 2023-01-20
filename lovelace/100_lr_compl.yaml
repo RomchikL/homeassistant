@@ -71,10 +71,10 @@ cards:
             chips:   
  
             - type: template
-              entity: switch.lr_pb_server
+              entity: switch.0xa4c138f1330afac4
               icon: phu:socket-eu
               icon_color: |-
-                {% if is_state("switch.lr_pb_server", "on") %}
+                {% if is_state("switch.0xa4c138f1330afac4", "on") %}
                 green
                 {% else %}
                 red
@@ -85,32 +85,32 @@ cards:
                 action: toggle
               
             - type: template
-              entity: sensor.lr_pb_server_power
+              entity: sensor.0xa4c138f1330afac4_power
               icon: mdi:lightning-bolt-circle
               icon_color: green
               content: |-
-                  {{states ('sensor.lr_pb_server_power')}} Ватт
+                  {{states ('sensor.0xa4c138f1330afac4_power')}} Ватт
               tap_action:
                 action: more-info
               
             - type: template
-              entity: sensor.lr_pb_server_voltage
+              entity: sensor.0xa4c138f1330afac4_voltage
               icon: mdi:sine-wave
               icon_color: green
               content: |-
-                  {{states ('sensor.lr_pb_server_voltage')}} В
+                  {{states ('sensor.0xa4c138f1330afac4_voltage')}} В
               tap_action:
                 action: more-info
               
             - type: template
-              entity: sensor.lr_pb_server_energy
+              entity: sensor.0xa4c138f1330afac4_meter_day
               icon: mdi:home-lightning-bolt
               icon_color: light-green
               content: |-
-                  {{states ('sensor.lr_pb_server_energy')}} KВт*ч
+                  {{states ('sensor.0xa4c138f1330afac4_meter_day')|float + states ('sensor.0xa4c138f1330afac4_meter_night')|float}} KВт*ч
               tap_action:
                 action: more-info
-                
+
           - type: markdown
             content: >
                **     **
@@ -134,13 +134,13 @@ cards:
             cards:
             - type: button
               name: Лента
-              entity: switch.light_in_lr_lenta
+              entity: switch.lr_ceiling_light_lenta
               tap_action:
                 action: toggle
               
             - type: button
               name: Лампочки
-              entity: switch.light_in_lr_lamp
+              entity: switch.lr_ceiling_light_lamps
               tap_action:
                 action: toggle
               

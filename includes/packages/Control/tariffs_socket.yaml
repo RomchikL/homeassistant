@@ -1,0 +1,33 @@
+tariffs_socket:
+
+    homeassistant:
+
+      customize:
+        automation.control_local_tuya_reload:
+          friendly_name: Контроль - перезагрузка Local Tuya
+          icon: mdi:reload
+
+
+    automation:
+
+      - alias: ha_socket_set_tariff
+        description: Дом - Выбрать тариф для розеток
+        initial_state: true
+        trigger:
+        - platform: time
+          at: "07:00:00" 
+          variables:
+            tariff: "day"
+        - platform: time
+          at: "23:00:00" 
+          variables:
+            tariff: "night"  
+        action:
+        - service: select.select_option
+          target:
+            entity_id:
+              - select.0xa4c138323f769290_meter #розетка елочки
+              - select.0xa4c138f1330afac4_meter #розетка сервера
+              - select.0xa4c1387beab4cd4f_meter #розетка стиралка
+          data:
+            option: "{{ tariff }}"

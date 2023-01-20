@@ -129,7 +129,7 @@ alice:
               entity_id: >-
                 {% set variable = namespace(value = {}) %}
                 {% set variable.value = expand(states.light, states.switch)
-                | rejectattr('entity_id', 'in',  ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.lr_pb_server_switch_overcharge'])
+                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a'])
                 | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
                 {% if (variable.value | count) > 0 %}
                 {{ variable.value }}
@@ -200,14 +200,14 @@ alice:
               text: Включи весь свет в зале
         action:
           - service_template: >
-              {% if (is_state("switch.light_in_lr_lamp", "on")) -%}
+              {% if (is_state("switch.lr_ceiling_light_lamps", "on")) -%}
               switch.toggle
               {%- else -%}
               {%- endif %}
             data_template:
               entity_id: >
-                {% if (is_state("switch.light_in_lr_lamp", "on")) -%}
-                switch.light_in_lr_lamp
+                {% if (is_state("switch.lr_ceiling_light_lamps", "on")) -%}
+                switch.lr_ceiling_light_lamps
                 {%- else -%}
                 {%- endif %}        
           - delay: 00:00:01       
@@ -215,7 +215,7 @@ alice:
               count: 7
               sequence:
                 - service: switch.toggle
-                  entity_id: switch.light_in_lr_lamp
+                  entity_id: switch.lr_ceiling_light_lamps
                 - delay:
                     milliseconds: 999
         mode: single        
@@ -311,7 +311,7 @@ alice:
               entity_id: >
                 {% set variable = namespace(value = {}) %}
                 {% set variable.value = expand(states.light, states.switch)
-                | rejectattr('entity_id', 'in',  ['switch.lr_pb_server', 'switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.kn_led_flower', 'switch.lr_pb_server_switch_overcharge'])
+                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a'])
                 | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
                 {% if (variable.value | count) > 0 %}
                 {{ variable.value }}

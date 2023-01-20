@@ -3,61 +3,115 @@ kn_switch:
     recorder:
       include:
         entities:
-           - switch.kn_led_flower
-           - sensor.kn_led_flower_energy
-           - sensor.kn_led_flower_voltage
-           - sensor.kn_led_flower_power
-           - switch.kn_fir
-           - sensor.kn_fir_energy
-           - sensor.kn_fir_voltage
-           - sensor.kn_fir_power
-           - switch.light_in_kn_lamps
-           - switch.light_in_kn_lenta
+           - switch.0xa4c1386f409b4ac4 # розетка цветы фиолетовая
+           - switch.0xa4c13849ef842ae5 # розетка цветы подсветка
+           - switch.0xa4c138323f769290 # розетка елочки
+           - switch.0xa4c138e5e488903a # розетка Холодос
            - switch.0xa4c138850066f7cd_left
- 
-           
+
+    sensor:
+    
+      - platform: integration
+        name: '0xa4c138323f769290_integration'
+        source: sensor.0xa4c138323f769290_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c138e5e488903a_integration'
+        source: sensor.0xa4c138e5e488903a_power
+        unit_prefix: k
+        round: 2
+        
+    utility_meter:
+
+      0xa4c138323f769290_meter:
+        source: sensor.0xa4c138323f769290_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night    
+          
+      0xa4c138e5e488903a_meter:
+        source: sensor.0xa4c138e5e488903a_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
 
     homeassistant:
         customize:
-            switch.kn_led_flower:
+            switch.0xa4c1386f409b4ac4:
                 friendly_name: Лента для цветов
                 device_class: light  
                 icon: mdi:flower
-                integration: localtuya
                 
-            switch.light_in_kn_lamps:
-                friendly_name: Лампочки
-                icon: phu:bulb-group-ceiling-round
-                integration: tuyaonline
+            switch.0xa4c13849ef842ae5:
+                friendly_name: Подсветка для цветов
+                device_class: light  
+                icon: mdi:flower
                 
-            switch.light_in_kn_lenta:
-                friendly_name: Лента
-                icon: phu:light-strip
-                integration: tuyaonline
-                
-            switch.kn_fir:
+            switch.0xa4c138323f769290:
                 friendly_name: Ёлочки
                 icon: phu:christmas-lights
-                integration: localtuya
 
-            automation.kn_ceiling_flowers_on_morning:
+            switch.0xa4c138e5e488903a:
+                friendly_name: Холодильник
+                icon: mdi:fridge                
+
+            automation.kn_socket_refrigerator_control:
+                friendly_name: Кухня - контроль розетки холодильника
+                icon: mdi:fridge
+
+            automation.kn_led_flowers_on_morning:
                 friendly_name: Кухня - включение ленты для цветов утром
                 icon: phu:light-strip
-            automation.kn_ceiling_flowers_off_morning:
+            automation.kn_led_flowers_off_morning:
                 friendly_name: Кухня - выключение ленты для цветов утром
                 icon: phu:lightstrip-off
-            automation.kn_ceiling_flowers_on_evening:
+            automation.kn_led_flowers_on_evening:
                 friendly_name: Кухня - включение ленты для цветов вечером
                 icon: phu:light-strip
-            automation.kn_ceiling_flowers_off_evening:
+            automation.kn_led_flowers_off_evening:
                 friendly_name: Кухня - выключение ленты для цветов вечером
                 icon: phu:lightstrip-off
 
  
  
     automation:
+    
+      - alias: kn_socket_refrigerator_control
+        description: Кухня - контроль розетки холодильника
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'off'
+            for: "00:01:00"
+        condition:
+          - condition: template
+            value_template: "{{ trigger.to_state.state in ['off','unknown','unavailable'] }}"          
+#          - platform: state
+#            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'unknown'
+#            for: "00:01:00"
+#          - platform: state
+#            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'unavailable'
+#            for: "00:01:00"
+        action: 
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                - !secret chat_id_romchik
+              message: | 
+                Внимание!
+                Розетка холодильника выключена или недоступна!
 
-      - alias: kn_ceiling_flowers_on_morning
+      - alias: kn_led_flowers_on_morning
         description: Кухня - включение ленты для цветов утром
         initial_state: true
         trigger:
@@ -68,18 +122,15 @@ kn_switch:
     # Если выключена
         - condition: device
           type: is_off
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         action:
         - type: turn_on
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         mode: single
         
-        
-      - alias: kn_ceiling_flowers_off_morning
+      - alias: kn_led_flowers_off_morning
         description: Кухня - выключение ленты для цветов утром
         initial_state: true
         trigger:
@@ -95,18 +146,15 @@ kn_switch:
     # Если выключена
         - condition: device
           type: is_on
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         action:
         - type: turn_off
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         mode: single
         
-        
-      - alias: kn_ceiling_flowers_on_evening
+      - alias: kn_led_flowers_on_evening
         description: Кухня - включение ленты для цветов вечером
         initial_state: true
         trigger:
@@ -122,18 +170,15 @@ kn_switch:
     # Если включена
         - condition: device
           type: is_off
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         action:
         - type: turn_on
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         mode: single
         
-        
-      - alias: kn_ceiling_flowers_off_evening
+      - alias: kn_led_flowers_off_evening
         description: Кухня - выключение ленты для цветов вечером
         initial_state: true
         trigger:
@@ -144,13 +189,11 @@ kn_switch:
     # Если включена
         - condition: device
           type: is_on
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         action:
         - type: turn_off
-          device_id: 9e64299ff7eb758323306fe290326412
-          entity_id: switch.kn_led_flower
+          entity_id: switch.0xa4c1386f409b4ac4
           domain: switch
         mode: single
         

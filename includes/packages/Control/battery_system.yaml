@@ -27,4 +27,4 @@ battery_system:
               message: | 
                 Внимание!
                 Уровень заряда системной батареи - {{ states('sensor.battery') }}%
-                Статус розетки сервера - {{ states('switch.lr_pb_server') }}
+                Статус розетки сервера - {{ states('switch.0xa4c138f1330afac4') }}

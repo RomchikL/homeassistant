@@ -3,41 +3,46 @@ lr_switch:
     recorder:
       include:
         entities:
-           - switch.lr_pb_server
-           - sensor.lr_pb_server_energy
-           - sensor.lr_pb_server_voltage
-           - sensor.lr_pb_server_power
-           - switch.light_in_lr_lenta
-           - switch.light_in_lr_lamp
+           - switch.0xa4c138f1330afac4 # розетка сервер
+           - switch.lr_ceiling_light_lenta
+           - switch.lr_ceiling_light_lamps
            - switch.lr_lanterns
            - switch.lr_garland_long
-#           - switch.lr_belaya
+
+    sensor:
+    
+      - platform: integration
+        name: '0xa4c138f1330afac4_integration'
+        source: sensor.0xa4c138f1330afac4_power
+        unit_prefix: k
+        round: 2
+        
+    utility_meter:
+
+      0xa4c138f1330afac4_meter:
+        source: sensor.0xa4c138f1330afac4_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night         
            
     homeassistant:
       customize:
         
-        switch.lr_pb_server:
+        switch.0xa4c138f1330afac4:
           friendly_name: Розетка сервера
           icon: mdi:power-socket-eu
-          integration: localtuya
-        switch.light_in_lr_lenta:
+        switch.lr_ceiling_light_lenta:
           friendly_name: Лента
           icon: phu:light-strip
-          integration: ltuyaonline
-        switch.light_in_lr_lamp:
+        switch.lr_ceiling_light_lamps:
           friendly_name: Лампочки
           icon: phu:ceiling-adore-alt-flush
-          integration: tuyaonline
           
         switch.lr_lanterns:
           friendly_name: Фонарики
           icon: phu:light-string
-          integration: tuyaonline
         
         switch.lr_garland_long:
           friendly_name: Длинная
           icon: phu:light-strip
-          integration: tuyaonline
-          
-        sensor.lr_pb_server_energy:
-          integration: localtuya

@@ -5,7 +5,8 @@ bt_switch:
         entities:
            - switch.0xa4c138850066f7cd_right
            - switch.0xa4c1381662c81b0e
-           
+           - switch.0xa4c1387beab4cd4f #Розетка стиралка
+
 
     homeassistant:
         customize:
@@ -16,6 +17,23 @@ bt_switch:
                 friendly_name: Ванная - Включениче света по датчику движения
                 icon: mdi:ceiling-light
 
+    sensor:
+    
+      - platform: integration
+        name: '0xa4c1387beab4cd4f_integration'
+        source: sensor.0xa4c1387beab4cd4f_power
+        unit_prefix: k
+        round: 2
+        
+    utility_meter:
+
+      0xa4c1387beab4cd4f_meter:
+        source: sensor.0xa4c1387beab4cd4f_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
     input_boolean:
     
      bt_ceiling_light_lock:
