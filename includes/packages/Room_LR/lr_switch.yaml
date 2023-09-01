@@ -4,16 +4,26 @@ lr_switch:
       include:
         entities:
            - switch.0xa4c138f1330afac4 # розетка сервер
-           - switch.lr_ceiling_light_lenta
-           - switch.lr_ceiling_light_lamps
-           - switch.lr_lanterns
-           - switch.lr_garland_long
-
+           - switch.0xa4c138f1330afac4_meter_day
+           - switch.0xa4c138f1330afac4_meter_night
+           - sensor.0xa4c138f1330afac4_power
+           - switch.0xa4c138cac637c3b3_l1 # свет в зале лента
+           - switch.0xa4c138cac637c3b3_l2 # свет в зале лампочки
+           - switch.0xa4c1388af6a76f04_l4 # гирлянда шарики зал
+           - switch.0xa4c1388af6a76f04_l3 # гирлянда длинная зал
+           - switch.0xa4c138184fccfbb1 # розетка удлинителя
+           
     sensor:
     
       - platform: integration
         name: '0xa4c138f1330afac4_integration'
         source: sensor.0xa4c138f1330afac4_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c138184fccfbb1_integration'
+        source: sensor.0xa4c138184fccfbb1_power
         unit_prefix: k
         round: 2
         
@@ -24,7 +34,14 @@ lr_switch:
         cycle: monthly 
         tariffs:
           - day
-          - night         
+          - night 
+          
+      0xa4c138184fccfbb1_meter:
+        source: sensor.0xa4c138184fccfbb1_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
            
     homeassistant:
       customize:
@@ -32,17 +49,17 @@ lr_switch:
         switch.0xa4c138f1330afac4:
           friendly_name: Розетка сервера
           icon: mdi:power-socket-eu
-        switch.lr_ceiling_light_lenta:
+        switch.0xa4c138cac637c3b3_l1:
           friendly_name: Лента
           icon: phu:light-strip
-        switch.lr_ceiling_light_lamps:
+        switch.0xa4c138cac637c3b3_l2:
           friendly_name: Лампочки
           icon: phu:ceiling-adore-alt-flush
           
-        switch.lr_lanterns:
+        switch.0xa4c1388af6a76f04_l4:
           friendly_name: Фонарики
           icon: phu:light-string
         
-        switch.lr_garland_long:
+        switch.0xa4c1388af6a76f04_l3:
           friendly_name: Длинная
           icon: phu:light-strip

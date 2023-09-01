@@ -17,6 +17,89 @@ cards:
         content: >
             **Управление**
 
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:  
+          - type: markdown
+            style: |
+                 ha-card {
+                   color: #f8ffd8;
+                   --paper-item-icon-color: #f8ffd8;
+                   --paper-item-icon-active-color: #f8ffd8;
+                   font-weight: bold;
+                   font-size: 14px;
+                 } 
+            content: >
+               **Освещение**
+          - type: horizontal-stack
+            cards:
+            - type: button
+              name: Лента
+              entity: switch.0xa4c138cac637c3b3_l1
+              tap_action:
+                action: toggle
+              
+            - type: button
+              name: Лампочки
+              entity: switch.0xa4c138cac637c3b3_l2
+              tap_action:
+                action: toggle
+              
+            - type: button
+              name: Настольная
+              entity: light.lamp_1s
+              tap_action:
+                action: toggle
+              
+#          - type: button
+#            name: Фонарики
+#            entity: switch.lr_belaya
+#            tap_action:
+#              action: toggle
+              
+          - type: conditional
+            conditions:
+              - entity: light.lamp_1s
+                state: "on"
+            card:
+                type: custom:mushroom-light-card
+                entity: light.lamp_1s
+                name: Настольная
+                icon_type: none
+                primary_info: name
+#              secondary_info: none
+                use_light_color: true
+                show_brightness_control: true
+                show_color_temp_control: true
+                show_color_control: false
+                collapsible_controls: true
+              
+          - type: markdown
+            style: |
+                 ha-card {
+                   color: #f8ffd8;
+                   --paper-item-icon-color: #f8ffd8;
+                   --paper-item-icon-active-color: #f8ffd8;
+                   font-weight: bold;
+                   font-size: 14px;
+                 } 
+            content: >
+               **Гирлянды**
+          - type: horizontal-stack
+            cards:
+            - type: button
+              name: Длинная
+              entity: switch.0xa4c1388af6a76f04_l3
+              tap_action:
+                action: toggle
+              
+            - type: button
+              name: Фонарики
+              entity: switch.0xa4c1388af6a76f04_l4
+              tap_action:
+                action: toggle
+
+
       - type: custom:mushroom-media-player-card
         entity: media_player.lr_samsung_tv
         name: Телевизор
@@ -80,7 +163,7 @@ cards:
                 red
                 {% endif %}
               content: |-
-                Розетка сервера
+                Сервер
               tap_action:
                 action: toggle
               
@@ -115,89 +198,51 @@ cards:
             content: >
                **     **
                
-               
-      - type: custom:stack-in-card
-        mode: vertical
-        cards:  
-          - type: markdown
-            style: |
-                 ha-card {
-                   color: #f8ffd8;
-                   --paper-item-icon-color: #f8ffd8;
-                   --paper-item-icon-active-color: #f8ffd8;
-                   font-weight: bold;
-                   font-size: 14px;
-                 } 
-            content: >
-               **Освещение**
-          - type: horizontal-stack
-            cards:
-            - type: button
-              name: Лента
-              entity: switch.lr_ceiling_light_lenta
+          - type: custom:mushroom-chips-card
+            alignment: start
+            chips:   
+ 
+            - type: template
+              entity: switch.0xa4c138184fccfbb1
+              icon: phu:socket-eu
+              icon_color: |-
+                {% if is_state("switch.0xa4c138184fccfbb1", "on") %}
+                green
+                {% else %}
+                red
+                {% endif %}
+              content: |-
+                Удлинитель
               tap_action:
                 action: toggle
               
-            - type: button
-              name: Лампочки
-              entity: switch.lr_ceiling_light_lamps
+            - type: template
+              entity: sensor.0xa4c138184fccfbb1_power
+              icon: mdi:lightning-bolt-circle
+              icon_color: green
+              content: |-
+                  {{states ('sensor.0xa4c138184fccfbb1_power')}} Ватт
               tap_action:
-                action: toggle
+                action: more-info
               
-            - type: button
-              name: Настольная
-              entity: light.lamp_1s
+            - type: template
+              entity: sensor.0xa4c138184fccfbb1_voltage
+              icon: mdi:sine-wave
+              icon_color: green
+              content: |-
+                  {{states ('sensor.0xa4c138184fccfbb1_voltage')}} В
               tap_action:
-                action: toggle
+                action: more-info
               
-#          - type: button
-#            name: Фонарики
-#            entity: switch.lr_belaya
-#            tap_action:
-#              action: toggle
-              
-          - type: conditional
-            conditions:
-              - entity: light.lamp_1s
-                state: "on"
-            card:
-                type: custom:mushroom-light-card
-                entity: light.lamp_1s
-                name: Настольная
-                icon_type: none
-                primary_info: name
-#              secondary_info: none
-                use_light_color: true
-                show_brightness_control: true
-                show_color_temp_control: true
-                show_color_control: false
-                collapsible_controls: true
-              
-          - type: markdown
-            style: |
-                 ha-card {
-                   color: #f8ffd8;
-                   --paper-item-icon-color: #f8ffd8;
-                   --paper-item-icon-active-color: #f8ffd8;
-                   font-weight: bold;
-                   font-size: 14px;
-                 } 
-            content: >
-               **Гирлянды**
-          - type: horizontal-stack
-            cards:
-            - type: button
-              name: Длинная
-              entity: switch.lr_garland_long
+            - type: template
+              entity: sensor.0xa4c138184fccfbb1_meter_day
+              icon: mdi:home-lightning-bolt
+              icon_color: light-green
+              content: |-
+                  {{states ('sensor.0xa4c138184fccfbb1_meter_day')|float + states ('sensor.0xa4c138184fccfbb1_meter_night')|float}} KВт*ч
               tap_action:
-                action: toggle
-              
-            - type: button
-              name: Фонарики
-              entity: switch.lr_lanterns
-              tap_action:
-                action: toggle
-
+                action: more-info
+                
                   
 ############################ Колонка 2 ############################
 

@@ -26,6 +26,9 @@ bt_sensors:
         sensor.0x00158d0008d90dbd_illuminance_lux:
           friendly_name: Ванная, освещенность
           
+        binary_sensor.0xa4c1387c6db81d88_contact:
+          friendly_name: Протечка ванная
+          
 #        sensor.0x00158d0008ce3dca_mmhg_pressure:
 #          friendly_name: Ванная давление мм рт. ст.
 #          device_class: pressure

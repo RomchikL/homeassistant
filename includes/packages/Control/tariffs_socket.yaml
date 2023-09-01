@@ -3,14 +3,15 @@ tariffs_socket:
     homeassistant:
 
       customize:
-        automation.control_local_tuya_reload:
-          friendly_name: Контроль - перезагрузка Local Tuya
+        automation.ha_socket_set_tariff:
+          friendly_name: Дом - Выбрать тариф для розеток
           icon: mdi:reload
 
 
     automation:
 
       - alias: ha_socket_set_tariff
+        id: ha_socket_set_tariff
         description: Дом - Выбрать тариф для розеток
         initial_state: true
         trigger:
@@ -27,7 +28,10 @@ tariffs_socket:
           target:
             entity_id:
               - select.0xa4c138323f769290_meter #розетка елочки
+              - select.0xa4c138e5e488903a_meter #розетка холодос
               - select.0xa4c138f1330afac4_meter #розетка сервера
               - select.0xa4c1387beab4cd4f_meter #розетка стиралка
+              - select.0xa4c13873bd4330eb_meter #розетка чайника
+              - select.0xa4c138184fccfbb1_meter #розетка удлинитель
           data:
             option: "{{ tariff }}"

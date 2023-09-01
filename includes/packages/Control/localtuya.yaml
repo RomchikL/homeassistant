@@ -34,6 +34,7 @@ localtuya:
     automation:
     
       - alias: control_local_tuya_reload
+        id: control_local_tuya_reload
         description: Контроль - перезагрузка Local Tuya
         initial_state: true
         trigger:

@@ -4,17 +4,22 @@ bt_switch:
       include:
         entities:
            - switch.0xa4c138850066f7cd_right
-           - switch.0xa4c1381662c81b0e
+           - switch.0xa4c1381662c81b0e # Лента ванная
            - switch.0xa4c1387beab4cd4f #Розетка стиралка
+           - sensor.0xa4c1387beab4cd4f_meter_day
+           - sensor.0xa4c1387beab4cd4f_meter_night
 
 
     homeassistant:
         customize:
             switch.0xa4c1381662c81b0e:
               icon: phu:amarant
+              
+            switch.0xa4c1387beab4cd4f:
+              icon: mdi:washing-machine
 
             automation.bt_ceiling_light_on_motion:
-                friendly_name: Ванная - Включениче света по датчику движения
+                friendly_name: Ванная - Включение света по датчику движения
                 icon: mdi:ceiling-light
 
     sensor:
@@ -44,15 +49,16 @@ bt_switch:
     automation:
 
       - alias: bt_ceiling_light_on_motion
-        description: Ванная - Включениче света по датчику движения
-        initial_state: true
+        id: bt_ceiling_light_on_motion
+        description: Ванная - Включение света по датчику движения
+        initial_state: false
         trigger:
         - platform: state
           entity_id: binary_sensor.0x00158d0008d90dbd_occupancy
           to: 'on'
         condition:
         - condition: state
-          entity_id: switch.0xa4c138850066f7cd_right
+          entity_id: switch.0xa4c138067561cf2a_right
           state: 'off'
         - condition: state
           entity_id: input_boolean.bt_ceiling_light_lock
@@ -63,8 +69,21 @@ bt_switch:
         action:
         - service: switch.turn_on
           entity_id: 
-           - switch.0xa4c138850066f7cd_right
+           - switch.0xa4c138067561cf2a_right
 #        - delay: 00:00:20
 #        - service: light.turn_off
 #          entity_id: 
 #           - light.gateway_light_f0b429cc1f11
+
+      - alias: bt_lenta_opple
+        id: bt_lenta_opple
+        description: Ванная - Включение Ленты по Opple
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.0x54ef4410003b4a83_action
+          to: 'button_3_single'
+        action:
+        - service: switch.toggle
+          target:
+            entity_id: switch.0xa4c1381662c81b0e

@@ -111,6 +111,50 @@ telegram_dialog:
             entity_id:
               - automation.alice_sleep_all
 
+    ##  Таймер на выключение Алисы с параметром
+      - id: Телеграм - таймер выключения Алисы
+        alias: telegram_Ya.Max_timer_off
+        initial_state: true
+        trigger:
+#          - platform: event
+#            event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+            event_data:
+              command: '/Alice'
+        condition:
+          - condition: template
+            value_template: >-
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["fffffffff", "ffffffff"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/Alice"] }} 
+              {%- endif -%}
+        action:
+          - service: media_player.volume_mute # mute
+            target:
+              entity_id:
+                - media_player.lr_yandex_station_max
+            data:
+              is_volume_muted: "{{ not state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+          - service: media_player.play_media
+            entity_id: media_player.lr_yandex_station_max
+            data:
+              media_content_id: "Выключись через {{ trigger.event.data['args']|join(' ') }} минут"
+              media_content_type: command
+          - delay: "00:00:05"
+          - service: media_player.volume_set
+            data:
+              entity_id:
+                - media_player.lr_yandex_station_max
+              volume_level: 0.1
+#          - service: media_player.volume_mute #unmute
+#            target:
+#              entity_id:
+#                - media_player.lr_yandex_station_max
+#            data:
+#              is_volume_muted: "{{ state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+
 
     ## Тест для запуска через кнопку --- Кнопка слишком большая, размер не меняется, неудобно
 #      - id: Вызов меню управления телеграм через кнопку

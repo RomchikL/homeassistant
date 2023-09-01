@@ -16,12 +16,6 @@ cards:
           content: >
              **Управление**
              
-
-
-
-
-############################ Колонка 2 ############################
-
         - type: custom:stack-in-card
           mode: vertical
           cards:  
@@ -44,7 +38,7 @@ cards:
               - type: custom:mushroom-template-card
                 primary: Лампочки
                 secondary: |-
-                  {% if is_state("switch.0xa4c138850066f7cd_right", "off") %}
+                  {% if is_state("switch.0xa4c138067561cf2a_right", "off") %}
                   Включить
                   {% else %}
                   Выключить
@@ -52,11 +46,11 @@ cards:
                 layout: vertical
                 tap_action:
                   action: toggle
-                entity: switch.0xa4c138850066f7cd_right
+                entity: switch.0xa4c138067561cf2a_right
                 icon: phu:wall-econic
                 multiline_secondary: true
                 icon_color: |-
-                  {% if is_state("switch.0xa4c138850066f7cd_right", "off") %}
+                  {% if is_state("switch.0xa4c138067561cf2a_right", "off") %}
                   grey
                   {% else %}
                   amber
@@ -82,6 +76,35 @@ cards:
                   {% else %}
                   amber
                   {% endif %} 
+                  
+      
+              - type: custom:mushroom-template-card
+                primary: BLE
+                secondary: |-
+                  {% if is_state("sensor.bt_ble_tracker_bt_esp32_wi_fi", "unavailable") or is_state("sensor.bt_ble_tracker_bt_esp32_wi_fi", "unknown")%}
+                  Недоступен
+                  {% else %}
+                  ОК
+                  {% endif %}
+                layout: vertical
+                entity: sensor.bt_ble_tracker_bt_esp32_wi_fi
+                icon: phu:esphome
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("sensor.bt_ble_tracker_bt_esp32_wi_fi", "unavailable") or is_state("sensor.bt_ble_tracker_bt_esp32_wi_fi", "unknown")%}
+                  red
+                  {% else %}
+                  green
+                  {% endif %}
+                tap_action:
+                  action: more-info                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
                   
             - type: horizontal-stack
               cards:
@@ -115,22 +138,22 @@ cards:
               - type: custom:mushroom-template-card
                 primary: Движение
                 secondary: |-
-                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  {% if is_state("binary_sensor.ld2410_bathroom_presence", "off") %}
                   Нет
                   {% else %}
                   Есть
                   {% endif %}
                 layout: vertical
-                entity: binary_sensor.0x00158d0008d90dbd_occupancy
+                entity: binary_sensor.ld2410_bathroom_presence
                 icon: |-
-                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  {% if is_state("binary_sensor.ld2410_bathroom_presence", "off") %}
                   mdi:motion-sensor-off
                   {% else %}
                   mdi:motion-sensor
                   {% endif %}
                 multiline_secondary: true
                 icon_color: |-
-                  {% if is_state("binary_sensor.0x00158d0008d90dbd_occupancy", "off") %}
+                  {% if is_state("binary_sensor.ld2410_bathroom_presence", "off") %}
                   grey
                   {% else %}
                   amber
@@ -163,7 +186,131 @@ cards:
                   {% endif %} 
                 tap_action:
                   action: more-info
+                  
+              - type: custom:mushroom-template-card
+                primary: Ванная
+                secondary: |-
+                  {% if is_state("binary_sensor.0xa4c1387c6db81d88_contact", "off") %}
+                  Сухо
+                  {% else %}
+                  Обнаружена протечка
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0xa4c1387c6db81d88_contact
+                icon: |-
+                  {% if is_state("binary_sensor.0xa4c1387c6db81d88_contact", "off") %}
+                  mdi:water-check
+                  {% else %}
+                  mdi:water-alert
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0xa4c1387c6db81d88_contact", "off") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %} 
+                tap_action:
+                  action: more-info
 
+
+
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+
+            - type: markdown
+              style: |
+                  ha-card {
+                    color: #f8ffd8;
+                    --paper-item-icon-color: #f8ffd8;
+                    --paper-item-icon-active-color: #f8ffd8;
+                    font-weight: bold;
+                    font-size: 14px;
+                  } 
+              content: >
+                **Розетки**
+
+
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c1387beab4cd4f
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c1387beab4cd4f", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Стиралка
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c1387beab4cd4f_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c1387beab4cd4f_meter_day')|float + states ('sensor.0xa4c1387beab4cd4f_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
+                  
+            - type: markdown
+              content: >
+                 **     **
+
+
+
+############################ Колонка 2 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          style: |
+              ha-card {
+                font-size: 26px;
+              }          
+          content: >
+             **Климат**
+             
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: markdown
+              style: |
+                   ha-card {
+                     color: #f8ffd8;
+                     --paper-item-icon-color: #f8ffd8;
+                     --paper-item-icon-active-color: #f8ffd8;
+                     font-weight: bold;
+                     font-size: 14px;
+                   } 
+              content: >
+                 **Датчики и сенсоры**
+                
             - type: horizontal-stack
               cards:
               
@@ -256,74 +403,8 @@ cards:
                     color: rgb(0,250,255)
                     fill: rgba(0,250,255,0.05)
 
-        - type: custom:stack-in-card
-          mode: vertical
-          cards:
 
-            - type: markdown
-              style: |
-                  ha-card {
-                    color: #f8ffd8;
-                    --paper-item-icon-color: #f8ffd8;
-                    --paper-item-icon-active-color: #f8ffd8;
-                    font-weight: bold;
-                    font-size: 14px;
-                  } 
-              content: >
-                **Розетки**
-
-
-            - type: custom:mushroom-chips-card
-              alignment: start
-              chips:   
- 
-              - type: template
-                entity: switch.0xa4c1387beab4cd4f
-                icon: phu:socket-eu
-                icon_color: |-
-                  {% if is_state("switch.0xa4c1387beab4cd4f", "on") %}
-                  green
-                  {% else %}
-                  red
-                  {% endif %}
-                content: |-
-                  Стиралка
-                tap_action:
-                  action: toggle
-              
-              - type: template
-                entity: sensor.0xa4c1387beab4cd4f_power
-                icon: mdi:lightning-bolt-circle
-                icon_color: green
-                content: |-
-                    {{states ('sensor.0xa4c1387beab4cd4f_power')}} Ватт
-                tap_action:
-                  action: more-info
-             
-              - type: template
-                entity: sensor.0xa4c1387beab4cd4f_voltage
-                icon: mdi:sine-wave
-                icon_color: green
-                content: |-
-                    {{states ('sensor.0xa4c1387beab4cd4f_voltage')}} В
-                tap_action:
-                  action: more-info
-              
-              - type: template
-                entity: sensor.0xa4c1387beab4cd4f_meter_day
-                icon: mdi:home-lightning-bolt
-                icon_color: light-green
-                content: |-
-                    {{states ('sensor.0xa4c1387beab4cd4f_meter_day')|float + states ('sensor.0xa4c1387beab4cd4f_meter_night')|float}} KВт*ч
-                tap_action:
-                  action: more-info
-                  
-            - type: markdown
-              content: >
-                 **     **
-
-
-############################ Колонка 2 ############################
+############################ Колонка 3 ############################
 
 
     - type: vertical-stack
@@ -389,7 +470,7 @@ cards:
                   - attribute: linkquality
                     name: Сигнал
                 - type: divider                    
-                - entity: switch.0xa4c138850066f7cd_right
+                - entity: switch.0xa4c138067561cf2a_right
                   type: custom:multiple-entity-row
                   icon: phu:wall-econic
                   toggle: true
@@ -412,17 +493,6 @@ cards:
                   - attribute: linkquality
                     name: Сигнал                    
                 - type: divider
-                - entity: sensor.0x00158d0008d90dbd_battery
-                  type: custom:multiple-entity-row
-                  icon: phu:aqara-motion
-                  state_color: true
-                  name: Датчик движения
-                  secondary_info: last-changed
-                  state_header: Батарейка
-                  entities:
-                  - attribute: linkquality
-                    name: Сигнал                     
-                - type: divider
                 - entity: sensor.0x00158d0008dfa560_battery
                   type: custom:multiple-entity-row
                   icon: phu:aqara-waterleak
@@ -433,7 +503,17 @@ cards:
                   entities:
                   - attribute: linkquality
                     name: Сигнал                           
-                    
+                - type: divider
+                - entity: sensor.0xa4c1387c6db81d88_battery
+                  type: custom:multiple-entity-row
+                  icon: phu:aqara-waterleak
+                  state_color: true
+                  name: Протечка, ванная
+                  secondary_info: last-changed
+                  state_header: Батарейка
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                    
                     
                     
                     

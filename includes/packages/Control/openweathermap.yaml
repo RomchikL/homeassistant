@@ -45,6 +45,7 @@ openweathermap:
     automation:
     
       - alias: control_openweathermap_reload
+        id: control_openweathermap_reload
         description: Контроль - перезагрузка openweathermap
         initial_state: true
     ## Более 5 сенсоров openweathermap недоступны
@@ -81,6 +82,7 @@ openweathermap:
                entity_id: input_boolean.control_openweathermap   
                
       - alias: control_openweathermap_blockoff
+        id: control_openweathermap_blockoff
         description: Контроль - отключение блокировки openweathermap
         initial_state: true
         trigger:

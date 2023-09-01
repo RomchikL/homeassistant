@@ -16,21 +16,23 @@ cards:
           content: >
              **Видеонаблюдение**
 
+######## Mini 7s #######
+
         - type: custom:stack-in-card
           mode: vertical
           cards:
             - type: picture-glance
-              title: Камера
+              title: Mini 7s
               show_name: false
               entities:
 #               - entity: switch.laxi_mini7s_an_kai_v300_8m_motion_alarm
 #               - entity: switch.laxi_mini7s_an_kai_v300_8m_sound_detection
-               - entity: input_button.laxi_mini7s
+               - entity: input_button.laxicam_mini7s_photo
                  tap_action:
                     action: call-service
                     service: input_button.press
                     service_data:
-                      entity_id: input_button.laxi_mini7s
+                      entity_id: input_button.laxicam_mini7s_photo
               camera_image: camera.laxicam_mini7s
               camera_view: live
 #            - type: entities
@@ -39,9 +41,6 @@ cards:
 #                # - entity: sensor.reolink_411_ws_last_event
 #                #   name: Последнее событие
 #                - entity: switch.0x00158d0003f46bb6_l2
-
-
-######## Тест #######         
 
         - type: horizontal-stack
           cards:
@@ -62,7 +61,7 @@ cards:
           - type: custom:mushroom-template-card
             primary: Cast
             secondary: |-
-              {% if is_state("media_player.tox1_150_ap", "off") %}
+              {% if is_state("media_player.android_tv_192_168_1_150", ['off', 'idle', 'paused']) %}
               Готов к трансляции
               {% else %}
               Остановка трансляции
@@ -72,7 +71,7 @@ cards:
             icon: mdi:cast-connected
             multiline_secondary: true
             icon_color: |-
-              {% if is_state("media_player.tox1_150_ap", "off") %}
+              {% if is_state("media_player.tox1_150_ap", ['off', 'idle', 'paused']) %}
               green
               {% else %}
               amber
@@ -82,6 +81,61 @@ cards:
               service: input_button.press
               target:
                 entity_id: input_button.laxicam_mini7s_cast 
+
+
+######## Logitech #######
+
+
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+            - type: picture-glance
+              title: Logitech
+              show_name: false
+              entities: []
+              camera_image: camera.logitech
+              camera_view: live
+
+        - type: horizontal-stack
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: input_button.logitech_photo
+            layout: horizontal
+            icon_color: blue
+            icon: mdi:camera
+            primary_info: name
+            name: Фото
+            secondary_info: last-changed
+            tap_action:
+              action: call-service
+              service: input_button.press
+              target:
+                entity_id: input_button.logitech_photo
+
+          - type: custom:mushroom-template-card
+            primary: Cast
+            secondary: |-
+              {% if is_state("media_player.android_tv_192_168_1_150", ['off', 'idle', 'paused']) %}
+              Готов к трансляции
+              {% else %}
+              Остановка трансляции
+              {% endif %}
+            layout: horizontal
+            entity: input_button.logitech_cast
+            icon: mdi:cast-connected
+            multiline_secondary: true
+            icon_color: |-
+              {% if is_state("media_player.tox1_150_ap", ['off', 'idle', 'paused']) %}
+              green
+              {% else %}
+              amber
+              {% endif %}
+            tap_action:
+              action: call-service
+              service: input_button.press
+              target:
+                entity_id: input_button.logitech_cast 
+                
 
 
 ############################ Колонка 2 ############################
@@ -117,7 +171,58 @@ cards:
                  **Датчики и сенсоры**
             - type: horizontal-stack
               cards:
+              
+              - type: custom:mushroom-template-card
+                primary: Лампочки
+                secondary: |-
+                  {% if is_state("switch.0xa4c138e25779d74d", "off") %}
+                  Включить
+                  {% else %}
+                  Выключить
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: switch.0xa4c138e25779d74d
+                icon: phu:wall-econic
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("switch.0xa4c138e25779d74d", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
                   
+              - type: custom:mushroom-template-card
+                primary: Вход
+                secondary: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  Не обнаружено
+                  {% else %}
+                  Движение
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.0x00158d0008f1142d_occupancy
+                icon: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  mdi:motion-sensor-off
+                  {% else %}
+                  mdi:motion-sensor
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
+                  grey
+                  {% else %}
+                  amber
+                  {% endif %} 
+                tap_action:
+                  action: more-info                   
+
+                  
+            - type: horizontal-stack
+              cards:                  
+                
               - type: custom:mushroom-template-card
                 primary: Температура
                 secondary: |-
@@ -166,31 +271,7 @@ cards:
                 tap_action:
                   action: more-info          
 
-              - type: custom:mushroom-template-card
-                primary: Вход
-                secondary: |-
-                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
-                  Не обнаружено
-                  {% else %}
-                  Движение
-                  {% endif %}
-                layout: vertical
-                entity: binary_sensor.0x00158d0008f1142d_occupancy
-                icon: |-
-                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
-                  mdi:motion-sensor-off
-                  {% else %}
-                  mdi:motion-sensor
-                  {% endif %}
-                multiline_secondary: true
-                icon_color: |-
-                  {% if is_state("binary_sensor.0x00158d0008f1142d_occupancy", "off") %}
-                  grey
-                  {% else %}
-                  amber
-                  {% endif %} 
-                tap_action:
-                  action: more-info            
+           
                   
             - type: horizontal-stack
               cards:                  
@@ -222,19 +303,19 @@ cards:
                   action: more-info                  
                   
               - type: custom:mushroom-template-card
-                primary: Note 8.0
+                primary: Redmi 5A
                 secondary: |-
-                  {% if is_state("device_tracker.galaxy_note_8_0", "home") %}
+                  {% if is_state("device_tracker.38_e6_0a_99_c8_2c", "home") %}
                   OK
                   {% else %}
                   Недоступен
                   {% endif %}
                 layout: horizontal
-                entity: device_tracker.galaxy_note_8_0
+                entity: device_tracker.38_e6_0a_99_c8_2c
                 icon: mdi:tablet-dashboard
                 multiline_secondary: true
                 icon_color: |-
-                  {% if is_state("device_tracker.galaxy_note_8_0", "home") %}
+                  {% if is_state("device_tracker.38_e6_0a_99_c8_2c", "home") %}
                   green
                   {% else %}
                   red
@@ -243,25 +324,92 @@ cards:
                   action: more-info
 
               - type: custom:mushroom-template-card
-                primary: Esp32
+                primary: BLE
                 secondary: |-
-                  {% if is_state("sensor.corridor_esp32_wi_fi", "unavailable") or is_state("sensor.corridor_esp32_wi_fi", "unknown")%}
+                  {% if is_state("sensor.cr_ble_tracker_cr_esp32_wi_fi", "unavailable") or is_state("sensor.cr_ble_tracker_cr_esp32_wi_fi", "unknown")%}
                   Недостепен
                   {% else %}
                   ОК
                   {% endif %}
                 layout: horizontal
-                entity: sensor.corridor_esp32_wi_fi
+                entity: sensor.cr_ble_tracker_cr_esp32_wi_fi
                 icon: phu:esphome
                 multiline_secondary: true
                 icon_color: |-
-                  {% if is_state("sensor.corridor_esp32_wi_fi", "unavailable") or is_state("sensor.corridor_esp32_wi_fi", "unknown")%}
+                  {% if is_state("sensor.cr_ble_tracker_cr_esp32_wi_fi", "unavailable") or is_state("sensor.cr_ble_tracker_cr_esp32_wi_fi", "unknown")%}
                   red
                   {% else %}
                   green
                   {% endif %}
                 tap_action:
                   action: more-info
+                  
+                  
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:
+
+            - type: markdown
+              style: |
+                  ha-card {
+                    color: #f8ffd8;
+                    --paper-item-icon-color: #f8ffd8;
+                    --paper-item-icon-active-color: #f8ffd8;
+                    font-weight: bold;
+                    font-size: 14px;
+                  } 
+              content: >
+                **Розетки**
+
+
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c138aca076db2a
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c138aca076db2a", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Планшет
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c138aca076db2a_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c138aca076db2a_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c138aca076db2a_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c138aca076db2a_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c138aca076db2a_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c138aca076db2a_meter_day')|float + states ('sensor.0xa4c138aca076db2a_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
+                  
+            - type: markdown
+              content: >
+                 **     **
 
 ############################ Колонка New ############################
 
@@ -338,7 +486,18 @@ cards:
                   entities:
                   - attribute: linkquality
                     name: Сигнал   
-                    
+                - type: divider                    
+                - entity: switch.0xa4c138e25779d74d
+                  type: custom:multiple-entity-row
+                  icon: phu:wall-econic
+                  toggle: true
+                  state_color: true
+                  name: Питание лампочек
+                  secondary_info: last-changed
+                  state_header: Питание
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                    
                     
                     
                     

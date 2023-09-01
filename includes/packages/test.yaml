@@ -1,12 +1,23 @@
 test:
 
-
+    recorder:
+      include:
+        entities:
+           - sensor.0x00158d0008dfa560_control
+           - sensor.0xa4c1387c6db81d88_control
+           - sensor.0x00158d0008dfa7df_control
 
     homeassistant:
 
       customize:
         switch.cr_motion:
           friendly_name: Коридор - движение
+        sensor.0x00158d0008dfa560_control:
+          friendly_name: Протечка ванная стояк
+        sensor.0xa4c1387c6db81d88_control:
+          friendly_name: Протечка ванная
+        sensor.0x00158d0008dfa7df_control:
+          friendly_name: Прочетка кухня          
           
 #    template:
     
@@ -16,8 +27,45 @@ test:
 #            device_class: motion
 #            icon: mdi:motion-sensor
 #            state: "{{ is_state('binary_sensor.kitchen_motion_sensor_occupancy', 'on') or is_state('binary_sensor.dining_room_motion_sensor_occupancy', 'on') }}"
-            
 
+    template:
+    
+      - trigger:
+        - platform: time_pattern
+          minutes: '/1'
+        sensor:
+          - name: '0x00158d0008dfa560_control'
+            state: >
+              {{(as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa560_water_leak', 'last_seen')))|int(0) }}
+            attributes:
+              time: >
+                {% set s = (as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa560_water_leak', 'last_seen')))|int(0) %}
+                {{ '{:d} дней {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}
+
+      - trigger:
+        - platform: time_pattern
+          minutes: '/1'
+        sensor:
+          - name: '0xa4c1387c6db81d88_control'
+            state: >
+              {{(as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0xa4c1387c6db81d88_contact', 'last_seen')))|int(0) }}
+            attributes:
+              time: >
+                {% set s = (as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0xa4c1387c6db81d88_contact', 'last_seen')))|int(0) %}
+                {{ '{:d} дней {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}      
+                
+      - trigger:
+        - platform: time_pattern
+          minutes: '/1'
+        sensor:
+          - name: '0x00158d0008dfa7df_control'
+            state: >
+              {{(as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa7df_water_leak', 'last_seen')))|int(0) }}
+            attributes:
+              time: >
+                {% set s = (as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa7df_water_leak', 'last_seen')))|int(0) %}
+                {{ '{:d} дней {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}
+            
     switch:
     
       - platform: template

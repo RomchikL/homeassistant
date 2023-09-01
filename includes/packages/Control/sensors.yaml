@@ -25,7 +25,7 @@ sensors:
     # Трекер Ромы по esp и wi fi
           - name: roma_home
             state: >
-              {{ is_state('device_tracker.phone_roma', 'home') or is_state('binary_sensor.mi_band_7', 'on') 
+              {{ is_state('device_tracker.phone_roma', 'home') or is_state('binary_sensor.cr_ble_tracker_mi_band_7', 'on') or is_state('binary_sensor.bt_ble_tracker_mi_band_7', 'on') 
               }}
             delay_off: 00:03:00
             device_class: presence
@@ -34,8 +34,10 @@ sensors:
     # Трекер Кристины по esp и wi fi
           - name: kitka_home
             state: >
-              {{ is_state('device_tracker.phone_kitka', 'home') or is_state('binary_sensor.redmond_skytracker', 'on') 
+              {{ is_state('device_tracker.phone_kitka', 'home') or is_state('binary_sensor.cr_ble_tracker_mi_band_2', 'on') or is_state('binary_sensor.bt_ble_tracker_mi_band_2', 'on')               
               }}
             delay_off: 00:03:00
             device_class: presence
             icon: mdi:home-account
+
+            # or is_state('binary_sensor.bt_ble_tracker_redmond_skytracker', 'on') or is_state('binary_sensor.cr_ble_tracker_redmond_skytracker', 'on')

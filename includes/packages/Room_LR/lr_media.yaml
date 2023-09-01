@@ -27,8 +27,9 @@ lr_media:
 
 
       - alias: lr_tox_volume_down_evening
+        id: lr_tox_volume_down_evening
         description: Гостиная - уменьшить громкость TOX ночью
-        initial_state: true
+        initial_state: false
         trigger:
         - platform: time
           at: '22:00:00'
@@ -40,8 +41,9 @@ lr_media:
             
             
       - alias: lr_tox_volume_up_morning
+        id: lr_tox_volume_up_morning
         description: Гостиная - увеличить громкость TOX утром
-        initial_state: true
+        initial_state: false
         trigger:
         - platform: time
           at: '8:00:00'
@@ -52,6 +54,7 @@ lr_media:
             volume_level: 1
             
       - alias: lr_yandex_station_max_volume_down_evening
+        id: lr_yandex_station_max_volume_down_evening
         description: Гостиная - уменьшить громкость станции Max ночью
         initial_state: true
         trigger:

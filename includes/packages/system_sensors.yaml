@@ -55,8 +55,8 @@ system_sensors:
     - platform: linux_battery
         
          
-    - platform: uptime
-      name: online
+#    - platform: uptime
+#      name: online
 
     - platform: time_date
       display_options:
@@ -66,9 +66,9 @@ system_sensors:
         - 'time_date'
 
 
-    binary_sensor:
-      - platform: workday
-        country: RU
+#    binary_sensor:
+#      - platform: workday
+#        country: RU
 
     template:
     

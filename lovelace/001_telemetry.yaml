@@ -250,7 +250,7 @@ cards:
                 entities:
                   - entity: sensor.current_version
                     name: Установлено
-              - type: divider
+#              - type: divider
                       
 
             - type: custom:auto-entities
@@ -1022,18 +1022,27 @@ cards:
                   } 
               content: >
                   **Активные таймеры**
-
+                  
             - type: custom:auto-entities
-              show_empty: false
               card:
                 type: entities
                 show_header_toggle: false
               filter:
                 include:
-                 - domain: timer
-                   state: 'active'
-                   options:
-                      secondary_info: last-changed
+                - domain: timer
+                  state: 'active'
+                  options:
+                      type: custom:timer-bar-card
+                      modifications:
+                      - elapsed: 30%
+                        bar_foreground: yellow
+                      - elapsed: 60%
+                        bar_foreground: orange
+                      - elapsed: 90%
+                        bar_foreground: red
+                      bar_height: 20px
+                      sync_issues: ignore
+                      invert: true
 
 ############################ Колонка 4 ############################
 

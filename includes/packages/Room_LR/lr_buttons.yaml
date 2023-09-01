@@ -1,0 +1,8 @@
+lr_buttons:
+
+
+    homeassistant:
+      customize:
+
+        sensor.0x00158d0006f85055_action:
+          friendly_name: Гостиная кнопка Aqara

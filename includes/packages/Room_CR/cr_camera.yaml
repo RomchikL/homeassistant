@@ -15,6 +15,14 @@ cr_camera:
           friendly_name: Mini 7s - удаление старых видео
           icon: mdi:camera
           
+        automation.cam_mini7s_cast:
+          friendly_name: Mini 7s - каст
+          icon: mdi:camera
+          
+        automation.cam_logitech_cast:
+          friendly_name: Logitech - каст
+          icon: mdi:camera
+          
     shell_command:
       play_wav_laxicam_mini7s: !secret laxicam_mini_7s_dingdong
       removemini7salarmvideo: 'find /config/www/cam_captures/alarm_videos/* -mtime +15 -exec rm {} \;'
@@ -24,15 +32,25 @@ cr_camera:
 
       laxicam_mini7s_photo:
         name: Фото Mini 7s
-        icon: mdi:camera
+        icon: mdi:camera-plus
 
       laxicam_mini7s_cast:
         name: Каст Mini 7s
         icon: mdi:cast-connected
         
+      logitech_photo:
+        name: Фото Logitech
+        icon: mdi:camera-plus
+
+      logitech_cast:
+        name: Каст Logitech
+        icon: mdi:cast-connected
+
+        
     automation:
     
-      - alias: cam_hikvision1_cast
+      - alias: cam_mini7s_cast
+        id: cam_mini7s_cast
         initial_state: true
         trigger:
     ## Виртуальная кнопка
@@ -42,30 +60,91 @@ cr_camera:
             - choose:
               - conditions:
                   - condition: state
-                    entity_id: media_player.tox1_150_ap
-                    state: 'idle'
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'off'
                 sequence:
-#                  - service: media_player.play_media
-#                    data:
-#                      entity_id: media_player.tox1_150_ap
-#                      media_content_type: "url"
-#                      media_content_id: "http://192.168.1.100:1984/stream.html?src=laxi_camera"
-
-                  - service: camera.play_stream
-                    target:
-                      entity_id: camera.laxicam_mini7s
+                  - service: media_player.turn_on
                     data:
-                      media_player: media_player.tox1_150_ap
-    
-    
-#                  - service: media_player.play_media
-#                    target:
-#                      entity_id: media_player.tox1_150_ap
-#                    data:
-#                      media_content_type: "video"
-#                      media_content_id: "rtsp://192.168.1.100:8554/laxi_camera"
-#                      "http://192.168.1.100:1984/stream.html?src=laxi_camera"
+                      entity_id: media_player.android_tv_192_168_1_150
+                  - delay: "00:00:05"
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/laxi_camera -t video/mp4"
                       
+              - conditions:      
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state:
+                      - 'idle'
+                      - 'paused'
+                sequence:
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/laxi_camera -t video/mp4"
+                      
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'playing'
+                sequence:
+                    - service: androidtv.adb_command
+                      target:
+                        entity_id: media_player.android_tv_192_168_1_150
+                      data:
+                        command: "adb shell am force-stop org.videolan.vlc"                 
+                        
+                        
+      - alias: cam_logitech_cast
+        id: cam_logitech_cast
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.logitech_cast
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'off'
+                sequence:
+                  - service: media_player.turn_on
+                    data:
+                      entity_id: media_player.android_tv_192_168_1_150
+                  - delay: "00:00:05"
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d http://192.168.1.100:1984/api/stream.mp4?src=logitechyuyv&mp4=flac -t video/mp4"
+                      
+              - conditions:      
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state:
+                      - 'idle'
+                      - 'paused'
+                sequence:
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d http://192.168.1.100:1984/api/stream.mp4?src=logitechyuyv&mp4=flac -t video/mp4"
+                      
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'playing'
+                sequence:
+                    - service: androidtv.adb_command
+                      target:
+                        entity_id: media_player.android_tv_192_168_1_150
+                      data:
+                        command: "adb shell am force-stop org.videolan.vlc"                    
 
 
 # https://github.com/guino/BazzDoorbell/issues/8#issuecomment-745198782    
@@ -86,6 +165,7 @@ cr_camera:
 #      media_player: media_player.{id} << ADD ID
 
       - alias: cam_laxi_mini7s_remove_old_alarm
+        id: cam_laxi_mini7s_remove_old_alarm
         description: Mini 7s - удаление старых видео
         initial_state: true
         trigger:
@@ -94,12 +174,14 @@ cr_camera:
         action:
          - service: shell_command.removemini7salarmvideo
 
+
       - alias: cam_laxi_mini7s_photo
+        id: cam_laxi_mini7s_photo
         initial_state: true
         trigger:
     ## Виртуальная кнопка
         - platform: state
-          entity_id: input_button.laxi_mini7s
+          entity_id: input_button.laxicam_mini7s_photo
         action:
          - service: camera.snapshot
            data:
@@ -117,7 +199,28 @@ cr_camera:
               - !secret chat_id_romchik
              file: "/config/www/cam_captures/laxi_mini7s_photo.jpg" 
              
+      - alias: cam_logitech_photo
+        id: cam_logitech_photo
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.logitech_photo
+        action:
+         - service: camera.snapshot
+           data:
+              entity_id: camera.logitech
+              filename: "/config/www/cam_captures/logitech_photo.jpg"
+         - delay: 00:00:03
+         - service: telegram_bot.send_photo
+           data_template:
+             target:
+              - !secret chat_id_romchik
+             file: "/config/www/cam_captures/logitech_photo.jpg" 
+             
+             
       - alias: cr_laxi_mini7s_photo
+        id: cr_laxi_mini7s_photo
         description: Триггер - фото и отправка в телеграмм
 #        initial_state: true
         trigger:
@@ -144,6 +247,7 @@ cr_camera:
              payload: test_command #idle
              
       - alias: cr_laxi_mini7s_video
+        id: cr_laxi_mini7s_video
         description: Обнаржение движения - отправка видео в Телеграм
 #        initial_state: true
         trigger:
@@ -172,6 +276,7 @@ cr_camera:
         
               
       - alias: cam_laxi_mini7s_test
+        id: cam_laxi_mini7s_test
 #        initial_state: true
         trigger:
         - platform: mqtt
@@ -186,26 +291,11 @@ cr_camera:
               extra:
                 volume_level: 0.9
                 
-      - alias: test_cast
-        initial_state: true
-        trigger:
-        - platform: state
-          entity_id: switch.lr_belaya
-          to: 'on'
-        action:
-#        - service: camera.play_stream
-#          data:
-#            media_player: media_player.tox1_150_ap
-#          target:
-#            entity_id: camera.laxicam_mini7s
-        - service: cast.show_lovelace_view
-          data:
-            entity_id: media_player.tox1_150_ap
-            dashboard_path: lovelace
-            view_path: "0"
+
             
     # еще тест
       - alias: test-alice_telik
+        id: alice_telik
         description: Test telik
         trigger:
           - platform: event

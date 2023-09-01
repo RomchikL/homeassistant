@@ -48,6 +48,7 @@ telegram_alarm:
 
 ################# Датчики воды #################
       - alias: send_list_water_leak_detect
+        id: send_list_water_leak_detect
         initial_state: true
         trigger:
          - platform: template

@@ -3,11 +3,25 @@ kn_switch:
     recorder:
       include:
         entities:
-           - switch.0xa4c1386f409b4ac4 # розетка цветы фиолетовая
-           - switch.0xa4c13849ef842ae5 # розетка цветы подсветка
+           - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка
+           - switch.0xa4c13849ef842ae5 # розетка цветы фиолетовая
            - switch.0xa4c138323f769290 # розетка елочки
            - switch.0xa4c138e5e488903a # розетка Холодос
+           - sensor.0xa4c138e5e488903a_power
+           - sensor.0xa4c138e5e488903a_meter_night
+           - sensor.0xa4c138e5e488903a_meter_day
+           - switch.0xa4c13873bd4330eb # розетка чайник
+           - sensor.0xa4c13873bd4330eb_power
+           - sensor.0xa4c13873bd4330eb_meter_night
+           - sensor.0xa4c13873bd4330eb_meter_day
+           - switch.0x70b3d52b6001b5e1 # розетка СВЧ
+           - sensor.0x70b3d52b6001b5e1_power
+           - switch.0x70b3d52b6001b5e1_meter_night
+           - switch.0x70b3d52b6001b5e1_meter_day
            - switch.0xa4c138850066f7cd_left
+           - switch.0xa4c1384b2bfeb644_l1
+           - switch.0xa4c1384b2bfeb644_l2
+           
 
     sensor:
     
@@ -20,6 +34,18 @@ kn_switch:
       - platform: integration
         name: '0xa4c138e5e488903a_integration'
         source: sensor.0xa4c138e5e488903a_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c13873bd4330eb_integration'
+        source: sensor.0xa4c13873bd4330eb_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0x70b3d52b6001b5e1_integration'
+        source: sensor.0x70b3d52b6001b5e1_power
         unit_prefix: k
         round: 2
         
@@ -38,22 +64,44 @@ kn_switch:
         tariffs:
           - day
           - night 
+          
+      0xa4c13873bd4330eb_meter:
+        source: sensor.0xa4c13873bd4330eb_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
+      0x70b3d52b6001b5e1_meter:
+        source: sensor.0x70b3d52b6001b5e1_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
 
     homeassistant:
         customize:
             switch.0xa4c1386f409b4ac4:
-                friendly_name: Лента для цветов
+                friendly_name: Подсветка для цветов
                 device_class: light  
                 icon: mdi:flower
                 
             switch.0xa4c13849ef842ae5:
-                friendly_name: Подсветка для цветов
+                friendly_name: Лента для цветов
                 device_class: light  
                 icon: mdi:flower
                 
             switch.0xa4c138323f769290:
                 friendly_name: Ёлочки
                 icon: phu:christmas-lights
+
+            switch.0xa4c1384b2bfeb644_l2:
+                friendly_name: Лампочки
+                icon: phu:bulb-group-ceiling-round
+                
+            switch.0xa4c1384b2bfeb644_l1:
+                friendly_name: Лента
+                icon: phu:light-strip
 
             switch.0xa4c138e5e488903a:
                 friendly_name: Холодильник
@@ -81,6 +129,7 @@ kn_switch:
     automation:
     
       - alias: kn_socket_refrigerator_control
+        id: kn_socket_refrigerator_control
         description: Кухня - контроль розетки холодильника
         initial_state: true
         trigger:
@@ -110,29 +159,26 @@ kn_switch:
               message: | 
                 Внимание!
                 Розетка холодильника выключена или недоступна!
-
+                
       - alias: kn_led_flowers_on_morning
+        id: kn_led_flowers_on_morning
         description: Кухня - включение ленты для цветов утром
-        initial_state: true
+        initial_state: false
         trigger:
-    # Утром в 6:00
         - platform: time
           at: '06:00:00'
         condition:
-    # Если выключена
-        - condition: device
-          type: is_off
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'off'
         action:
-        - type: turn_on
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
-        mode: single
+        - service: switch.turn_on
+          entity_id: switch.0xa4c13849ef842ae5
         
       - alias: kn_led_flowers_off_morning
+        id: kn_led_flowers_off_morning
         description: Кухня - выключение ленты для цветов утром
-        initial_state: true
+        initial_state: false
         trigger:
         - platform: sun
           # Possible values: sunset, sunrise
@@ -143,20 +189,17 @@ kn_switch:
 #        - platform: time
 #          at: '08:30:00'
         condition:
-    # Если выключена
-        - condition: device
-          type: is_on
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'on'
         action:
-        - type: turn_off
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
-        mode: single
+        - service: switch.turn_off
+          entity_id: switch.0xa4c13849ef842ae5
         
       - alias: kn_led_flowers_on_evening
+        id: kn_led_flowers_on_evening
         description: Кухня - включение ленты для цветов вечером
-        initial_state: true
+        initial_state: false
         trigger:
         - platform: sun
           # Possible values: sunset, sunrise
@@ -167,33 +210,25 @@ kn_switch:
 #        - platform: time
 #          at: '19:30:00'
         condition:
-    # Если включена
-        - condition: device
-          type: is_off
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'off'
         action:
-        - type: turn_on
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
-        mode: single
+        - service: switch.turn_on
+          entity_id: switch.0xa4c13849ef842ae5
         
       - alias: kn_led_flowers_off_evening
+        id: kn_led_flowers_off_evening
         description: Кухня - выключение ленты для цветов вечером
-        initial_state: true
+        initial_state: false
         trigger:
     # Вечером в 23:00
         - platform: time
           at: '23:00:00'
         condition:
-    # Если включена
-        - condition: device
-          type: is_on
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'on'
         action:
-        - type: turn_off
-          entity_id: switch.0xa4c1386f409b4ac4
-          domain: switch
-        mode: single
-        
+        - service: switch.turn_off
+          entity_id: switch.0xa4c13849ef842ae5

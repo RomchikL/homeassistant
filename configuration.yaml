@@ -1,6 +1,7 @@
 homeassistant:
   name: My Home
   country: RU
+  currency: RUB
   latitude: !secret latitude_coord
   longitude: !secret longitude_coord
   elevation: 5
@@ -15,15 +16,18 @@ homeassistant:
   allowlist_external_dirs :
    - /config #/www
 
+# For HomeKit
+#zeroconf:
+
 config:
 #Сканирование доступных устройств в сети
 ssdp:
 
 # блютус
-#bluetooth:
-#device_tracker:
-#  - platform: bluetooth_le_tracker
-#    track_new_devices: true
+bluetooth:
+device_tracker:
+  - platform: bluetooth_le_tracker
+    track_new_devices: true
 
 # Включение официального интерфейса
 frontend:
@@ -107,6 +111,12 @@ lovelace:
     - url: /hacsfiles/logbook-card/logbook-card.js
       type: module
     - url: /hacsfiles/home-assistant-jukebox/jukebox-card.js
+      type: module
+    - url: /hacsfiles/timer-bar-card/timer-bar-card.js
+      type: module
+    - url: /hacsfiles/apexcharts-card/apexcharts-card.js
+      type: module
+    - url: /hacsfiles/lovelace-layout-card/layout-card.js
       type: module
 #    - url: /hacsfiles/lovelace-card-mod/card-mod.js
 #      type: module

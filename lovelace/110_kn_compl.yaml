@@ -29,7 +29,7 @@ cards:
                 - type: custom:mushroom-template-card
                   primary: Лампочки
                   secondary: |-
-                    {% if is_state("switch.0xa4c138850066f7cd_left", "off") %}
+                    {% if is_state("switch.0xa4c138067561cf2a_left", "off") %}
                     Включить
                     {% else %}
                     Выключить
@@ -37,24 +37,24 @@ cards:
                   layout: vertical
                   tap_action:
                     action: toggle
-                  entity: switch.0xa4c138850066f7cd_left
+                  entity: switch.0xa4c138067561cf2a_left
                   icon: phu:wall-econic
                   multiline_secondary: true
                   icon_color: |-
-                    {% if is_state("switch.0xa4c138850066f7cd_left", "off") %}
+                    {% if is_state("switch.0xa4c138067561cf2a_left", "off") %}
                     grey
                     {% else %}
                     amber
                     {% endif %}               
                     
                 - type: button
-                  entity: switch.light_in_kn_lamps
+                  entity: switch.0xa4c1384b2bfeb644_l2
                   name: Подсветка
                   tap_action:
                     action: toggle                    
                     
                 - type: button
-                  entity: switch.light_in_kn_lenta
+                  entity: switch.0xa4c1384b2bfeb644_l1
                   name: Лента
                   tap_action:
                     action: toggle
@@ -69,7 +69,7 @@ cards:
             - type: horizontal-stack
               cards:        
                 - type: button
-                  entity: switch.0xa4c1386f409b4ac4
+                  entity: switch.0xa4c13849ef842ae5
                   name: Цветы
                   tap_action:
                     action: toggle
@@ -109,65 +109,16 @@ cards:
               chips:   
  
               - type: template
-                entity: switch.0xa4c1386f409b4ac4
+                entity: switch.0xa4c13849ef842ae5
                 icon: phu:socket-eu
                 icon_color: |-
-                  {% if is_state("switch.0xa4c1386f409b4ac4", "on") %}
+                  {% if is_state("switch.0xa4c13849ef842ae5", "on") %}
                   purple
                   {% else %}
                   red
                   {% endif %}
                 content: |-
                   Цветы
-                tap_action:
-                  action: toggle
-              
-              - type: template
-                entity: sensor.0xa4c1386f409b4ac4_power
-                icon: mdi:lightning-bolt-circle
-                icon_color: green
-                content: |-
-                    {{states ('sensor.0xa4c1386f409b4ac4_power')}} Ватт
-                tap_action:
-                  action: more-info
-             
-              - type: template
-                entity: sensor.0xa4c1386f409b4ac4_voltage
-                icon: mdi:sine-wave
-                icon_color: green
-                content: |-
-                    {{states ('sensor.0xa4c1386f409b4ac4_voltage')}} В
-                tap_action:
-                  action: more-info
-              
-              - type: template
-                entity: sensor.0xa4c1386f409b4ac4_energy
-                icon: mdi:home-lightning-bolt
-                icon_color: light-green
-                content: |-
-                    {{states ('sensor.0xa4c1386f409b4ac4_energy')}} KВт*ч
-                tap_action:
-                  action: more-info
-                
-            - type: markdown
-              content: >
-                 **     **
-
-            - type: custom:mushroom-chips-card
-              alignment: start
-              chips:   
- 
-              - type: template
-                entity: switch.0xa4c13849ef842ae5
-                icon: phu:socket-eu
-                icon_color: |-
-                  {% if is_state("switch.0xa4c13849ef842ae5", "on") %}
-                  green
-                  {% else %}
-                  red
-                  {% endif %}
-                content: |-
-                  Подсветка Цветы
                 tap_action:
                   action: toggle
               
@@ -202,9 +153,55 @@ cards:
               content: >
                  **     **
 
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c1386f409b4ac4
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c1386f409b4ac4", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Подсветка Цветы
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c1386f409b4ac4_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1386f409b4ac4_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c1386f409b4ac4_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c1386f409b4ac4_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c1386f409b4ac4_energy
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c1386f409b4ac4_energy')}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
 
-
-                    
             - type: custom:mushroom-chips-card
               alignment: start
               chips:   
@@ -302,7 +299,100 @@ cards:
             - type: markdown
               content: >
                  **     **
+                 
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0xa4c13873bd4330eb
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0xa4c13873bd4330eb", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  Чайник
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0xa4c13873bd4330eb_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c13873bd4330eb_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0xa4c13873bd4330eb_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0xa4c13873bd4330eb_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0xa4c13873bd4330eb_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0xa4c13873bd4330eb_meter_day')|float + states ('sensor.0xa4c13873bd4330eb_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
+                
+            - type: markdown
+              content: >
+                 **     **
 
+            - type: custom:mushroom-chips-card
+              alignment: start
+              chips:   
+ 
+              - type: template
+                entity: switch.0x70b3d52b6001b5e1
+                icon: phu:socket-eu
+                icon_color: |-
+                  {% if is_state("switch.0x70b3d52b6001b5e1", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                content: |-
+                  СВЧ
+                tap_action:
+                  action: toggle
+              
+              - type: template
+                entity: sensor.0x70b3d52b6001b5e1_power
+                icon: mdi:lightning-bolt-circle
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0x70b3d52b6001b5e1_power')}} Ватт
+                tap_action:
+                  action: more-info
+             
+              - type: template
+                entity: sensor.0x70b3d52b6001b5e1_voltage
+                icon: mdi:sine-wave
+                icon_color: green
+                content: |-
+                    {{states ('sensor.0x70b3d52b6001b5e1_voltage')}} В
+                tap_action:
+                  action: more-info
+              
+              - type: template
+                entity: sensor.0x70b3d52b6001b5e1_meter_day
+                icon: mdi:home-lightning-bolt
+                icon_color: light-green
+                content: |-
+                    {{states ('sensor.0x70b3d52b6001b5e1_meter_day')|float + states ('sensor.0x70b3d52b6001b5e1_meter_night')|float}} KВт*ч
+                tap_action:
+                  action: more-info
 
 ############################ Колонка 2 ############################
 
@@ -513,38 +603,40 @@ cards:
                 icon: mdi:gauge
                 tap_action:
                   action: more-info 
+
+
         
-    - type: custom:mini-media-player
-      entity: media_player.kn_yandex_station_mini
-      artwork: cover
-      sound_mode: icon
-      shortcuts:
-        attribute: sound_mode
-        buttons:
-          - icon: 'mdi:account-voice'
-            id: Произнеси текст
-            type: sound_mode
-          - icon: 'mdi:robot'
-            id: Выполни команду
-            type: sound_mode
-          - icon: 'mdi:playlist-star'
-            id: включи мою любимую музыку вперемешку
-            type: command
-          - icon: 'mdi:playlist-music'
-            id: включи плейлист дня
-            type: command
-          - icon: 'mdi:heart'
-            id: лайк
-            type: command
-          - icon: 'mdi:heart-off'
-            id: снять лайк
-            type: command
-        columns: 6
-      hide:
-        sound_mode: true
-        runtime: false
-      tts:
-        platform: yandex_station
+        - type: custom:mini-media-player
+          entity: media_player.kn_yandex_station_mini
+          artwork: cover
+          sound_mode: icon
+          shortcuts:
+            attribute: sound_mode
+            buttons:
+              - icon: 'mdi:account-voice'
+                id: Произнеси текст
+                type: sound_mode
+              - icon: 'mdi:robot'
+                id: Выполни команду
+                type: sound_mode
+              - icon: 'mdi:playlist-star'
+                id: включи мою любимую музыку вперемешку
+                type: command
+              - icon: 'mdi:playlist-music'
+                id: включи плейлист дня
+                type: command
+              - icon: 'mdi:heart'
+                id: лайк
+                type: command
+              - icon: 'mdi:heart-off'
+                id: снять лайк
+                type: command
+            columns: 6
+            hide:
+            sound_mode: true
+            runtime: false
+          tts:
+            platform: yandex_station
 
 
 
@@ -613,7 +705,7 @@ cards:
                   - attribute: linkquality
                     name: Сигнал
                 - type: divider                    
-                - entity: switch.0xa4c138850066f7cd_left
+                - entity: switch.0xa4c138067561cf2a_left
                   type: custom:multiple-entity-row
                   icon: phu:wall-econic
                   toggle: true
@@ -635,7 +727,30 @@ cards:
                   entities:
                   - attribute: linkquality
                     name: Сигнал 
-                    
+                - type: divider                    
+                - entity: switch.0xa4c1384b2bfeb644_l2
+                  type: custom:multiple-entity-row
+                  icon: phu:wall-econic
+                  toggle: true
+                  state_color: true
+                  name: Питание подсветки
+                  secondary_info: last-changed
+                  state_header: Питание
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                    
+                - type: divider                    
+                - entity: switch.0xa4c1384b2bfeb644_l1
+                  type: custom:multiple-entity-row
+                  icon: phu:wall-econic
+                  toggle: true
+                  state_color: true
+                  name: Питание ленты
+                  secondary_info: last-changed
+                  state_header: Питание
+                  entities:
+                  - attribute: linkquality
+                    name: Сигнал                     
 
         - type: custom:stack-in-card
           mode: vertical

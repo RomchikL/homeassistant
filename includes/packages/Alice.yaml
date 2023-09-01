@@ -69,6 +69,7 @@ alice:
     
     # Сигнализация - обновление таймера pending
       - alias: alarm_timer_update
+        id: alarm_timer_update
         description: Сигн. - обновление таймера
         initial_state: true
         trigger:
@@ -85,6 +86,7 @@ alice:
 
     # Алиса - Общение в Телеграм - принятие сообщений
       - alias: alice_telegram_communication_in
+        id: alice_telegram_communication_in
         description: Алиса - Общение в Телеграм in
         initial_state: true
         trigger:
@@ -103,6 +105,7 @@ alice:
 
     # Алиса - Общение в Телеграм - отправка сообщений
       - alias: alice_telegram_communication_out
+        id: alice_telegram_communication_out
         description: Алиса - Общение в Телеграм out
         initial_state: true
         trigger:
@@ -114,8 +117,9 @@ alice:
             target: "{{ trigger.event.data.request_id }}"
             message: "{{ trigger.event.data.text }}"
 
-    # Алиса - Всем спать - выключить везде свет
+    # Алиса - Всем спать - выключить везде свет, плееры, поставь Алису на таймер
       - alias: alice_sleep_all
+        id: alice_sleep_all
         description: Алиса - Всем спать
         initial_state: true
         trigger:
@@ -123,13 +127,17 @@ alice:
             event_type: yandex_intent
             event_data:
               text: Всем спать
+          # Кнопка Aqara
+          - platform: state
+            entity_id: sensor.0x00158d0006f85055_action
+            to: 'double'
         action:
           - service: homeassistant.turn_off     # none - вызывает ошибку, см https://github.com/home-assistant/core/issues/32752
             target:
               entity_id: >-
                 {% set variable = namespace(value = {}) %}
                 {% set variable.value = expand(states.light, states.switch)
-                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a'])
+                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_on', 'switch.lr_humidifier_led', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a', 'switch.0x70b3d52b6001b5e1', 'switch.0xa4c13873bd4330eb', 'switch.0xa4c138aca076db2a'])
                 | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
                 {% if (variable.value | count) > 0 %}
                 {{ variable.value }}
@@ -148,21 +156,44 @@ alice:
                 {% else %}
                 light.nullen
                 {% endif %}              
-          - service: media_player.media_pause # Яндекс станции
+          - service: media_player.media_pause # Яндекс станции, кроме Max
             target:
               entity_id: >
                 {% set variable = namespace(value = {}) %}
                 {% set variable.value = expand(states.media_player)
                 |selectattr('entity_id','search','yandex_station')
-                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                |rejectattr('state','in','(paused|off)') |rejectattr('entity_id','in',['media_player.lr_yandex_station_max']) | map(attribute='entity_id') | list %}
                 {% if (variable.value | count) > 0 %}
                 {{ variable.value }}
                 {% else %}
                 none
-                {% endif %}              
+                {% endif %}
+          - if:
+            - "{{ is_state('media_player.lr_yandex_station_max', 'playing') }}"
+            then:
+              - service: media_player.volume_mute # mute
+                target:
+                  entity_id:
+                    - media_player.lr_yandex_station_max
+                data:
+                  is_volume_muted: "{{ not state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+              - service: media_player.play_media
+                entity_id: media_player.lr_yandex_station_max
+                data:
+                  media_content_id: "Выключись через 20 минут"
+                  media_content_type: command  
+              - delay: "00:00:05"
+              - service: media_player.volume_set
+                data:
+                  entity_id:
+                    - media_player.lr_yandex_station_max
+                  volume_level: 0.1                 
+
+                
 
     # Алиса - Мы уходим - сказать пока-пока и запустить скрипт alice_go_away_script
       - alias: alice_go_away
+        id: alice_go_away
         description: Алиса - Мы уходим
         initial_state: true
         trigger:
@@ -184,13 +215,14 @@ alice:
             data:
               media_content_type: text
               media_content_id: >
-                {{ ['Пока Пока!', 'Пока Пока!']|random }}
+                {{ ['Пока Пока!', 'Хорошей погоды!', 'Удачи!', 'Возвращайтесь быстрее!', 'Скатертью дорожка', 'Ну и уходите', 'А я пока похозяйничаю']|random }}
               extra:
-                volume_level: 0.6
+                volume_level: 0.9
           - service: script.alice_go_away_script
                 
     # Алиса - Включи весь свет в зале - включить полный свет на лампочках в зале
       - alias: alice_lr_all_ceiling
+        id: alice_lr_all_ceiling
         description: Алиса - Включи весь свет в зале
         initial_state: true
         trigger:
@@ -200,14 +232,14 @@ alice:
               text: Включи весь свет в зале
         action:
           - service_template: >
-              {% if (is_state("switch.lr_ceiling_light_lamps", "on")) -%}
+              {% if (is_state("switch.0xa4c138cac637c3b3_l2", "on")) -%}
               switch.toggle
               {%- else -%}
               {%- endif %}
             data_template:
               entity_id: >
-                {% if (is_state("switch.lr_ceiling_light_lamps", "on")) -%}
-                switch.lr_ceiling_light_lamps
+                {% if (is_state("switch.0xa4c138cac637c3b3_l2", "on")) -%}
+                switch.0xa4c138cac637c3b3_l2
                 {%- else -%}
                 {%- endif %}        
           - delay: 00:00:01       
@@ -215,13 +247,14 @@ alice:
               count: 7
               sequence:
                 - service: switch.toggle
-                  entity_id: switch.lr_ceiling_light_lamps
+                  entity_id: switch.0xa4c138cac637c3b3_l2
                 - delay:
                     milliseconds: 999
         mode: single        
 
     # Алиса - broadcast
       - alias: alice_broadcast
+        id: alice_broadcast
         description: Алиса - broadcast
         initial_state: true
         trigger:
@@ -253,6 +286,7 @@ alice:
 
     # Алиса - Навык "Всем домашним"
       - alias: alice_dialog_all_home
+        id: alice_dialog_all_home
         description: Алиса - Навык "Всем домашним"
         initial_state: true
         trigger:
@@ -311,7 +345,7 @@ alice:
               entity_id: >
                 {% set variable = namespace(value = {}) %}
                 {% set variable.value = expand(states.light, states.switch)
-                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a'])
+                | rejectattr('entity_id', 'in',  ['switch.lr_humidifier_buzzer', 'switch.lr_humidifier_led', 'switch.lr_humidifier_on', 'switch.kn_balcony_curtain', 'switch.0xa4c1386f409b4ac4', 'switch.0xa4c138f1330afac4', 'switch.0xa4c1387beab4cd4f', 'switch.0xa4c138e5e488903a', 'switch.0xa4c138e25779d74d', 'switch.0x70b3d52b6001b5e1', 'switch.0xa4c13873bd4330eb', 'switch.0xa4c138aca076db2a'])
                 | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
                 {% if (variable.value | count) > 0 %}
                 {{ variable.value }}
@@ -346,4 +380,15 @@ alice:
             data:
               entity_id: alarm_control_panel.home_alarm
               code: !secret alarm_code
-# {% if (not is_state("media_player.mpd", "playing")) -%}  
+          - wait_for_trigger:
+              platform: state
+              entity_id: binary_sensor.0x00158d0008d93f0d_contact
+              from: 'on'
+              to: 'off' 
+            timeout: "00:04:40"
+#            continue_on_timeout: false
+          - if:
+            - "{{ is_state('switch.0xa4c138e25779d74d', 'on') }}"
+            then:
+              - service: switch.turn_off
+                entity_id: switch.0xa4c138e25779d74d            
