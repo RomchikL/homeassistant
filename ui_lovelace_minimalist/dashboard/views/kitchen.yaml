@@ -1,0 +1,101 @@
+title: "Kitchen"
+path: "kitchen"
+cards:
+  - type: 'custom:button-card'
+    template: chip_back
+    variables:
+      ulm_chip_back_path: home
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Кухня
+
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0xa4c1383117449f5c_temperature
+        variables:
+          ulm_card_graph_color: "var(--google-blue)"
+          ulm_card_graph_name: Temperature
+          ulm_card_graph_entity: sensor.0xa4c1383117449f5c_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24 
+
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0xa4c1383117449f5c_humidity
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Влажность
+          ulm_card_graph_entity: sensor.0xa4c1383117449f5c_humidity
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24  
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: "Devices"
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000aad4d8_left
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_icon: phu:ceiling-adore-alt-flush
+          ulm_card_light_name: Свет
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c13849ef842ae5
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.kn_backlight_lamps
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.kn_backlight_lenta
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c138323f769290
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.sonoff_10018da14e_1
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_name: Штора
+
+  - type: "custom:button-card"
+    template: card_media_player
+    entity: media_player.kn_yandex_station_mini
+    variables:
+      ulm_card_media_player_name : Станция Mini
+      ulm_card_media_player_enable_art: true
+      ulm_card_media_player_enable_controls: true
+      ulm_card_media_player_more_info: true
+      ulm_card_media_player_power_button: true
+
+  - type: "custom:button-card"
+    template: card_thermostat
+    entity: climate.0x54ef44100070621d
+    variables:
+      ulm_card_thermostat_enable_collapse: true
+      ulm_card_thermostat_enable_controls: true
+      ulm_card_thermostat_enable_hvac_modes: true
+      ulm_card_thermostat_enable_popup: true

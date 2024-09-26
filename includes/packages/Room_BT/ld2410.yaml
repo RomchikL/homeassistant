@@ -1,0 +1,71 @@
+ld2410:
+
+    recorder:
+      include:
+        entities:
+           - binary_sensor.bt_ld2410_presence
+
+
+    homeassistant:
+        customize:
+            switch.0xa4c1381662c81b0e:
+              icon: phu:amarant
+
+            automation.bt_ceiling_light_on_ld2410:
+                friendly_name: Ванная - Включениче света ld2410
+                icon: mdi:ceiling-light
+                
+            automation.bt_ceiling_light_off_ld2410:
+                friendly_name: Ванная - Выключениче света ld2410
+                icon: mdi:ceiling-light
+ 
+    automation:
+
+      - alias: bt_ceiling_light_on_ld2410
+        id: bt_ceiling_light_on_ld2410
+        description: Ванная - Включениче света ld2410
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: binary_sensor.bt_ld2410_presence
+          to: 'on'
+        condition:
+        - condition: state
+          entity_id: switch.0x54ef441000aad4d8_right
+          state: 'off'
+        - condition: state
+          entity_id: input_boolean.bt_ceiling_light_lock
+          state: 'off'
+        - condition: time
+          after: '06:00:00'
+          before: '23:00:00'
+#        - condition: numeric_state
+#          entity_id: sensor.0x00158d0008d90dbd_illuminance_lux
+#          below: 25
+        action:
+        - service: switch.turn_on
+          entity_id: 
+           - switch.0x54ef441000aad4d8_right
+
+      - alias: bt_ceiling_light_off_ld2410
+        id: bt_ceiling_light_off_ld2410
+        description: Ванная - Выключениче света ld2410
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: binary_sensor.bt_ld2410_presence
+          to: 'off'
+        condition:
+        - condition: state
+          entity_id: switch.0x54ef441000aad4d8_right
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.bt_ceiling_light_lock
+          state: 'off'
+#        - condition: numeric_state
+#          entity_id: sensor.0x00158d0008d90dbd_illuminance_lux
+#          below: 25
+        action:
+        - service: switch.turn_off
+          entity_id: 
+           - switch.0x54ef441000aad4d8_right

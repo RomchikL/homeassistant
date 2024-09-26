@@ -1,0 +1,23 @@
+lr_light:
+
+#    yeelight_v2:
+#      devices:
+#        192.168.1.88:
+#          name: "lamp_1s"
+#          ssdp_fallback: True # Recommended, the default value is False
+#          miio_token: !secret lamp_1s_token # if provided miio protocol is used (optional)
+
+    homeassistant:
+      customize:
+
+        light.lamp_1s:
+          friendly_name: Настольная лампа
+          icon: phu:yeelight-desklamp
+          min_mireds: 200
+          max_mireds: 384
+          min_color_temp_kelvin: 2600
+          max_color_temp_kelvin: 5000
+          
+       
+
+             

@@ -1,0 +1,98 @@
+telegram_alarm:
+
+    homeassistant:
+      customize:
+          
+        binary_sensor.0x00158d0008dfa560_water_leak:
+          friendly_name: Ванная протечка, стояк
+        sensor.0x00158d0008dfa560_battery:
+          friendly_name: Ванная протечка, стояк
+          
+        binary_sensor.0x00158d0008dfa7df_water_leak:
+          friendly_name: Кухня протечка, раковина
+        sensor.0x00158d0008dfa7df_battery:
+          friendly_name: Кухня протечка, раковина
+
+        automation.send_list_water_leak_detect:
+          friendly_name: Список сработавших датчиков протечки
+
+
+    template:
+    
+      - sensor:
+                
+################# Датчики протечки #################    
+          - name: water_leak_detect
+            state: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.binary_sensor if is_state(entity.entity_id, 'on')   
+                and is_state_attr(entity.entity_id, 'device_class', 'moisture') %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {% if (variable.value | length) | int > 0 %}
+                {{ variable.value | length }}
+                {% else %}
+                 0
+                {% endif %}
+            attributes:
+              list_entities: >
+                {% set variable = namespace(value = {}) %}
+                {% for entity in states.binary_sensor if is_state(entity.entity_id, 'on')   
+                  and is_state_attr(entity.entity_id, 'device_class', 'moisture') %}
+                 {% set variable.value = dict(variable.value, **{entity.name: entity.state }) %}
+                {% endfor %}
+                {{ variable.value |dictsort(false, 'value') }}
+
+    automation: 
+   
+
+################# Датчики воды #################
+      - alias: send_list_water_leak_detect
+        id: send_list_water_leak_detect
+        initial_state: true
+        trigger:
+         - platform: template
+           value_template: "{{ (states('sensor.water_leak_detect')|int) > 0 }}"
+         - platform: template
+           value_template: "{{ (states('sensor.water_leak_detect')|int) == 0 }}"
+        action:
+            - choose:
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ (states('sensor.water_leak_detect')|int) > 0 }}"
+                sequence:
+                  - service: telegram_bot.send_message
+                    data_template:
+                      target:
+                        - !secret chat_id_group_alarm
+                      message: |
+                         {{'\U000026A0'}} *Обнаружена протечка, время события {{ states('sensor.time_date') }} * 
+                         *{% for entity_name, entity_state in state_attr('sensor.water_leak_detect', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}*
+                  - service: media_player.play_media
+                    entity_id:
+                      - media_player.kn_yandex_station_mini
+                    data:
+                      media_content_id: "Обнаружена протечка {% for entity_name, entity_state in state_attr('sensor.water_leak_detect', 'list_entities')-%} {{ entity_name }} {{ '\n' -}} {% endfor %}"
+                      media_content_type: text
+                      extra:
+                        volume_level: 0.2
+ 
+              - conditions:
+                  - condition: template
+                    value_template: "{{ (states('sensor.water_leak_detect')|int) == 0 }}"
+                sequence:
+                  - service: telegram_bot.send_message
+                    data_template:
+                      target:
+                        - !secret chat_id_group_alarm
+                      message: | 
+                           {{"\U0001F44C"}} Протечка устранена
+                  - service: media_player.play_media
+                    entity_id:
+                      - media_player.kn_yandex_station_mini
+                    data:
+                      media_content_id: "Все в порядке, протечка устранена"
+                      media_content_type: text
+                      extra:
+                        volume_level: 0.2

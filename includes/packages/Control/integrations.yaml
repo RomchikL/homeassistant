@@ -1,0 +1,37 @@
+integations:
+
+
+    homeassistant:
+
+      customize:
+        automation.control_integraions_reload:
+          friendly_name: Контроль - перезагрузка интеграций
+          icon: mdi:reload
+
+    automation:
+    
+      - alias: control_integraions_reload
+        id: control_integraions_reload
+        description: Контроль - перезагрузка интеграций
+        initial_state: false
+        trigger:
+         - platform: time_pattern
+           minutes: /3
+        condition:
+        - condition: template
+          value_template: >
+            {% set variable = namespace(value = {}) %}
+            {% set variable.value = expand(states.binary_sensor)
+            |selectattr('entity_id','search','hlk_ld2410')
+            |selectattr('state', 'eq', 'unavailable') | map(attribute='entity_id') | list %}
+            {% if (variable.value | count) > 0 %}
+            true
+            {% else %}
+            false
+            {% endif %}     
+        action:  
+    ## Перезагрузка интеграции
+          - service: homeassistant.reload_config_entry
+            data: {}
+            target:
+              device_id: binary_sensor.hlk_ld2410_0c05_motion 

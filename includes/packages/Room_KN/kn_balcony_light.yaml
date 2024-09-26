@@ -1,0 +1,13 @@
+kn_balcony_light:
+
+    recorder:
+      include:
+        entities:
+           - switch.sonoff_10018da14e_1 # штора на балконе
+
+    homeassistant:
+      customize:
+
+        switch.sonoff_10018da14e_1:
+          friendly_name: Штора на балконе
+          icon: phu:vert-blind-open

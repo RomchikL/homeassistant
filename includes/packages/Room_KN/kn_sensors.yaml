@@ -1,0 +1,42 @@
+kn_sensors:
+
+    recorder:
+      include:
+        entities:
+           - sensor.0x00158d0008cafd13_temperature
+           - sensor.0x00158d0008cafd13_humidity
+           - sensor.0x00158d0008cafd13_mmhg_pressure
+           - sensor.0xa4c1383117449f5c_temperature
+           - sensor.0xa4c1383117449f5c_humidity
+           - binary_sensor.0xa4c1388bf2574d1e_contact
+           
+    homeassistant:
+      customize:
+   
+
+        sensor.0x00158d0008cafd13_humidity:
+          friendly_name: Балкон влажность
+          icon: mdi:water-percent
+        sensor.0x00158d0008cafd13_temperature:
+          friendly_name: Балкон температура
+          icon: mdi:temperature-celsius
+        sensor.0x00158d0008cafd13_mmhg_pressure:
+          friendly_name: Балкон давление мм рт. ст.
+          device_class: pressure
+        sensor.0xa4c1383117449f5c_humidity:
+          friendly_name: Кухня влажность
+          icon: mdi:water-percent
+        sensor.0xa4c1383117449f5c_temperature:
+          friendly_name: Кухня температура
+          icon: mdi:temperature-celsius       
+          
+    template:
+     
+
+      - sensor:
+
+          - name: 0x00158d0008cafd13_mmhg_pressure
+            state: "{{ (states('sensor.0x00158d0008cafd13_pressure')|float * 0.7500637)|round(2) }}"
+            availability: "{{ (states('sensor.0x00158d0008cafd13_pressure')|float > 850 ) }}" 
+            unit_of_measurement: mmHg
+            icon: mdi:gauge 

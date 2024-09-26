@@ -1,0 +1,27 @@
+cr_tabtet_note8:
+
+    homeassistant:
+      customize:
+
+        automation.note8_screen_on:
+          friendly_name: Note 8.0 - Экран
+#          icon: phu:smart-camera
+        
+    automation:
+    
+      - alias: note8_screen_on
+        id: note8_screen_on
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: binary_sensor.0x00158d0008d90dbd_occupancy
+          to: "on"
+        condition:
+          - condition: state
+            entity_id: switch.galaxy_note_8_0_screen
+            state: "off"
+        action:
+        - service: switch.turn_on
+          entity_id: switch.galaxy_note_8_0_screen         
+                        
+                        

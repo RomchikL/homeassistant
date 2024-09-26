@@ -1,0 +1,36 @@
+lr_samsung_tv:
+
+#    recorder:
+#      include:
+#        entities:
+#           - sensor.0x00158d0001291d12_power
+
+    homeassistant:
+      customize:
+
+        automation.lr_samsung_tv_fix_anynet:
+          friendly_name: Гостиная - фикс Anynet
+          icon: mdi:television
+
+    automation:
+
+
+      - alias: lr_samsung_tv_fix_anynet
+        id: lr_samsung_tv_fix_anynet
+        description: Гостиная - фикс Anynet
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Рататуй
+        action:
+        - service: remote.send_command
+          target:
+            entity_id: remote.samsung_q60ba_55_tv
+          data:
+            command:
+              - KEY_HDMI
+              - KEY_HDMI
+     
+     

@@ -1,0 +1,154 @@
+lr_hum:
+
+    recorder:
+      include:
+        entities:
+           - humidifier.deerma_jsq_befb_humidifier
+           
+    homeassistant:
+      customize:
+      
+        humidifier.deerma_jsq_befb_humidifier:
+          friendly_name: Дуся
+          
+        automation.lr_hum_water_warning:
+          friendly_name: Гостиная - предупреждение о нехватке воды в Дусе в Телеграм
+          icon: phu:homepod
+
+        automation.lr_hum_temperature_zigbee:
+          friendly_name: Гостиная - Работа Дуси по датчику zigbee
+          icon: phu:homepod        
+          
+    input_number:
+        lr_humidifier_target_humidity:
+          name: Уровень влажности
+#          initial: 50
+          min: 20
+          max: 100
+          step: 1
+                
+    template:
+     
+      - sensor:
+    
+        #Сенсор определяющий режим работы, в зависимости от влажности и окна (внешний датчик влажности)
+          - name: lr_hydration_mode
+            state: >
+              {% set current = states('input_number.lr_humidifier_target_humidity') | float %}
+              {% set low = states('input_number.lr_humidifier_target_humidity') | float - 3 %}
+              {% set medium = states('input_number.lr_humidifier_target_humidity') | float - 6 %}
+              {% set high = states('input_number.lr_humidifier_target_humidity') | float - 10 %}
+              {% set humidity = states('sensor.0x00158d0008ce3df9_humidity') | float %}
+              {% 
+              if is_state('humidifier.deerma_jsq_befb_humidifier', 'off')
+              or is_state('binary_sensor.lr_aeration', 'on')
+              %}
+              Disable
+              {% elif humidity < high %} 
+              High
+              {% elif humidity < medium %} 
+              Medium
+              {% elif humidity < low %} 
+              Low
+              {% else %}
+              Humidity
+              {% endif %}
+             
+#                   {% set high = state_attr('humidifier.deerma_jsq_befb_humidifier', 'humidifier.target_humidity') | float - 10 %}
+
+    automation:
+    
+        - alias: lr_hum_water_warning
+          id: lr_hum_water_warning
+          description: Гостиная - предупреждение о нехватке воды в Дусе в Телеграм
+          initial_state: true
+          trigger:
+           - platform: state
+             entity_id: humidifier.deerma_jsq_befb_humidifier
+             attribute: humidifier.water_status
+             from: "true"
+             to: "false"
+             for: "00:00:20"
+#          condition:
+#            - condition: template # only every 5 minutes at most
+#              value_template:  "{{ (( as_timestamp(now()) - as_timestamp(state_attr('automation.lr_hum_water_warning', 'last_triggered')) | int(0) ) / 60 ) > 30 }}"
+          action:
+             - service: telegram_bot.send_message
+               data_template:
+                 target:
+                     - !secret chat_id_romchik
+                 message: | 
+                      {{"\U0001F6B1"}} Закончилась вода в Дусе {{ states('sensor.time_date') }}               
+ 
+        - alias: lr_hum_temperature_zigbee
+          id: lr_hum_temperature_zigbee
+          description: Гостиная - Работа Дуси по датчику zigbee
+          initial_state: true
+          trigger:
+        # Ловим любое изменение состояния сенсора
+           - platform: state
+             entity_id: sensor.lr_hydration_mode
+        # Ловим любое изменение состояния (аттрибута mode) увлажнителя
+           - platform: state
+             entity_id: humidifier.deerma_jsq_befb_humidifier
+             attribute: mode
+          action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: sensor.lr_hydration_mode
+                    state: 'Disable'
+                sequence:
+                  - service: humidifier.turn_off
+                    entity_id: humidifier.deerma_jsq_befb_humidifier
+                    
+              - conditions:
+                  - condition: state
+                    entity_id: sensor.lr_hydration_mode
+                    state: 'High'
+                sequence:
+                  - service: humidifier.set_mode
+                    entity_id: humidifier.deerma_jsq_befb_humidifier
+                    data:
+                      mode: 'High'
+          
+              - conditions:
+                  - condition: state
+                    entity_id: sensor.lr_hydration_mode
+                    state: 'Medium'
+                sequence:
+                  - service: humidifier.set_mode
+                    entity_id: humidifier.deerma_jsq_befb_humidifier
+                    data:
+                      mode: 'Medium'         
+
+              - conditions:
+                  - condition: state
+                    entity_id: sensor.lr_hydration_mode
+                    state: 'Low'
+                sequence:
+                  - service: humidifier.set_mode
+                    entity_id: humidifier.deerma_jsq_befb_humidifier
+                    data:
+                      mode: 'Low'  
+        
+              - conditions:
+                  - condition: state
+                    entity_id: sensor.lr_hydration_mode
+                    state: 'Humidity'
+                sequence:
+                  - service: humidifier.set_mode
+                    entity_id: humidifier.deerma_jsq_befb_humidifier
+                    data:
+                      mode: 'ConstHumidity'
+                  - service: humidifier.set_humidity
+                    data:
+                      entity_id: humidifier.deerma_jsq_befb_humidifier
+                      humidity: |-
+                        {{ states('input_number.lr_humidifier_target_humidity') }}
+          mode: single
+          max_exceeded: silent
+
+
+        
+        

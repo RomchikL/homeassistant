@@ -1,0 +1,32 @@
+find_my_phone:
+  sequence:
+  - service: notify.mobile_app_my_android
+    data:
+      message: command_volume_level
+      data:
+        media_stream: alarm_stream
+        command: 20
+  - service: notify.mobile_app_my_android
+    data:
+      message: Home Assistant is searching your phone !
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+  mode: single
+
+turn_off_all_lights:
+  alias: turn_off_all_lights
+#  icon: yandex:alisa
+  sequence:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: >
+        {% set variable = namespace(value = {}) %}
+        {% set variable.value = ['switch.0x54ef441000b89402_left', 'switch.0x54ef441000b89402_right', 'light.lamp_1s', 'switch.0xa4c1388af6a76f04_l4', 'switch.0x54ef441000aad4d8_left', 'switch.0xa4c13849ef842ae5', 'switch.kn_backlight_lamps', 'switch.kn_backlight_lenta', 'switch.0xa4c138323f769290', 'switch.sonoff_10018da14e_1', 'switch.0x54ef441000aad4d8_right', 'switch.0xa4c1381662c81b0e', 'switch.0x54ef4410009f9505']
+        | select('is_state', 'on') | list %}
+        {% if (variable.value | count) > 0 %}
+        {{ variable.value }}
+        {% else %}
+        light.nullen
+        {% endif %}

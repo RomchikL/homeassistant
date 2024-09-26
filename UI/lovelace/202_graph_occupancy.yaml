@@ -1,0 +1,31 @@
+title: Движение и присутствие
+panel: true
+icon: phu:aqara-motion
+cards:
+
+    - type: custom:history-explorer-card
+    #   header: hide
+      header: Движение и присутствие
+      defaultTimeRange: 6h
+      labelsVisible: true
+      labelAreaWidth: 140
+      uimode: dark
+      stateColors:
+        binary_sensor.off: red
+        binary_sensor.on: green
+      uiLayout:
+        toolbar: top
+        selector: hide
+      graphs:
+      - type: timeline
+        entities:
+          - entity: alarm_control_panel.home_alarm
+            name: Сигнализация
+      - type: timeline
+        entities:
+          - entity: binary_sensor.0x00158d0008d90dbd_occupancy 
+            name: Коридор
+      - type: timeline
+        entities:
+          - entity: binary_sensor.0x00158d0008f1142d_occupancy 
+            name: Ванная

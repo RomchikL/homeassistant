@@ -1,0 +1,44 @@
+bt_sensors:
+
+    recorder:
+      include:
+        entities:
+           - sensor.0x00158d0008ce3dca_temperature
+           - sensor.0x00158d0008ce3dca_humidity
+           - binary_sensor.0xa4c138dc68586d06_contact
+#           - sensor.0x00158d0008ce3dca_mmhg_pressure
+           
+    homeassistant:
+      customize:
+   
+
+        sensor.0x00158d0008ce3dca_humidity:
+          friendly_name: Ванная влажность
+          icon: mdi:water-percent
+        sensor.0x00158d0008ce3dca_temperature:
+          friendly_name: Ванная температура
+          icon: mdi:temperature-celsius
+          
+        binary_sensor.0xa4c1387c6db81d88_contact:
+          friendly_name: Протечка ванная
+          device_class: moisture
+
+        binary_sensor.0xa4c1380837d46b7d_contact:
+          friendly_name: Протечка стиралка
+          device_class: moisture
+          
+#        sensor.0x00158d0008ce3dca_mmhg_pressure:
+#          friendly_name: Ванная давление мм рт. ст.
+#          device_class: pressure
+          
+          
+#    template:
+     
+
+#      - sensor:
+
+#          - name: 0x00158d0008ce3dca_mmhg_pressure
+#            state: "{{ (states('sensor.0x00158d0008ce3dca_pressure')|float * 0.7500637)|round(2) }}"
+#            availability: "{{ (states('sensor.0x00158d0008ce3dca_pressure')|float > 850 ) }}" 
+#            unit_of_measurement: mmHg
+#            icon: mdi:gauge 

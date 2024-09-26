@@ -1,0 +1,277 @@
+kn_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка
+           - switch.0xa4c13849ef842ae5 # розетка цветы фиолетовая
+           - switch.0xa4c138323f769290 # розетка елочки
+           - sensor.0xa4c138323f769290_meter_night           
+           - switch.0xa4c138e5e488903a # розетка Холодос
+           - sensor.0xa4c138e5e488903a_power
+           - sensor.0xa4c138e5e488903a_meter_night
+           - sensor.0xa4c138e5e488903a_meter_day
+           - switch.0xa4c13873bd4330eb # розетка чайник
+           - sensor.0xa4c13873bd4330eb_power
+           - sensor.0xa4c13873bd4330eb_meter_night
+           - sensor.0xa4c13873bd4330eb_meter_day
+           - switch.0x70b3d52b6001b5e1 # розетка СВЧ
+           - sensor.0x70b3d52b6001b5e1_power
+           - sensor.0x70b3d52b6001b5e1_meter_night
+           - sensor.0x70b3d52b6001b5e1_meter_day
+           - switch.0xa4c138850066f7cd_left
+           - switch.kn_backlight_lenta #0xa4c1384b2bfeb644_l1 Лента гарнитур
+           - switch.kn_backlight_lamps #0xa4c1384b2bfeb644_l2 Лампочки гарнитур
+           - switch.0xa4c1389395f3f656 # рознтка Микки
+           
+
+    sensor:
+    
+      - platform: integration
+        name: '0xa4c138323f769290_integration'
+        source: sensor.0xa4c138323f769290_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c138e5e488903a_integration'
+        source: sensor.0xa4c138e5e488903a_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c13873bd4330eb_integration'
+        source: sensor.0xa4c13873bd4330eb_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0x70b3d52b6001b5e1_integration'
+        source: sensor.0x70b3d52b6001b5e1_power
+        unit_prefix: k
+        round: 2
+
+      - platform: integration
+        name: '0xa4c1389395f3f656_integration'
+        source: sensor.0xa4c1389395f3f656_power
+        unit_prefix: k
+        round: 2    
+
+    utility_meter:
+
+      0xa4c138323f769290_meter:
+        source: sensor.0xa4c138323f769290_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night    
+          
+      0xa4c138e5e488903a_meter:
+        source: sensor.0xa4c138e5e488903a_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
+      0xa4c13873bd4330eb_meter:
+        source: sensor.0xa4c13873bd4330eb_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
+      0x70b3d52b6001b5e1_meter:
+        source: sensor.0x70b3d52b6001b5e1_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night
+
+      0xa4c1389395f3f656_meter:
+        source: sensor.0xa4c1389395f3f656_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+
+    homeassistant:
+        customize:
+            switch.0xa4c1386f409b4ac4:
+                friendly_name: Подсветка для цветов
+                device_class: light  
+                icon: mdi:flower
+                
+            switch.0xa4c13849ef842ae5:
+                friendly_name: Лента для цветов
+                device_class: light  
+                icon: mdi:flower
+                
+            switch.0xa4c138323f769290:
+                friendly_name: Ёлочки
+                icon: phu:christmas-lights
+
+            switch.kn_backlight_lamps:
+                friendly_name: Лампочки
+                icon: phu:bulb-group-ceiling-round
+                
+            switch.kn_backlight_lenta:
+                friendly_name: Лента
+                icon: phu:light-strip
+
+            switch.0xa4c138e5e488903a:
+                friendly_name: Холодильник
+                icon: mdi:fridge            
+            sensor.0xa4c138e5e488903a_meter_night:
+                friendly_name: Холодильник ночь               
+            sensor.0xa4c138e5e488903a_meter_day:
+                friendly_name: Холодильник день
+ 
+            switch.0xa4c13873bd4330eb:
+                friendly_name: Чайник
+                icon: mdi:kettle  
+            sensor.0xa4c13873bd4330eb_meter_night:
+                friendly_name: Чайник ночь               
+            sensor.0xa4c13873bd4330eb_meter_day:
+                friendly_name: Чайник день
+                
+            switch.0x70b3d52b6001b5e1:
+                friendly_name: СВЧ
+                icon: mdi:microwave                
+            sensor.0x70b3d52b6001b5e1_meter_night:
+                friendly_name: СВЧ ночь               
+            sensor.0x70b3d52b6001b5e1_meter_day:
+                friendly_name: СВЧ день
+
+            switch.0xa4c1389395f3f656:
+                friendly_name: Микки
+                icon: mdi:speaker                
+            sensor.0xa4c1389395f3f656_meter_night:
+                friendly_name: Микки ночь               
+            sensor.0xa4c1389395f3f656_meter_day:
+                friendly_name: Микки день
+
+            automation.kn_socket_refrigerator_control:
+                friendly_name: Кухня - контроль розетки холодильника
+                icon: mdi:fridge
+
+            automation.kn_led_flowers_on_morning:
+                friendly_name: Кухня - включение ленты для цветов утром
+                icon: mdi:flower
+            automation.kn_led_flowers_off_morning:
+                friendly_name: Кухня - выключение ленты для цветов утром
+                icon: mdi:flower
+            automation.kn_led_flowers_on_evening:
+                friendly_name: Кухня - включение ленты для цветов вечером
+                icon: mdi:flower
+            automation.kn_led_flowers_off_evening:
+                friendly_name: Кухня - выключение ленты для цветов вечером
+                icon: mdi:flower
+
+ 
+ 
+    automation:
+    
+      - alias: kn_socket_refrigerator_control
+        id: kn_socket_refrigerator_control
+        description: Кухня - контроль розетки холодильника
+        initial_state: true
+        trigger:
+          - platform: state
+            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'off'
+            for: "00:01:00"
+        condition:
+          - condition: template
+            value_template: "{{ trigger.to_state.state in ['off','unknown','unavailable'] }}"          
+#          - platform: state
+#            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'unknown'
+#            for: "00:01:00"
+#          - platform: state
+#            entity_id: switch.0xa4c138e5e488903a
+#            from: 'on'
+#            to: 'unavailable'
+#            for: "00:01:00"
+        action: 
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                - !secret chat_id_romchik
+              message: | 
+                Внимание!
+                Розетка холодильника выключена или недоступна!
+                
+      - alias: kn_led_flowers_on_morning
+        id: kn_led_flowers_on_morning
+        description: Кухня - включение ленты для цветов утром
+        initial_state: true
+        trigger:
+        - platform: time
+          at: '06:00:00'
+        condition:
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'off'
+        action:
+        - service: switch.turn_on
+          entity_id: switch.0xa4c13849ef842ae5
+        
+      - alias: kn_led_flowers_off_morning
+        id: kn_led_flowers_off_morning
+        description: Кухня - выключение ленты для цветов утром
+        initial_state: true
+        trigger:
+        - platform: sun
+          # Possible values: sunset, sunrise
+          event: sunrise
+          # Optional time offset. This example will trigger 45 minutes before sunset.
+          #offset: "-00:45:00"
+    # Утром в 8:30
+#        - platform: time
+#          at: '08:30:00'
+        condition:
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'on'
+        action:
+        - service: switch.turn_off
+          entity_id: switch.0xa4c13849ef842ae5
+        
+      - alias: kn_led_flowers_on_evening
+        id: kn_led_flowers_on_evening
+        description: Кухня - включение ленты для цветов вечером
+        initial_state: true
+        trigger:
+        - platform: sun
+          # Possible values: sunset, sunrise
+          event: sunset
+          # Optional time offset. This example will trigger 45 minutes before sunset.
+          #offset: "-00:45:00"
+    # Вечером в 19:30
+#        - platform: time
+#          at: '19:30:00'
+        condition:
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'off'
+        action:
+        - service: switch.turn_on
+          entity_id: switch.0xa4c13849ef842ae5
+        
+      - alias: kn_led_flowers_off_evening
+        id: kn_led_flowers_off_evening
+        description: Кухня - выключение ленты для цветов вечером
+        initial_state: true
+        trigger:
+    # Вечером в 23:00
+        - platform: time
+          at: '23:00:00'
+        condition:
+        - condition: state
+          entity_id: switch.0xa4c13849ef842ae5
+          state: 'on'
+        action:
+        - service: switch.turn_off
+          entity_id: switch.0xa4c13849ef842ae5

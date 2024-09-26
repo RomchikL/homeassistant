@@ -1,0 +1,8 @@
+title: Home Assistant
+views:
+  - !include UI/lovelace/200_graph_system.yaml
+  - !include UI/lovelace/201_graph_climate.yaml
+  - !include UI/lovelace/203_graph_power.yaml
+  - !include UI/lovelace/202_graph_occupancy.yaml
+  - !include UI/lovelace/204_graph_environment.yaml
+  - !include UI/lovelace/209_graph_test.yaml

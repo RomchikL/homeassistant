@@ -1,0 +1,351 @@
+alice:
+
+    homeassistant:
+        
+      customize:
+
+        automation.alice_telegram_communication_in:
+          friendly_name: Алиса - Общение в Телеграм in
+          icon: yandex:alisa
+
+        automation.alice_telegram_communication_out:
+          friendly_name: Алиса - Общение в Телеграм out
+          icon: yandex:alisa
+
+        automation.alice_sleep_all:
+          friendly_name: Алиса - Всем спать
+          icon: yandex:alisa
+          
+        automation.alice_go_away:
+          friendly_name: Алиса - Мы уходим
+          icon: yandex:alisa
+
+        automation.alice_broadcast:
+          friendly_name: Алиса - broadcast
+          icon: yandex:alisa
+
+        automation.alice_dialog_all_home:
+          friendly_name: Алиса - Навык "Всем домашним"
+          icon: yandex:alisa
+
+    notify:
+      - name: alice_mini_alert  # любое название
+        platform: yandex_station
+        data:
+          entity_id: media_player.kn_yandex_station_mini  # замените на вашу колонку
+          media_content_id: >-
+            {% if title is defined %}<speaker effect="megaphone">{{ title }}<speaker effect="-"> sil <[200]>{% endif %}{{ message }}
+#          media_content_type: dialog
+        
+    template:
+    
+#      - trigger:
+#        - platform: time
+#          at: '00:00'
+#        - platform: time_pattern
+#          seconds: '/2'
+        - sensor:
+#          - name: alarm_pending_remaining_time
+#            state: >-
+#                {% set f = state_attr('timer.alarm_pending', 'finishes_at') %}
+#                {{ '00:00' if f == None else
+#                  (as_datetime(f) - now()).total_seconds() | timestamp_custom('%M:%S', false) }}
+                  
+          - name: alice_state_Max
+            state: "{{ state_attr('media_player.lr_yandex_station_max', 'alice_state') }}"
+            
+          - name: alice_state_mini
+            state: "{{ state_attr('media_player.kn_yandex_station_mini', 'alice_state') }}"
+                  
+    automation:
+    
+
+    # Алиса - Общение в Телеграм - принятие сообщений
+      - alias: alice_telegram_communication_in
+        id: alice_telegram_communication_in
+        description: Алиса - Общение в Телеграм in
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+        condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text not in ["Всем спать", "всем спать", "куку", "Куку", "Rere", "rere", "Привет", "привет", "Ghbdtn", "ghbdtn", "sos", "Sos", "сос", "Сос"] }}
+        action:
+          service: media_player.play_media
+          entity_id: media_player.kn_yandex_station_mini
+          data:
+            media_content_id: "{{ trigger.event.data.text }}"
+            media_content_type: "question:{{ trigger.event.data.chat_id }}"
+
+    # Алиса - Общение в Телеграм - отправка сообщений
+      - alias: alice_telegram_communication_out
+        id: alice_telegram_communication_out
+        description: Алиса - Общение в Телеграм out
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_station_response
+        action:
+          service: telegram_bot.send_message
+          data:
+            target: "{{ trigger.event.data.request_id }}"
+            message: "{{ trigger.event.data.text }}"
+
+    # Алиса - Всем спать - выключить везде свет, плееры, поставь Алису на таймер
+      - alias: alice_sleep_all
+        id: alice_sleep_all
+        description: Алиса - Всем спать
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Всем спать
+          # Кнопка Aqara
+#          - platform: state
+#            entity_id: sensor.0x00158d0006f85055_action
+#            to: 'double'
+        action:
+          - service: homeassistant.turn_off     # none - вызывает ошибку, см https://github.com/home-assistant/core/issues/32752
+            target:
+              entity_id: >-
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.group.light_all)
+                | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %} 
+          - service: homeassistant.turn_off # mpd и телевизор
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search',"(mpd|samsung_q60ba_55_tv)")
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %}              
+          - service: media_player.media_pause # Яндекс станции, кроме Max
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search','yandex_station')
+                |rejectattr('state','in','(paused|off)') |rejectattr('entity_id','in',['media_player.lr_yandex_station_max']) | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                none
+                {% endif %}
+          - if:
+            - "{{ is_state('media_player.lr_yandex_station_max', 'playing') }}"
+            then:
+              - service: media_player.volume_mute # mute
+                target:
+                  entity_id:
+                    - media_player.lr_yandex_station_max
+                data:
+                  is_volume_muted: "{{ not state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+              - service: media_player.play_media
+                entity_id: media_player.lr_yandex_station_max
+                data:
+                  media_content_id: "Выключись через 20 минут"
+                  media_content_type: command  
+              - delay: "00:00:05"
+              - service: media_player.volume_set
+                data:
+                  entity_id:
+                    - media_player.lr_yandex_station_max
+                  volume_level: 0.1                 
+
+                
+
+    # Алиса - Мы уходим - сказать пока-пока и запустить скрипт alice_go_away_script
+      - alias: alice_go_away
+        id: alice_go_away
+        description: Алиса - Мы уходим
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Мы уходим
+          - platform: tag
+            tag_id: !secret tag_id_go_away
+        action:
+          - service: media_player.play_media 
+            target:
+              entity_id: >-
+                {% if trigger.event_type == 'yandex_intent' %}
+                trigger.event.data.entity_id
+                {% else %}
+                media_player.kn_yandex_station_mini
+                {% endif %}                
+            data:
+              media_content_type: text
+              media_content_id: >
+                {{ ['Пока Пока!', 'Хорошей погоды!', 'Удачи!', 'Возвращайтесь быстрее!', 'Скатертью дорожка', 'Ну и уходите', 'А я пока похозяйничаю']|random }}
+              extra:
+                volume_level: 0.5
+          - service: script.alice_go_away_script     
+
+    # Алиса - broadcast
+      - alias: alice_broadcast
+        id: alice_broadcast
+        description: Алиса - broadcast
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Оповещение
+        action: 
+          - service: media_player.play_media
+            target:
+              entity_id: '{{ trigger.event.data.entity_id }}'
+            data:
+              media_content_type: dialog:Умный дом:оповещение  # укажите имя вашего Яндекс.Диалога
+              media_content_id: 'Произнесите фразу'
+          - wait_for_trigger:
+              platform: event
+              event_type: yandex_intent
+              event_data:
+                session:
+                  dialog: оповещение
+            timeout: '10'
+            continue_on_timeout: false
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.kn_yandex_station_mini  # можно указать несколько колонок
+              media_content_type: text
+              media_content_id: '{{ wait.trigger.event.data.text }}'
+        mode: single
+
+    # Алиса - Навык "Всем домашним"
+      - alias: alice_dialog_all_home
+        id: alice_dialog_all_home
+        description: Алиса - Навык "Всем домашним"
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              intent: ANNOUNCE
+        action:
+          - service: media_player.play_media
+            data:
+              entity_id: media_player.kn_yandex_station_mini
+              media_content_type: text
+              media_content_id: '{{ trigger.event.data.phrase }}'          
+        
+
+
+    script:     
+    
+    # Алиса - Список покупок
+        alice_update_shopping_list:
+          alias: alice_update_shopping_list
+#          description: Алиса - Список покупок
+          icon: mdi:cart-arrow-up
+          sequence:
+            - variables:
+                station: >-
+                  {{ states.media_player | selectattr('entity_id','search','yandex_station') | selectattr('attributes.alice_state', 'eq', 'IDLE') | selectattr('state', 'in', ['paused', 'idle']) | map(attribute='entity_id') | list | random }}
+            - service: media_player.volume_mute
+              data:
+                entity_id: "{{ station }}"
+                is_volume_muted: true
+            - service: media_player.play_media
+              data:
+                entity_id: "{{ station }}"
+                media_content_id: update
+                media_content_type: shopping_list
+            - delay:
+                milliseconds: 300
+            - service: media_player.play_media
+              data:
+                entity_id: "{{ station }}"
+                media_content_id: "стоп"
+                media_content_type: command
+            - service: media_player.volume_mute
+              data:
+                entity_id: "{{ station }}"
+                is_volume_muted: false        
+        
+    # Алиса - Мы уходим - выключить везде свет, кроме гирлянд; выключить медиаплееры; включить сигнализацию (Дуся выключится автоматически по датчику аэрации)
+        alice_go_away_script:
+          alias: alice_go_away_script
+          icon: yandex:alisa
+          sequence:
+          - service: homeassistant.turn_off
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.group.light_all)
+                | rejectattr('entity_id','eq','switch.0x54ef4410009f9505')
+                | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %} 
+          - service: homeassistant.turn_off # mpd и телевизор
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search',"(mpd|samsung_q60ba_55_tv)")
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                light.nullen
+                {% endif %}              
+          - service: media_player.media_pause # Яндекс станции
+            target:
+              entity_id: >
+                {% set variable = namespace(value = {}) %}
+                {% set variable.value = expand(states.media_player)
+                |selectattr('entity_id','search','yandex_station')
+                |rejectattr('state','in','(paused|off)') | map(attribute='entity_id') | list %}
+                {% if (variable.value | count) > 0 %}
+                {{ variable.value }}
+                {% else %}
+                none
+                {% endif %} 
+          - service: alarm_control_panel.alarm_arm_away
+            data:
+              entity_id: alarm_control_panel.home_alarm
+              code: !secret alarm_code
+          - wait_for_trigger:
+              platform: state
+              entity_id: binary_sensor.0x00158d0008d93f0d_contact
+              from: 'on'
+              to: 'off' 
+            timeout: "00:04:40"
+#            continue_on_timeout: false
+          - if:
+            - "{{ is_state('switch.0x54ef4410009f9505', 'on') }}"
+            then:
+              - service: switch.turn_off
+                entity_id: switch.0x54ef4410009f9505            
+
+    # Алиса - Караоке
+        alice_karaoke:
+          alias: alice_karaoke
+#          description: Алиса - Караоке
+ #         icon: mdi:cart-arrow-up
+          sequence:
+            - service: media_player.play_media
+              target:
+                entity_id: media_player.xiaomi_tv_box_cast
+              data:
+                media_content_id: >-
+                  http://192.168.1.100:8123/api/camera_proxy_stream/camera.yandex_station_x003gq000vbn8b_lyrics?token={{state_attr('camera.yandex_station_x003gq000vbn8b_lyrics', 'access_token') }}
+                media_content_type: image/jpeg

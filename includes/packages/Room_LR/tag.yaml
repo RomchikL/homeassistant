@@ -1,0 +1,22 @@
+lr_tag:
+
+    homeassistant:
+      customize:
+
+        automation.tag_sleep_all:
+          friendly_name: Метка - Всем спать
+          icon: mdi:nfc-variant
+          
+    automation:
+
+      - alias: tag_sleep_all
+        id: tag_sleep_all
+        description: Метка - Всем спать
+        initial_state: true
+        trigger:
+        - platform: tag
+          tag_id: !secret tag_id_sleep_all
+        action:
+          - service: automation.trigger
+            entity_id:
+              - automation.alice_sleep_all 

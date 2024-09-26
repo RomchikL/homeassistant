@@ -1,0 +1,151 @@
+
+title: Общая
+panel: true
+icon: mdi:home-assistant
+cards:
+
+  - type: custom:stack-in-card
+    mode: vertical
+    cards: 
+    - type: custom:hourly-weather
+      entity: weather.pirateweather
+      name: null
+      icons: true
+      num_segments: '10'
+
+    - type: tile
+      entity: alarm_control_panel.home_alarm
+      features:
+      - type: "alarm-modes"
+        modes:
+          - armed_home
+          - armed_away
+          - armed_night
+          - disarmed
+
+
+    - type: conditional
+      conditions:
+        - entity: timer.alarm_pending
+          state: "active"
+      card:
+          type: custom:timer-bar-card
+          entity: timer.alarm_pending
+          invert: true
+          bar_width: 60%
+          bar_direction: rtl
+          modifications:
+          - elapsed: 30%
+            bar_foreground: yellow
+          - elapsed: 60%
+            bar_foreground: orange
+          - elapsed: 90%
+            bar_foreground: red
+          bar_height: 20px
+          sync_issues: ignore
+          mushroom:
+            layout: horizontal
+
+    - type: custom:stack-in-card
+      mode: vertical
+      cards:  
+        - type: horizontal-stack
+          cards:
+          
+          - type: custom:mushroom-person-card
+            entity: device_tracker.phone_roma
+            name: Рома
+            icon: mdi:face-man
+          
+          - type: custom:mushroom-person-card
+            entity: device_tracker.phone_kitka
+            name: Кристина
+            icon: mdi:face-woman
+
+    - type: horizontal-stack
+      cards:
+
+      - type: custom:mushroom-template-card
+        icon: mdi:exit-run
+        layout: horizontal
+        primary: Уходим
+    #    secondary: test
+        tap_action:
+          action: call-service
+          service: media_player.play_media
+          service_data:
+            media_content_id: Мы уходим
+            media_content_type: command
+          target:
+            entity_id: media_player.kn_yandex_station_mini
+    #   multiline_secondary: true
+
+
+      - type: custom:mushroom-entity-card
+        entity: input_boolean.bt_ceiling_light_lock
+        icon: mdi:block-helper
+        layout: horizontal
+  #       primary: Свет в ванной
+    #    secondary: test
+        tap_action:
+          action: call-service
+          service: input_boolean.toggle
+          target:
+            entity_id: input_boolean.bt_ceiling_light_lock
+    #   multiline_secondary: true
+
+
+    - type: horizontal-stack
+      cards:
+
+      - type: custom:mushroom-template-card
+        primary: Дверь на балкон
+        secondary: |-
+          {% if is_state("binary_sensor.0xa4c1388bf2574d1e_contact", "off") %}
+          Закрыта
+          {% else %}
+          Открыта
+          {% endif %}
+        layout: vertical
+        entity: binary_sensor.0xa4c1388bf2574d1e_contact
+        icon: |-
+          {% if is_state("binary_sensor.0xa4c1388bf2574d1e_contact", "off") %}
+          phu:panel-glass-door2-close
+          {% else %}
+          phu:panel-glass-door2-open
+          {% endif %}
+        multiline_secondary: true
+        icon_color: |-
+          {% if is_state("binary_sensor.0xa4c1388bf2574d1e_contact", "off") %}
+          grey
+          {% else %}
+          amber
+          {% endif %} 
+        tap_action:
+          action: more-info
+
+      - type: custom:mushroom-template-card
+        primary: Окно зал
+        secondary: |-
+          {% if is_state("binary_sensor.0x00158d0008e1c64f_contact", "off") %}
+          Закрыто
+          {% else %}
+          Открыто
+          {% endif %}
+        layout: vertical
+        entity: binary_sensor.0x00158d0008e1c64f_contact
+        icon: |-
+          {% if is_state("binary_sensor.0x00158d0008e1c64f_contact", "off") %}
+          phu:double-window-closed
+          {% else %}
+          phu:double-window-open
+          {% endif %}
+        multiline_secondary: true
+        icon_color: |-
+          {% if is_state("binary_sensor.0x00158d0008e1c64f_contact", "off") %}
+          grey
+          {% else %}
+          light-blue
+          {% endif %} 
+        tap_action:
+          action: more-info 

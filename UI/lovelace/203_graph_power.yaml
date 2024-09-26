@@ -1,0 +1,251 @@
+title: Потребление электричества
+panel: true
+icon: mdi:transmission-tower
+cards:
+
+    - type: 'custom:layout-card'
+      layout: vertical
+      max_columns: 3
+      cards:
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: Холодильник 
+            show_states: true
+            colorize_states: true
+            floating: false
+            disable_actions: true              
+          graph_span: 160d
+          span:
+            end: month
+          show:
+            last_updated: true
+          stacked: true
+          apex_config:
+            chart:
+              height: 295
+            stroke:
+              show: true
+            legend:
+              show: false
+          yaxis:
+            - min: 0
+              max: ~50
+              decimals: 0
+              apex_config:
+                tickAmount: 5
+          series:
+            - entity: sensor.0xa4c138e5e488903a_meter_day
+              name: День
+              color: '#5692A9'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+              statistics:
+                type: state
+                period: month
+                align: end
+            - entity: sensor.0xa4c138e5e488903a_meter_night
+              name: Ночь
+              color: '#F29C38'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+#                in_chart: false
+              statistics:
+                type: state
+                period: month
+                align: end
+
+###################################            
+            
+            
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: Стиралка 
+            show_states: true
+            colorize_states: true
+            floating: false
+            disable_actions: true              
+          graph_span: 160d
+          span:
+            end: day
+          show:
+            last_updated: true
+          stacked: true
+          apex_config:
+            chart:
+              height: 295
+            stroke:
+              show: true
+            legend:
+              show: false
+          yaxis:
+            - min: 0
+              max: ~20
+              decimals: 0
+              apex_config:
+                tickAmount: 4
+          series:
+            - entity: sensor.0xa4c1387beab4cd4f_meter_day
+              name: День
+              color: '#5692A9'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+              statistics:
+                type: state
+                period: month
+                align: end
+            - entity: sensor.0xa4c1387beab4cd4f_meter_night
+              name: Ночь
+              color: '#F29C38'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+#                in_chart: false
+              statistics:
+                type: state
+                period: month
+                align: end            
+            
+################################### 
+
+
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: Сервер 
+            show_states: true
+            colorize_states: true
+            floating: false
+            disable_actions: true              
+          graph_span: 160d
+          span:
+            end: day
+          show:
+            last_updated: true
+          stacked: true
+          apex_config:
+            chart:
+              height: 295
+            stroke:
+              show: true
+            legend:
+              show: false
+          yaxis:
+            - min: 0
+              max: ~20
+              decimals: 0
+              apex_config:
+                tickAmount: 5
+          series:
+            - entity: sensor.0xa4c138f1330afac4_meter_day
+              name: День
+              color: '#5692A9'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+              statistics:
+                type: state
+                period: month
+                align: end
+            - entity: sensor.0xa4c13873bd4330eb_meter_night
+              name: Ночь
+              color: '#F29C38'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+#                in_chart: false
+              statistics:
+                type: state
+                period: month
+                align: end            
+            
+            
+################################### 
+
+
+        - type: custom:apexcharts-card
+          header:
+            show: true
+            title: Чайник 
+            show_states: true
+            colorize_states: true
+            floating: false
+            disable_actions: true              
+          graph_span: 160d
+          span:
+            end: day
+          show:
+            last_updated: true
+          stacked: true
+          apex_config:
+            chart:
+              height: 295
+            stroke:
+              show: true
+            legend:
+              show: false
+          yaxis:
+            - min: 0
+              max: ~20
+              decimals: 0
+              apex_config:
+                tickAmount: 4
+          series:
+            - entity: sensor.0xa4c13873bd4330eb_meter_day
+              name: День
+              color: '#5692A9'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+              statistics:
+                type: state
+                period: month
+                align: end
+            - entity: sensor.0xa4c13873bd4330eb_meter_night
+              name: Ночь
+              color: '#F29C38'
+              type: column
+              float_precision: 2
+              show:
+                name_in_header: true
+                datalabels: true
+                legend_value: false
+                header_color_threshold: true
+#                in_chart: false
+              statistics:
+                type: state
+                period: month
+                align: end             
+            

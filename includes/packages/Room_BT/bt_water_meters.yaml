@@ -1,0 +1,41 @@
+bt_water_meters:
+
+  recorder:
+    include:
+      entities:
+          - sensor.bt_meter_cold_water
+          - sensor.bt_meter_hot_water
+#  homeassistant:
+#    customize:
+
+#      sensor.0x00158d0006f85055_action:
+#        friendly_name: Ванная кнопка Aqara
+
+  input_number:
+  
+    bt_meter_cold_water:
+      name: Счетчик холодной воды
+      icon: mdi:fuse  
+      min: 0
+      max: 99999 
+
+    bt_meter_hot_water:
+      name: Счетчик холодной воды
+      icon: mdi:fuse 
+      min: 0
+      max: 99999   
+
+  template:
+    - sensor:
+      - name: "bt_meter_cold_water"
+        unit_of_measurement: "m³"
+        state_class: total_increasing
+        device_class: water
+        state: "{{ states.input_number.bt_meter_cold_water.state | round(3) }}"
+
+      - name: "bt_meter_hot_water"
+        unit_of_measurement: "m³"
+        state_class: total_increasing
+        device_class: water
+        state: "{{ states.input_number.bt_meter_hot_water.state | round(3) }}"
+          

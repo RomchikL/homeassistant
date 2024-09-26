@@ -1,0 +1,154 @@
+title: "Lights"
+path: "lights"
+cards:
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+
+      - type: "custom:button-card"
+        color_type: blank-card
+
+      - type: 'custom:button-card'
+        template: chip_icon_only
+        variables:
+          ulm_chip_icon_only: '💡' 
+          ulm_name_tap_action: "call-service"
+          ulm_name_tap_service: "script.turn_on"
+          ulm_name_tap_service_data:
+            entity_id: script.turn_off_all_lights
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Lights
+
+############################### Зал ################################
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: Зал
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000b89402_left
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000b89402_right
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.lamp_1s
+        variables:
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_name: Лампа
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c1388af6a76f04_l4
+        variables:
+          ulm_card_light_enable_color: true
+
+############################### Кухня ################################
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: Кухня
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000aad4d8_left
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_icon: phu:ceiling-adore-alt-flush
+          ulm_card_light_name: Свет
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c13849ef842ae5
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.kn_backlight_lamps
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.kn_backlight_lenta
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c138323f769290
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.sonoff_10018da14e_1
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_name: Штора
+
+
+############################### Ванная ################################
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: Ванная
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000aad4d8_right
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_icon: phu:ceiling-adore-alt-flush
+          ulm_card_light_name: Лампочки
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c1381662c81b0e
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_name: Лента
+
+############################### Коридор ################################
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: Коридор
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef4410009f9505
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_icon: phu:ceiling-adore-alt-flush
+          ulm_card_light_name: Лампочки

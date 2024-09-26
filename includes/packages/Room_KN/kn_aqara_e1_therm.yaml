@@ -1,0 +1,136 @@
+kn_aqara_e1_therm:
+
+    recorder:
+      include:
+        entities:
+           - climate.0x54ef44100070621d
+           
+    homeassistant:
+      customize:
+      
+        automation.kn_aqara_e1_set_temp:
+          friendly_name: Установка температуры внешнего сенсора
+          icon: phu:aqara-thermo-e1 #thermostat
+
+        automation.kn_aqara_e1_temp_schedule:
+          friendly_name: Умное расписание Aqara E1
+          icon: phu:aqara-thermo-e1
+
+        automation.kn_aqara_e1_window_control:
+          friendly_name: Aqara E1 - окно
+          icon: phu:aqara-thermo-e1
+             
+        
+    automation:
+    
+      - alias: kn_aqara_e1_set_temp
+        id: kn_aqara_e1_set_temp
+        description: Установка температуры внешнего сенсора #/set/external_temperature_input /set/sensor_temp
+        initial_state: true
+        trigger:
+         - platform: state
+           entity_id: sensor.0xa4c1383117449f5c_temperature
+        action:
+        - service: mqtt.publish
+          data_template:
+            topic: "zigbee2mqtt/0x54ef44100070621d/set/external_temperature_input"
+            payload: "{{states('sensor.0xa4c1383117449f5c_temperature')|float(21)}}"
+            retain: true 
+            
+      - alias: kn_aqara_e1_temp_schedule
+        id: kn_aqara_e1_temp_schedule
+        description: Умное расписание Aqara E1
+        initial_state: false
+        trigger:
+         - platform: time
+           at: "06:0:00"
+           id: "06"
+         - platform: time
+           at: "07:0:00"
+           id: "07"
+         - platform: time
+           at: "06:30:00"
+           id: "0630"
+         - platform: time
+           at: "17:00:00"
+           id: "17"
+         - platform: time
+           at: "18:00:00"
+           id: "18"
+         - platform: time
+           at: "19:00:00"
+           id: "19"
+        action:
+          - if:
+             - "{{ is_state('binary_sensor.workday_sensor', 'off') }}"        #Если выходной день или мы остались дома  or is_state('input_boolean.we_are_home', 'on') 
+            then: 
+              - choose:
+                - conditions:
+                    - condition: trigger
+                      id: "0630"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 23
+                - conditions:
+                    - condition: trigger
+                      id: "18"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 19                        
+            else:                                       # иначе в рабочий день:
+              - choose:
+                - conditions:
+                    - condition: trigger
+                      id: "06"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 23
+                - conditions:
+                    - condition: trigger
+                      id: "07"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 18
+                - conditions:
+                    - condition: trigger
+                      id: "18"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 23
+                - conditions:
+                    - condition: trigger
+                      id: "19"
+                  sequence:
+                    - service: climate.set_temperature
+                      data:
+                        entity_id: climate.0x54ef44100070621d
+                        temperature: 19
+
+      - alias: kn_aqara_e1_window_control
+        id: kn_aqara_e1_window_control
+        description: Aqara E1 - окно
+        initial_state: false
+        trigger:
+         - platform: state
+           entity_id: binary_sensor.0xa4c1388bf2574d1e_contact
+           for: "00:02:00"
+        action:
+          - if: "{{ is_state('binary_sensor.0xa4c1388bf2574d1e_contact', 'on') }}"       
+            then: 
+              - service: climate.turn_off
+                data:
+                  entity_id: climate.0x54ef44100070621d
+            else:
+              - service: climate.turn_on
+                data:
+                  entity_id: climate.0x54ef44100070621d  

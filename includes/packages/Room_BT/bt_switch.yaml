@@ -1,0 +1,66 @@
+bt_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.0xa4c138850066f7cd_right
+           - switch.0xa4c1381662c81b0e # Лента ванная
+           - switch.0xa4c1387beab4cd4f #Розетка стиралка
+           - sensor.0xa4c1387beab4cd4f_meter_day
+           - sensor.0xa4c1387beab4cd4f_meter_night
+
+
+    homeassistant:
+        customize:
+            switch.0xa4c1381662c81b0e:
+              icon: phu:amarant
+              
+            switch.0xa4c1387beab4cd4f:
+              friendly_name: Стиралка
+              icon: mdi:washing-machine
+              
+            sensor.0xa4c1387beab4cd4f_meter_night:
+                friendly_name: Стиралка ночь
+                
+            sensor.0xa4c1387beab4cd4f_meter_day:
+                friendly_name: Стиралка день
+
+
+    sensor:
+    
+      - platform: integration
+        name: '0xa4c1387beab4cd4f_integration'
+        source: sensor.0xa4c1387beab4cd4f_power
+        unit_prefix: k
+        round: 2
+        
+    utility_meter:
+
+      0xa4c1387beab4cd4f_meter:
+        source: sensor.0xa4c1387beab4cd4f_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
+    input_boolean:
+    
+     bt_ceiling_light_lock:
+        name: Блокировка света в ванной
+        icon: mdi:fuse
+ 
+ 
+    automation:
+
+      - alias: bt_lenta_opple
+        id: bt_lenta_opple
+        description: Ванная - Включение Ленты по Opple
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.0x54ef4410003b4a83_action
+          to: 'button_3_single'
+        action:
+        - service: switch.toggle
+          target:
+            entity_id: switch.0xa4c1381662c81b0e

@@ -1,0 +1,184 @@
+
+title: Свет
+#panel: true
+icon: mdi:track-light
+cards:
+
+    - type: 'custom:button-card'
+      name: Зал
+      entity: switch.0x54ef441000b89402_right
+      icon: phu:rooms-living
+      tap_action:
+        action: navigate
+        navigation_path: 'living_room'
+
+############################ Колонка 1 ############################
+
+    - type: vertical-stack
+      cards:
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:  
+          - type: markdown
+            card_mod:
+              style: |
+                    ha-card {
+                      color: #f8ffd8;
+                      --paper-item-icon-color: #f8ffd8;
+                      --paper-item-icon-active-color: #f8ffd8;
+                      font-weight: bold;
+                      font-size: 14px;
+                    } 
+            content: >
+                **Зал**
+          - type: horizontal-stack
+            cards:
+            - type: custom:mushroom-light-card
+              entity: switch.0x54ef441000b89402_left
+              name: Лента
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.0x54ef441000b89402_right
+              name: Лампочки
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.0xa4c1388af6a76f04_l4
+              name: Фонарики
+              layout: vertical
+              primary_info: name
+              secondary_info: none          
+
+            - type: custom:mushroom-light-card
+              entity: light.lamp_1s
+              name: Лампа
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+#              show_brightness_control: true
+#              show_color_temp_control: true
+#              collapsible_controls: true
+
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:  
+          - type: markdown
+            card_mod:
+              style: |
+                    ha-card {
+                      color: #f8ffd8;
+                      --paper-item-icon-color: #f8ffd8;
+                      --paper-item-icon-active-color: #f8ffd8;
+                      font-weight: bold;
+                      font-size: 14px;
+                    } 
+            content: >
+                **Кухня**
+          - type: horizontal-stack
+            cards:
+            - type: custom:mushroom-light-card
+              entity: switch.0x54ef441000aad4d8_left
+              name: Свет
+              icon: phu:ceiling-adore-alt-flush
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+            
+            - type: custom:mushroom-light-card
+              entity: switch.kn_backlight_lamps
+              name: Подсветка
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.kn_backlight_lenta
+              name: Лента
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+            
+            - type: custom:mushroom-light-card
+              entity: switch.0xa4c13849ef842ae5
+              name: Цветы
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+          - type: horizontal-stack
+            cards:
+            - type: custom:mushroom-light-card
+              entity: switch.0xa4c138323f769290
+              name: Ёлочки
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+            
+            - type: custom:mushroom-light-card
+              entity: switch.sonoff_10018da14e_1
+              name: Штора
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.0xa4c1386f409b4ac4
+              name: Подсветка
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+            
+
+
+############################ Колонка 2 ############################
+
+    - type: vertical-stack
+      cards:
+      
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:  
+          - type: markdown
+            card_mod:
+              style: |
+                    ha-card {
+                      color: #f8ffd8;
+                      --paper-item-icon-color: #f8ffd8;
+                      --paper-item-icon-active-color: #f8ffd8;
+                      font-weight: bold;
+                      font-size: 14px;
+                    } 
+            content: >
+                **Ванная и коридор**
+          - type: horizontal-stack
+            cards:
+            - type: custom:mushroom-light-card
+              entity: switch.0x54ef441000aad4d8_right
+              name: Лампочки ванная
+              icon: phu:ceiling-adore-alt-flush
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.0xa4c1381662c81b0e
+              name: Лента
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+            - type: custom:mushroom-light-card
+              entity: switch.0x54ef4410009f9505
+              name: Лампочки коридор
+              icon: phu:ceiling-adore-alt-flush
+              layout: vertical
+              primary_info: name
+              secondary_info: none
+
+

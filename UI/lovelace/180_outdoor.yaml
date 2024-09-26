@@ -1,0 +1,37 @@
+##################   Погода
+title: Погода
+icon: mdi:weather-hazy
+cards:
+
+############################ Колонка 1 ############################
+    - type: vertical-stack
+      cards:
+
+        - type: markdown
+          card_mod:
+            style: |
+                ha-card {
+                  font-size: 26px;
+                }          
+          content: >
+             **Воздух, погода**
+        - type: custom:air-visual-card
+          air_pollution_level: sensor.u_s_air_pollution_level
+          air_quality_index: sensor.u_s_air_quality_index
+          main_pollutant: sensor.u_s_main_pollutant
+          city: 'Санкт-Петербург'
+          #icons: 
+          #weather: weather.dark_sky
+
+        - type: custom:weather-card
+          entity: weather.pirateweather
+          name: Прогноз
+          current: true
+          details: false
+          forecast: true
+          hourly_forecast: true
+          number_of_forecasts: 6
+
+
+   
+          

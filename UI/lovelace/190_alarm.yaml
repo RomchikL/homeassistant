@@ -1,0 +1,315 @@
+##################   Alarm paper
+title: Сигнализации
+icon: mdi:shield-home
+cards:
+
+
+############################ Колонка 1 ############################
+
+    - type: custom:stack-in-card
+      mode: vertical
+      cards:  
+            - type: markdown
+              card_mod:
+                style: |
+                    ha-card {
+                      color: #f8ffd8;
+                      --paper-item-icon-color: #f8ffd8;
+                      --paper-item-icon-active-color: #f8ffd8;
+                      font-weight: bold;
+                      font-size: 26px;
+                    } 
+              content: >
+                 **Код**
+
+
+            - type: horizontal-stack
+              cards:
+
+              - type: custom:mushroom-template-card
+                primary: Первый
+                secondary: |-
+                  {% if is_state("input_boolean.alarm_first", "on") %}
+                  Вкл
+                  {% else %}
+                  Выкл
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: input_boolean.alarm_first
+                icon: mdi:numeric-1-box
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("input_boolean.alarm_first", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+
+              - type: custom:mushroom-template-card
+                primary: Второй
+                secondary: |-
+                  {% if is_state("input_boolean.alarm_second", "on") %}
+                  Вкл
+                  {% else %}
+                  Выкл
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: input_boolean.alarm_second
+                icon: mdi:numeric-2-box
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("input_boolean.alarm_second", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+
+              - type: custom:mushroom-template-card
+                primary: Третий
+                secondary: |-
+                  {% if is_state("input_boolean.alarm_third", "on") %}
+                  Вкл
+                  {% else %}
+                  Выкл
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: input_boolean.alarm_third
+                icon: mdi:numeric-3-box
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("input_boolean.alarm_third", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+
+              - type: custom:mushroom-template-card
+                primary: Четвертый
+                secondary: |-
+                  {% if is_state("input_boolean.alarm_fourth", "on") %}
+                  Вкл
+                  {% else %}
+                  Выкл
+                  {% endif %}
+                layout: vertical
+                tap_action:
+                  action: toggle
+                entity: input_boolean.alarm_fourth
+                icon: mdi:numeric-4-box
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("input_boolean.alarm_fourth", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+
+            - type: custom:timer-bar-card
+              entities:
+              - entity: timer.alarm_code
+                name: Осталось - 
+              modifications:
+                - elapsed: 30%
+                  bar_foreground: yellow
+                - elapsed: 60%
+                  bar_foreground: orange
+                - elapsed: 90%
+                  bar_foreground: red
+              bar_height: 20px
+              sync_issues: ignore
+              invert: true
+
+
+            - type: horizontal-stack
+              cards:
+
+              - type: custom:mushroom-template-card
+                primary: zero
+                secondary: |-
+                  {% if is_state("binary_sensor.alarm_zero", "on") %}
+                  Открыто
+                  {% else %}
+                  Закрыто
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.alarm_zero
+                icon: |-
+                  {% if is_state("binary_sensor.alarm_zero", "on") %}
+                  mdi:lock-open
+                  {% else %}
+                  mdi:lock
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.alarm_zero", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: first
+                secondary: |-
+                  {% if is_state("binary_sensor.alarm_first", "on") %}
+                  Открыто
+                  {% else %}
+                  Закрыто
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.alarm_first
+                icon: |-
+                  {% if is_state("binary_sensor.alarm_first", "on") %}
+                  mdi:lock-open
+                  {% else %}
+                  mdi:lock
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.alarm_first", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: second
+                secondary: |-
+                  {% if is_state("binary_sensor.alarm_second", "on") %}
+                  Открыто
+                  {% else %}
+                  Закрыто
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.alarm_second
+                icon: |-
+                  {% if is_state("binary_sensor.alarm_second", "on") %}
+                  mdi:lock-open
+                  {% else %}
+                  mdi:lock
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.alarm_second", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: third
+                secondary: |-
+                  {% if is_state("binary_sensor.alarm_third", "on") %}
+                  Открыто
+                  {% else %}
+                  Закрыто
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.alarm_third
+                icon: |-
+                  {% if is_state("binary_sensor.alarm_third", "on") %}
+                  mdi:lock-open
+                  {% else %}
+                  mdi:lock
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.alarm_third", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: fourth
+                secondary: |-
+                  {% if is_state("binary_sensor.alarm_fourth", "on") %}
+                  Открыто
+                  {% else %}
+                  Закрыто
+                  {% endif %}
+                layout: vertical
+                entity: binary_sensor.alarm_fourth
+                icon: |-
+                  {% if is_state("binary_sensor.alarm_fourth", "on") %}
+                  mdi:lock-open
+                  {% else %}
+                  mdi:lock
+                  {% endif %}
+                multiline_secondary: true
+                icon_color: |-
+                  {% if is_state("binary_sensor.alarm_fourth", "on") %}
+                  green
+                  {% else %}
+                  red
+                  {% endif %}
+                tap_action:
+                  action: more-info
+
+
+############################ Колонка 2 ############################
+
+    - type: vertical-stack
+      cards:
+      
+        - type: markdown
+          card_mod:
+            style: |
+                ha-card {
+                  font-size: 26px;
+                }          
+          content: >
+             **Датчики и сенсоры**
+        - type: custom:stack-in-card
+          mode: vertical
+          cards:  
+            - type: horizontal-stack
+              cards:
+              
+              - type: custom:mushroom-person-card
+                entity: device_tracker.phone_roma
+                name: Рома
+                icon: mdi:face-man
+              
+              - type: custom:mushroom-person-card
+                entity: device_tracker.phone_kitka
+                name: Кристина
+                icon: mdi:face-woman
+                
+    - type: vertical-stack
+      cards:
+      
+      - type: markdown
+        card_mod:
+          style: |
+              ha-card {
+                font-size: 26px;
+              }  
+        content: >
+            **Управление**
+
+      - type: custom:mushroom-alarm-control-panel-card
+        entity: alarm_control_panel.home_alarm
+        name: Сигнализация
+        icon: mdi:alarm-light
+        primary_info: name
+        secondary_info: state 
+        icon_type: icon 
+        states: ["armed_home", "armed_away", "armed_night", "armed_vacation"]
+        show_keypad: true
+        
+
+

@@ -1,0 +1,326 @@
+cr_camera:
+
+    homeassistant:
+      customize:
+
+        automation.cam_laxi_mini7s_photo:
+          friendly_name: Laxi Mini 7S - фото и отправка в телеграмм
+          icon: phu:smart-camera
+          
+        automation.cr_laxi_mini7s_photo:
+          friendly_name: Коридор - фото и отправка в телеграмм при триггере
+          icon: mdi:camera
+          
+        automation.cam_laxi_mini7s_remove_old_alarm:
+          friendly_name: Mini 7s - удаление старых видео
+          icon: mdi:camera
+          
+        automation.cam_mini7s_cast:
+          friendly_name: Mini 7s - каст
+          icon: mdi:camera
+          
+        automation.cam_logitech_c525_cast:
+          friendly_name: Logitech C525 - каст
+          icon: mdi:camera
+          
+    shell_command:
+      play_wav_laxicam_mini7s: !secret laxicam_mini_7s_dingdong
+      removemini7salarmvideo: 'find /config/www/cam_captures/alarm_videos/* -mtime +15 -exec rm {} \;'
+       
+          
+    input_button:
+
+      laxicam_mini7s_photo:
+        name: Фото Mini 7s
+        icon: mdi:camera-plus
+
+      laxicam_mini7s_cast:
+        name: Каст Mini 7s
+        icon: mdi:cast-connected
+        
+      logitech_c525_photo:
+        name: Фото Logitech C525
+        icon: mdi:camera-plus
+
+      logitech_c525_cast:
+        name: Каст Logitech C525
+        icon: mdi:cast-connected
+
+        
+    automation:
+    
+      - alias: cam_mini7s_cast
+        id: cam_mini7s_cast
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.laxicam_mini7s_cast
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'off'
+                sequence:
+                  - service: media_player.turn_on
+                    data:
+                      entity_id: media_player.android_tv_192_168_1_150
+                  - delay: "00:00:05"
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/laxi_camera -t video/mp4"
+                      
+              - conditions:      
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state:
+                      - 'idle'
+                      - 'paused'
+                sequence:
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/laxi_camera -t video/mp4"
+                      
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'playing'
+                sequence:
+                    - service: androidtv.adb_command
+                      target:
+                        entity_id: media_player.android_tv_192_168_1_150
+                      data:
+                        command: "adb shell am force-stop org.videolan.vlc"                 
+                        
+                        
+      - alias: cam_logitech_c525_cast
+        id: cam_logitech_c525_cast
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.logitech_c525_cast
+        action:
+            - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'off'
+                sequence:
+                  - service: media_player.turn_on
+                    data:
+                      entity_id: media_player.android_tv_192_168_1_150
+                  - delay: "00:00:05"
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/logitech_c525 -t video/mp4"
+                      
+              - conditions:      
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state:
+                      - 'idle'
+                      - 'paused'
+                sequence:
+                  - service: androidtv.adb_command
+                    target:
+                      entity_id: media_player.android_tv_192_168_1_150
+                    data:
+                      command: "adb shell am start -a android.intent.action.VIEW -d rtsp://192.168.1.100:8554/logitech_c525 -t video/mp4"
+                      
+              - conditions:
+                  - condition: state
+                    entity_id: media_player.android_tv_192_168_1_150
+                    state: 'playing'
+                sequence:
+                    - service: androidtv.adb_command
+                      target:
+                        entity_id: media_player.android_tv_192_168_1_150
+                      data:
+                        command: "adb shell am force-stop org.videolan.vlc"                    
+
+
+# https://github.com/guino/BazzDoorbell/issues/8#issuecomment-745198782    
+#    **Trigger:**
+#platform: mqtt
+#    topic: home/doorbell/button
+#    payload: pushed
+#
+#**Actions:**
+#  - service: mqtt.publish
+#    data:
+#      topic: home/doorbell/button
+#      payload: idle
+#  
+#  - service: camera.play_stream
+#    data:
+#      entity_id: camera.{id} << ADD ID
+#      media_player: media_player.{id} << ADD ID
+
+      - alias: cam_laxi_mini7s_remove_old_alarm
+        id: cam_laxi_mini7s_remove_old_alarm
+        description: Mini 7s - удаление старых видео
+        initial_state: true
+        trigger:
+        - platform: time
+          at: 03:00:00
+        action:
+         - service: shell_command.removemini7salarmvideo
+
+
+      - alias: cam_laxi_mini7s_photo
+        id: cam_laxi_mini7s_photo
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.laxicam_mini7s_photo
+        action:
+         - service: camera.snapshot
+           data:
+              entity_id: camera.laxicam_mini7s
+              filename: "/config/www/cam_captures/laxi_mini7s_photo.jpg"
+#         - delay: 00:00:07
+#         - service: camera.snapshot #see https://github.com/home-assistant/core/issues/75930
+#           data:
+#              entity_id: camera.laxicam_mini7s
+#              filename: "/config/www/cam_captures/laxi_mini7s_photo.jpg"
+         - delay: 00:00:03
+         - service: telegram_bot.send_photo
+           data_template:
+             target:
+              - !secret chat_id_romchik
+             file: "/config/www/cam_captures/laxi_mini7s_photo.jpg" 
+             
+      - alias: cam_logitech_c525_photo
+        id: cam_logitech_c525_photo
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.logitech_c525_photo
+        action:
+         - service: camera.snapshot
+           data:
+              entity_id: camera.logitech_c525
+              filename: "/config/www/cam_captures/logitech_c525_photo.jpg"
+         - delay: 00:00:03
+         - service: telegram_bot.send_photo
+           data_template:
+             target:
+              - !secret chat_id_romchik
+             file: "/config/www/cam_captures/logitech_c525_photo.jpg" 
+             
+             
+      - alias: cr_laxi_mini7s_photo
+        id: cr_laxi_mini7s_photo
+        description: Триггер - фото и отправка в телеграмм
+#        initial_state: true
+        trigger:
+    ## Триггер
+        - platform: state
+          entity_id: switch.lr_belaya
+          to: 'on'
+        action:
+         - service: telegram_bot.send_message
+           data_template:
+             target:
+                 - !secret chat_id_romchik
+             message: | 
+                  {{"\U0001F6AA"}} Триггер {{ states.sensor.time_date.state }}
+         - service: input_button.press
+           target:
+             entity_id: 
+              - input_button.laxi_mini7s
+         - service: shell_command.play_wav_laxicam_mini7s
+
+         - service: mqtt.publish
+           data:
+             topic: home/laxicam_mini7s/motion
+             payload: test_command #idle
+             
+      - alias: cr_laxi_mini7s_video
+        id: cr_laxi_mini7s_video
+        description: Обнаржение движения - отправка видео в Телеграм
+#        initial_state: true
+        trigger:
+        - platform: mqtt
+          topic: home/laxicam_mini7s/motion
+          payload: detected
+        action:
+         - service: telegram_bot.send_message
+           data_template:
+             target:
+                 - !secret chat_id_romchik
+             message: | 
+                  {{"\U0001F6AA"}} Обнаружено движение {{ states.sensor.time_date.state }}
+         - service: camera.record
+           data_template:
+             entity_id: camera.laxicam_mini7s
+             filename: "/config/www/cam_captures/laxi_mini7s_video.mp4"
+             duration: 4
+         - delay: 00:00:10
+         - service: telegram_bot.send_video
+           data_template:
+             target:
+                 - !secret chat_id_romchik
+             file: "/config/www/cam_captures/laxi_mini7s_video.mp4"
+
+        
+              
+      - alias: cam_laxi_mini7s_test
+        id: cam_laxi_mini7s_test
+#        initial_state: true
+        trigger:
+        - platform: mqtt
+          topic: home/laxicam_mini7s/motion
+          payload: detected
+        action:
+          - service: media_player.play_media
+            entity_id: media_player.kn_yandex_station_mini
+            data:
+              media_content_id: <speaker is_whisper="true">Хозяин, пора бы спать 
+              media_content_type: text:Умный дом
+              extra:
+                volume_level: 0.9
+                
+
+            
+    # еще тест
+      - alias: test-alice_telik
+        id: alice_telik
+        description: Test telik
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Цветок живет
+        action:
+          - service: media_player.select_source
+            entity_id: media_player.lr_yandex_station_lite
+            data:
+              source: SamsungTV
+          - service: media_player.play_media
+            entity_id: media_player.lr_yandex_station_lite  # замените на вашу колонку
+            data:
+              media_content_id: Включи мою любимую музыку вперемешку
+              media_content_type: command
+          
+#          - service: tts.yandex_station
+#            entity_id: 
+#              - media_player.kn_yandex_station_mini
+#            data:
+#              message: "Обнаружено движение"
+#         - service: telegram_bot.send_message
+#           data_template:
+#             target:
+#                 - !secret chat_id_romchik
+#             message: | 
+#                  Тест сработал {{ states.sensor.time_date.state }}

@@ -1,0 +1,134 @@
+test:
+
+  plant:
+    dracaena:
+      sensors:
+        moisture: sensor.kn_ble_tracker_dracaena_moisture
+#        battery: sensor.my_sensor_battery
+        temperature: sensor.kn_ble_tracker_dracaena_temperature
+        conductivity: sensor.kn_ble_tracker_dracaena_soil_conductivity
+        brightness: sensor.kn_ble_tracker_dracaena_illuminance
+      min_moisture: 15
+
+    zamioculcas:
+      sensors:
+        moisture: sensor.kn_ble_tracker_zamioculcas_moisture
+#        battery: sensor.my_sensor_battery
+        temperature: sensor.kn_ble_tracker_zamioculcas_temperature
+        conductivity: sensor.kn_ble_tracker_zamioculcas_soil_conductivity
+        brightness: sensor.kn_ble_tracker_zamioculcas_illuminance
+      min_moisture: 15
+
+#    xiaomi_miot:
+#      device_customizes:
+#        deerma.deerma_jsq_befb_humidifier:
+#          exclude_miot_services: null
+#          number_properties: humidity
+ 
+
+#    recorder:
+#      include:
+#        entities:
+#           - sensor.0x00158d0008dfa560_control
+#           - sensor.0xa4c1387c6db81d88_control
+#           - sensor.0x00158d0008dfa7df_control
+
+#    homeassistant:
+
+#      customize:
+
+#        sensor.0x00158d0008dfa560_control:
+#          friendly_name: Протечка ванная стояк          
+          
+#    template:
+    
+#      - binary_sensor:
+
+#          - name: cr_motion
+#            device_class: motion
+#            icon: mdi:motion-sensor
+#            state: "{{ is_state('binary_sensor.kitchen_motion_sensor_occupancy', 'on') or is_state('binary_sensor.dining_room_motion_sensor_occupancy', 'on') }}"
+
+
+#    input_number:
+#      pantry_expiration:
+#        name: Pantry Expiration Window
+#        initial: 90
+#        min: 30
+#        max: 120
+#        step: 1
+#        unit_of_measurement: days
+#        icon: mdi:calendar-clock
+
+
+#    template:
+#    
+#      - trigger:
+#        - platform: time_pattern
+#          minutes: '/1'
+#        sensor:
+#          - name: '0x00158d0008dfa560_control'
+#            state: >
+#              {{(as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa560_water_leak', 'last_seen')))|int(0) }}
+#            attributes:
+#              time: >
+#                {% set s = (as_timestamp (now()) -as_timestamp(state_attr('binary_sensor.0x00158d0008dfa560_water_leak', 'last_seen')))|int(0) %}
+#                {{ '{:d} дней {:02d}:{:02d}:{:02d}'.format (s // 86400, s % 86400 // 3600, s % 3600 // 60, s % 60) }}
+
+
+            
+ #   switch:
+#    
+#      - platform: template
+#        switches:
+#
+#          cr_motion:
+#            friendly_name: "Коридор - движение"
+#            value_template: "{{ is_state('binary_sensor.kn_boiler_mode', 'on') }}"
+#            turn_on:
+#            turn_off:
+
+
+
+#    switch:
+#      name: cr_motion
+#      device_class: motion
+
+#    timer:
+#      cr_motion_timer:
+#        duration: '00:00:10'
+    
+            
+#    automation:
+#             
+#      - alias: cr_motion_update
+#        description: Обнаржение движения - обновление сенсора
+#        trigger:
+#        - platform: mqtt
+#          topic: home/laxicam_mini7s/motion
+#          payload: detected
+#        condition:
+#          condition: template
+#          value_template: "{{ not is_state('input_select.fan_time_select', 'OFF') }}"
+#        action:
+#         - service: switch.turn_on
+#           entity_id: switch.cr_motion
+#         - service: timer.start
+#           data:
+#             entity_id: timer.cr_motion_timer
+#             duration:
+#               minutes:  "1"
+#           
+#      - alias: cr_motion_update_out
+#        description: Обнаржение движения - обновление сенсора_out
+#        trigger:
+#        - platform: event
+#          event_type: timer.finished
+#          event_data:
+#            entity_id: timer.cr_motion_timer
+#        condition:
+#          condition: template
+#          value_template: "{{ not is_state('input_select.fan_time_select', 'OFF') }}"
+#        action:
+#         - service: switch.turn_off
+#           entity_id: switch.cr_motion

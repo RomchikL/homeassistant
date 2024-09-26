@@ -1,0 +1,42 @@
+# https://github.com/alryaz/hass-yandex-music-browser
+# Конфигурация интеграции
+language: ru
+
+menu_options:
+  - !secret yandex_user_liked_tracks_Roma
+  # Предустановка: Новые релизы
+  - new_releases
+
+  # Создание папки в корне:
+  - title: "Юзвери"
+    image: "http://www.pngall.com/wp-content/uploads/2016/06/Nyan-Cat-Free-Download-PNG.png"
+    items:
+
+  # Иерархия многоуровневая и многотипная.
+      - title: "И их любимые альбомы"
+        class: "albums"
+        items:
+          # На одном уровне может находиться сколько угодно объектов каких-либо типов.
+          - album(10413482)  # Carpenter Brut - Blood Machines
+          - album(448629)  # The Karaoke Machine Presents - Gwen Stefani
+          - track(24945454)  # Five Finger Death Punch - Wrong Side of Heaven
+
+
+
+
+  # Язык для отображения
+  # Поддерживаемые языки:
+  # - en: Английский (поддерживается интеграцией)
+  # - ru: Русский (поддерживается интеграцией)
+  # - uk: Украинский (поддерживается интеграцией)
+  # - az: Азербайджанский
+  # - be: Белорусский
+  # - he: Иврит
+  # - hy: Армянский
+  # - ka: Грузинский
+  # - kk: Казахский
+  # - tr: Турецкий
+  # - uz: Узбекский
+  #
+  # Языки, не поддерживаемые интеграцией, будут отображать контент на выбранном языке,
+  # но элементы управления будут на английском.

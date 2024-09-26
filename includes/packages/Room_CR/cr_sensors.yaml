@@ -1,0 +1,25 @@
+cr_sensors:
+
+    recorder:
+      include:
+        entities:
+           - binary_sensor.0x00158d0008d93f0d_contact
+           - sensor.0x00158d0008c12daf_temperature
+           - sensor.0x00158d0008c12daf_humidity
+           - binary_sensor.0x00158d0008d90dbd_occupancy
+           - sensor.0x00158d0008d90dbd_illuminance_lux
+           
+    homeassistant:
+      customize:
+   
+        sensor.0x00158d0008c12daf_humidity:
+          friendly_name: Коридор влажность
+          icon: mdi:water-percent
+        sensor.0x00158d0008c12daf_temperature:
+          friendly_name: Коридор температура
+          icon: mdi:temperature-celsius          
+          
+        binary_sensor.0x00158d0008d90dbd_occupancy:
+          friendly_name: Коридор, движение
+        sensor.0x00158d0008d90dbd_illuminance_lux:
+          friendly_name: Коридор, освещенность          

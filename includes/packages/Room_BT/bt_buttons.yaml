@@ -1,0 +1,45 @@
+bt_buttons:
+
+
+    homeassistant:
+      customize:
+
+        sensor.0x00158d0006f85055_action:
+          friendly_name: Ванная кнопка Aqara
+          
+          
+    automation:
+
+      - alias: bt_lenta_aqara
+        id: bt_lenta_aqara
+        description: Ванная - Управление лентой кнопкой Aqara
+        initial_state: true
+        trigger:
+        - platform: state
+          entity_id: sensor.0x00158d0006f85055_action
+          to: 'single'
+          id: "single"
+        - platform: state
+          entity_id: sensor.0x00158d0006f85055_action
+          to: 'double'
+          id: "double"          
+        action:
+          - choose:
+            - conditions:
+                - condition: trigger
+                  id: "single"
+              sequence:
+                - service: switch.toggle
+                  target:
+                    entity_id: switch.0xa4c1381662c81b0e
+
+            - conditions:
+                - condition: trigger
+                  id: "double"
+              sequence:
+                - service: input_boolean.toggle
+                  target:
+                    entity_id: input_boolean.bt_ceiling_light_lock
+
+
+          

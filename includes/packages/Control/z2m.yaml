@@ -1,0 +1,128 @@
+z2m:
+
+    recorder:
+      include:
+        entities:
+           - sensor.count_zigbee_devices
+
+    homeassistant:
+
+      customize:
+        automation.control_z2m_missing_device_last_seen:
+          friendly_name: Контроль - Отключение zigbee устройств, last seen
+          icon: phu:zigbee-dongle
+
+        automation.control_z2m_missing_device_count:
+          friendly_name: Контроль - Отключение zigbee устройств, count
+          icon: phu:zigbee-dongle
+
+        binary_sensor.0xa4c138dc68586d06_contact:
+          friendly_name: Дверь ванная
+        binary_sensor.0xa4c1388bf2574d1e_contact:
+          friendly_name: Дверь балкон
+        binary_sensor.0x00158d0008e1c64f_contact:
+          friendly_name: Окно зал
+          device_class: window
+        binary_sensor.0x00158d0008d93f0d_contact:
+          friendly_name: Дверь вход         
+        binary_sensor.0x00158d0008dfa560_water_leak:
+          friendly_name: Протечка ванная стояк
+        binary_sensor.0xa4c1387c6db81d88_water_leak:
+          friendly_name: Протечка ванная 
+        binary_sensor.0x00158d0008dfa7df_water_leak:
+          friendly_name: Протечка кухня
+        climate.0x54ef441000705554:
+          friendly_name: Термоголовка Aqara зал
+        climate.0x54ef44100070621d:
+          friendly_name: Термоголовка Aqara кухня
+        binary_sensor.0x00158d0008d90dbd_occupancy:
+          friendly_name: Движение коридор
+        binary_sensor.0x00158d0008f1142d_occupancy:
+          friendly_name: Движение кухня
+    
+    template:
+
+
+       - trigger:
+           - platform: time_pattern
+             seconds: "/30"
+         sensor:
+           - name: count_zigbee_devices
+             state: >
+                {{ expand(integration_entities('mqtt') )
+                |selectattr('entity_id','search',"(_contact|_occupancy|_water_leak|_humidity|_action|switch)")
+                |rejectattr('entity_id','search',"(switch_type)")
+                |rejectattr('object_id','search',"(_left|_l2)")
+                | selectattr('attributes.last_seen', 'defined')
+                | map(attribute='entity_id')
+                |list
+                |count
+                }}             
+
+    sensor:
+      - platform: statistics
+        name: "max_count_zigbee_devices"
+        entity_id: sensor.count_zigbee_devices
+        state_characteristic: value_max
+        max_age:
+          hours: 24
+
+    automation:
+    
+      - alias: control_z2m_missing_device_last_seen
+        id: control_z2m_missing_device_last_seen
+        description: Контроль - Отключение zigbee устройств, last seen
+        initial_state: true
+        trigger:
+         - platform: time_pattern
+           hours: /1
+        condition:
+        - condition: template
+          value_template: >
+            {% set ns = namespace(break = false) %} {% for state in
+            (expand(states.sensor, states.binary_sensor, states.light, states.switch)
+            | selectattr('attributes.last_seen', 'defined')) -%}
+              {%- if state.attributes.last_seen and not (state.name | regex_search('updateavailable|linkquality|poweronbehavior|updatestate|BathRoomWaterLeak|KitchenWaterLeak|UndergroundSpaceWaterLeak')) %}
+                {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60 * 60 * 6) ) and ns.break == false %}
+                  {%- set ns.break = true %}
+                  true
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor %}             
+        action:  
+          - service: telegram_bot.send_message
+            data:
+              target: !secret chat_id_group
+              title: ATTENTION!!!
+              message: >-
+                Some Zigbee devices haven't been seen lately... {% for state in
+                (expand(states.sensor, states.binary_sensor, states.light,
+                states.switch) | selectattr('attributes.last_seen', 'defined')) -%}
+                  {%- if state.attributes.last_seen and not (state.name | regex_search('updateavailable|linkquality|poweronbehavior|updatestate|BathRoomWaterLeak|KitchenWaterLeak|UndergroundSpaceWaterLeak')) %}
+                    {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60 * 60 * 6) ) %}
+                      {{ ((as_timestamp(now()) -  as_timestamp(state.attributes.last_seen)) / (3600)) | round(1) }} hours ago for {{ state.name }}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor %}
+        mode: single
+        
+        
+      - alias: control_z2m_missing_device_count
+        id: control_z2m_missing_device_count
+        description: Контроль - Отключение zigbee устройств, count
+        initial_state: false
+        trigger:
+         - platform: template
+           value_template: "{{ (states('sensor.count_zigbee_devices')|int(0) - states('sensor.max_count_zigbee_devices')|int(0)) | abs > 0 }}"
+           for: "00:00:40"
+        condition:
+          - condition: template # Через 2 минуты после старта системы начать действовать
+            value_template:  "{{ (( as_timestamp(now())-as_timestamp(states('sensor.online'))  | int(0) ) / 60 ) > 2 }}"
+        action:  
+          - service: telegram_bot.send_message
+            data:
+              target: !secret chat_id_group
+              title: Внимание!!!
+              message: >-
+                Кто-то из зигби удалился!
+        mode: single

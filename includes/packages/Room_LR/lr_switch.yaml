@@ -1,0 +1,82 @@
+lr_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.0x54ef441000b89402_left # свет в зале лента
+           - switch.0x54ef441000b89402_right # свет в зале лампочки
+           - switch.0xa4c1388af6a76f04_l4 # гирлянда зал
+           - switch.0xa4c1388af6a76f04_l3 # Дуся
+           - switch.0xa4c138184fccfbb1 # розетка удлинителя
+           - sensor.0xa4c138184fccfbb1_meter_day
+           - sensor.0xa4c138184fccfbb1_meter_night
+           - sensor.0xa4c138184fccfbb1_power           
+           - switch.0xa4c138623bc77529 # розетка стабилизатора
+           - sensor.0xa4c138623bc77529_meter_day
+           - sensor.0xa4c138623bc77529_meter_night
+           - sensor.0xa4c138623bc77529_power
+           
+    sensor:
+        
+      - platform: integration
+        name: '0xa4c138184fccfbb1_integration'
+        source: sensor.0xa4c138184fccfbb1_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c138623bc77529_integration'
+        source: sensor.0xa4c138623bc77529_power
+        unit_prefix: k
+        round: 2
+        
+    utility_meter:
+          
+      0xa4c138184fccfbb1_meter:
+        source: sensor.0xa4c138184fccfbb1_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+          
+      0xa4c138623bc77529_meter:
+        source: sensor.0xa4c138623bc77529_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+           
+    homeassistant:
+      customize:
+    
+        switch.0x54ef441000b89402_left:
+          friendly_name: Лента
+          icon: phu:light-strip
+        switch.0x54ef441000b89402_right:
+          friendly_name: Лампочки
+          icon: phu:ceiling-adore-alt-flush
+        switch.0xa4c138623bc77529:
+          friendly_name: Стабилизатор
+          icon: phu:apc-ups-upright
+          
+        sensor.0xa4c138623bc77529_meter_day:
+          friendly_name: Стабилизатор день
+        sensor.0xa4c138623bc77529_meter_night:
+          friendly_name: Стабилизатор ночь          
+
+        switch.0xa4c138184fccfbb1:
+          friendly_name: Удлинитель
+          icon: mdi:power-socket-eu
+          
+        sensor.0xa4c138184fccfbb1_meter_day:
+          friendly_name: Удлинитель день
+        sensor.0xa4c138184fccfbb1_meter_night:
+          friendly_name: Удлинитель ночь
+          
+        switch.0xa4c1388af6a76f04_l4:
+          friendly_name: Фонарики
+          icon: phu:light-string
+        
+#        switch.0xa4c1388af6a76f04_l3:
+#          friendly_name: Длинная
+#          icon: phu:light-strip

@@ -1,0 +1,34 @@
+title: Окружающая среда
+panel: true
+icon: mdi:earth
+cards:
+
+    - type: custom:history-explorer-card
+      header: Климат
+      defaultTimeRange: 4h
+      lineMode: curves
+      decimation: true
+      uimode: dark
+      recordedEntitiesOnly: true
+      labelsVisible: false
+      uiColors:
+        gridlines: rgb(100,100,100)
+      uiLayout:
+        toolbar: top
+        selector: hide
+      graphs:
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008cafd13_mmhg_pressure
+            color: rgb(219,255,251)
+            fill: rgba(219,255,251,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008d90dbd_illuminance_lux 
+            color: rgb(252,255,223)
+            fill: rgba(252,255,223,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008f1142d_illuminance_lux
+            color: rgb(252,255,223)
+            fill: rgba(252,255,223,0.05)

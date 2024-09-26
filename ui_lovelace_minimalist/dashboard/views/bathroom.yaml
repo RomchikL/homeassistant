@@ -1,0 +1,54 @@
+title: "Bathroom"
+path: "bathroom"
+cards:
+  - type: 'custom:button-card'
+    template: chip_back
+    variables:
+      ulm_chip_back_path: home
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Bathroom
+
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0x00158d0008ce3dca_temperature
+        variables:
+          ulm_card_graph_color: "var(--google-blue)"
+          ulm_card_graph_name: Temperature
+          ulm_card_graph_entity: sensor.0x00158d0008ce3dca_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24 
+
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0x00158d0008ce3dca_humidity
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Влажность
+          ulm_card_graph_entity: sensor.0x00158d0008ce3dca_humidity
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24  
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: "Devices"
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000aad4d8_right
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_icon: phu:ceiling-adore-alt-flush
+          ulm_card_light_name: Лампочки
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c1381662c81b0e
+        variables:
+          ulm_card_light_enable_color: true
+          ulm_card_light_name: Лента

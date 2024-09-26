@@ -1,0 +1,18 @@
+#kn_light:
+
+
+#    homeassistant:
+#        customize:
+        
+#            switch.lenta_flower:
+#                friendly_name: Лента для цветов
+#                device_class: light  
+#                icon: mdi:flower
+                
+#            switch.light_in_kn_lamps:
+#                friendly_name: Лампочки
+#                icon: phu:bulb-group-ceiling-round
+                
+#            switch.light_in_kn_lenta:
+#                friendly_name: Лента
+#                icon: phu:light-strip

@@ -1,0 +1,11 @@
+kiosk_mode:
+#  kiosk: true
+  hide_sidebar: true
+  hide_search: true
+  hide_assistant: true
+
+title: Panel
+views:
+  - !include UI/lovelace/301_panel_general.yaml
+  - !include UI/lovelace/302_panel_lights.yaml
+  - !include UI/lovelace/303_panel_media.yaml

@@ -1,0 +1,31 @@
+battery_system:
+
+    homeassistant:
+
+      customize:
+        automation.control_battery_system:
+          friendly_name: Контроль - системная батарея
+          icon: phu:battery-low
+
+    automation:
+    
+      - alias: control_battery_system
+        id: control_battery_system
+        description: Контроль - системная батарея
+        initial_state: true
+        trigger:
+         - platform: template
+           value_template: "{{ (states('sensor.battery')|int) < 90 }}"
+#           for: "00:00:65" # Сенсор обновялется раз в 60 секунд
+        condition:
+          - condition: template # only every 10 minutes at most
+            value_template:  "{{ (( as_timestamp(now()) - as_timestamp(state_attr('automation.control_battery_system', 'last_triggered')) | int(0) ) / 60 ) > 3 }}"
+        action: 
+          - service: telegram_bot.send_message
+            data_template:
+              target:
+                - !secret chat_id_group_alarm
+              message: | 
+                Внимание!
+                Уровень заряда системной батареи - {{ states('sensor.battery') }}%
+                Статус розетки сервера - {{ states('switch.0xa4c138f1330afac4') }}

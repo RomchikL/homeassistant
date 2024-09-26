@@ -1,0 +1,159 @@
+title: "Living room"
+path: "living_room"
+cards:
+  - type: 'custom:button-card'
+    template: chip_back
+    variables:
+      ulm_chip_back_path: home
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Зал
+
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0x00158d0008ce3df9_temperature
+        variables:
+          ulm_card_graph_color: "var(--google-blue)"
+          ulm_card_graph_name: Temperature
+          ulm_card_graph_entity: sensor.0x00158d0008ce3df9_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24 
+
+      - type: 'custom:button-card'
+        template: card_graph
+        entity: sensor.0x00158d0008ce3df9_humidity
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Влажность
+          ulm_card_graph_entity: sensor.0x00158d0008ce3df9_humidity
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24  
+  
+  - type: 'custom:button-card'
+    template: card_title
+    label: "Devices"
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000b89402_left
+        variables:
+          ulm_card_light_enable_color: true
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0x54ef441000b89402_right
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.lamp_1s
+        variables:
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_name: Лампа
+
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.0xa4c1388af6a76f04_l4
+        variables:
+          ulm_card_light_enable_color: true
+
+  - type: 'custom:button-card'
+    template: card_power_outlet
+    entity: humidifier.deerma_jsq_befb_humidifier
+    variables:
+      ulm_card_power_outlet_icon: phu:homepod
+
+
+  - type: "custom:button-card"
+    template: card_media_player
+    entity: media_player.lr_yandex_station_max
+    variables:
+      ulm_card_media_player_name : Станция Max
+      ulm_card_media_player_enable_art: true
+      ulm_card_media_player_enable_controls: true
+      ulm_card_media_player_more_info: true
+      ulm_card_media_player_power_button: true
+
+  - type: "custom:button-card"
+    template: card_media_player
+    entity: media_player.mpd
+    variables:
+      ulm_card_media_player_name : Галя
+
+
+  - type: horizontal-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_media_player
+      entity: media_player.samsung_q60ba_55_tv
+      variables:
+        ulm_card_media_player_enable_art: true
+        ulm_card_media_player_name : Телевизор
+        ulm_card_media_player_enable_popup: true
+#        ulm_card_media_player_enable_volume_slider: true
+#        ulm_card_media_player_power_button: false
+
+    - type: "custom:button-card"
+      template: card_media_player
+      entity: media_player.android_tv_192_168_1_150
+      variables:
+        ulm_card_media_player_name : Приставка
+
+  - type: "custom:button-card"
+    template: card_thermostat
+    entity: climate.0x54ef441000705554
+    variables:
+      ulm_card_thermostat_enable_collapse: true
+      ulm_card_thermostat_enable_controls: true
+      ulm_card_thermostat_enable_hvac_modes: true
+      ulm_card_thermostat_enable_popup: true
+
+  - type: 'custom:button-card'
+    template: card_title
+    label: "Удлинитель"
+
+  - type: horizontal-stack
+    cards:
+
+      - type: 'custom:button-card'
+        template: chip_mdi_icon_only
+        variables:
+          ulm_chip_mdi_icon_only_entity: switch.0xa4c1388af6a76f04_l1
+          ulm_chip_mdi_icon_only_icon: mdi:power-socket-eu
+
+      - type: 'custom:button-card'
+        template: chip_mdi_icon_only
+        variables:
+          ulm_chip_mdi_icon_only_entity: switch.0xa4c1388af6a76f04_l1
+          ulm_chip_mdi_icon_only_icon: mdi:power-socket-eu  
+
+      - type: 'custom:button-card'
+        template: chip_mdi_icon_only
+        variables:
+          ulm_chip_mdi_icon_only_entity: switch.0xa4c1388af6a76f04_l1
+          ulm_chip_mdi_icon_only_icon: mdi:power-socket-eu
+
+      - type: 'custom:button-card'
+        template: chip_mdi_icon_only
+        variables:
+          ulm_chip_mdi_icon_only_entity: switch.0xa4c1388af6a76f04_l1
+          ulm_chip_mdi_icon_only_icon: mdi:power-socket-eu  
+
+      - type: 'custom:button-card'
+        template: chip_mdi_icon_only
+        variables:
+          ulm_chip_mdi_icon_only_entity: switch.0xa4c1388af6a76f04_l1
+          ulm_chip_mdi_icon_only_icon: mdi:power-socket-eu
+
+
+

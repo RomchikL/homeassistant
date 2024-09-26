@@ -1,0 +1,138 @@
+title: "Home"
+path: "home"
+cards:
+  - type: "custom:button-card"
+    template: "card_esh_welcome"
+    triggers_update: "input_boolean.minimalist_dropdown"
+    variables:
+      ulm_card_esh_welcome_collapse: input_boolean.minimalist_dropdown
+      ulm_weather: "weather.yandex_weather"
+      entity_1:
+        nav: "house"
+        icon: "mdi:home"
+        name: "House"
+        color: "blue"
+      entity_2:
+        nav: "lights"
+        icon: "mdi:lightbulb"
+        name: "Lights"
+        color: "yellow"
+      entity_3:
+        nav: "security"
+        icon: "mdi:shield"
+        name: Secure
+        color: "green"
+      entity_4:
+        nav: "lab"
+        icon: "mdi:nas"
+        name: Lab
+        color: "purple"
+      entity_5:
+        nav: "network"
+        icon: "mdi:flask"
+        name: Lab
+        color: "red"
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Hotkeys
+
+  - type: horizontal-stack
+    cards:
+    - type: 'custom:button-card'
+      template: card_script
+      variables:
+        ulm_card_script_title: Спать
+        ulm_card_script_icon: 'mdi:bed-clock'
+      tap_action:
+        action: call-service
+        service: automation.trigger
+        service_data:
+          entity_id: automation.alice_sleep_all
+
+    - type: 'custom:button-card'
+      template: card_script
+      variables:
+        ulm_card_script_title: Уходим
+        ulm_card_script_icon: 'mdi:exit-run'
+      tap_action:
+        action: call-service
+        service: automation.trigger
+        service_data:
+          entity_id: automation.alice_go_away
+
+    - type: 'custom:button-card'
+      template: card_script
+      variables:
+        ulm_card_script_title: SOS
+        ulm_card_script_icon: 'mdi:baby-face'
+      tap_action:
+        action: call-service
+        service: automation.trigger
+        service_data:
+          entity_id: automation.telegram_sos_regina
+
+
+  - type: 'custom:button-card'
+    template: card_title
+    name: Rooms
+
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Зал
+        entity: switch.0x54ef441000b89402_right
+        icon: phu:rooms-living
+        tap_action:
+          action: navigate
+          navigation_path: 'living_room'
+        variables:
+          ulm_custom_card_esh_room_light_entity: switch.0x54ef441000b89402_right
+        label: '[[[ return states["sensor.0x00158d0008ce3df9_temperature"].state + "°C" ]]]'
+
+      - type: 'custom:button-card'
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Кухня
+        entity: switch.0x54ef441000aad4d8_left
+        icon: mdi:knife
+        tap_action:
+          action: navigate
+          navigation_path: 'kitchen'
+        variables:
+          ulm_custom_card_esh_room_light_entity: switch.0x54ef441000aad4d8_left
+        label: '[[[ return states["sensor.0xa4c1383117449f5c_temperature"].state + "°C" ]]]'
+
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Bathroom
+        entity: switch.0x54ef441000aad4d8_right
+        icon: mdi:bathtub
+        tap_action:
+          action: navigate
+          navigation_path: 'bathroom'
+        variables:
+          ulm_custom_card_esh_room_light_entity: switch.0x54ef441000aad4d8_right
+        label: '[[[ return states["sensor.0x00158d0008ce3dca_temperature"].state + "°C" ]]]'
+
+      - type: 'custom:button-card'
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Corridor
+        entity: switch.0x54ef4410009f9505
+        icon: phu:rooms-other
+        tap_action:
+          action: navigate
+          navigation_path: 'corridor'
+        variables:
+          ulm_custom_card_esh_room_light_entity: switch.0x54ef4410009f9505
+        label: '[[[ return states["sensor.0x00158d0008c12daf_temperature"].state + "°C" ]]]'

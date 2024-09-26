@@ -1,0 +1,52 @@
+title: Климат
+panel: true
+icon: mdi:thermometer-water
+cards:
+
+    - type: custom:history-explorer-card
+      header: Климат
+      defaultTimeRange: 4h
+      lineMode: curves
+      decimation: true
+      uimode: dark
+      recordedEntitiesOnly: true
+      labelsVisible: false
+      uiColors:
+        gridlines: rgb(100,100,100)
+      uiLayout:
+        toolbar: top
+        selector: hide
+      graphs:
+      - type: line
+        # title: Зал
+        entities:
+          - entity: sensor.0x00158d0008ce3df9_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008ce3df9_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008cafd13_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008cafd13_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008ce3dca_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008ce3dca_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)        
+      - type: line
+        entities:
+          - entity: sensor.0x00158d0008c12daf_temperature
+            color: rgb(255,239,97)
+            fill: rgba(255,239,97,0.05)
+          - entity: sensor.0x00158d0008c12daf_humidity
+            color: rgb(0,250,255)
+            fill: rgba(0,250,255,0.05)  

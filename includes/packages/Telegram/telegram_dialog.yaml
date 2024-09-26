@@ -1,0 +1,196 @@
+telegram_dialog:
+
+    automation:
+
+    ## Стартовая автоматизация для запуска меню
+      - id: Вызов меню управления телеграм
+        alias: telegram_menu_start
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+        condition:
+          - condition: template
+            value_template: >-
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["куку", "Куку", "Rere", "rere", "Привет", "привет", "Ghbdtn", "ghbdtn"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/go"] }} 
+              {%- endif -%}
+        action:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: >
+                       {{ trigger.event.data.user_id == (states('sensor.admin_1_tg_id')|int) or trigger.event.data.user_id == (states('sensor.admin_2_tg_id')|int) }}
+                sequence:
+                  - service: telegram_bot.send_message
+                    data:
+                      target: "{{ trigger.event.data.user_id }}"
+                      message: |
+                        {{'\U0001F527'}} *Управление умным домом*
+                        * *
+                        {{'\U0001F4BB'}} *CPU* - {{ states('sensor.processor_use') }} %, {{'\U0001F321'}} - {{ states('sensor.processor_temperature') }} °C
+                        {{'\U0001F6CE'}} - {{ states('alarm_control_panel.home_alarm')|replace('_', ' ') }}
+                      inline_keyboard:
+                      - '{{''\U00002328''}} Телеметрия:/telemetry'
+                      - '{{''\U0001F3E2''}} Гостиная:/lr_control , {{''\U0001F374''}} Кухня:/kn_control'
+                      - '{{''\U0001F6B6''}} Коридор:/cr_control, {{''\U0001F6C0''}} Санузел:/bt_control'
+                      - '{{''\U0001F9EA''}} Быстрые команды:/hotkeys, {{''\U0001F4A1''}} Гирлянды:/gl_control'
+                      - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
+#              - conditions:
+#                  - condition: template
+#                    value_template: >
+#                       {{ trigger.event.data.user_id == (states('sensor.user_tg_id')|int) }}
+#                sequence:
+#                  - service: telegram_bot.send_message
+#                    data:
+#                      target: "{{ trigger.event.data.user_id }}"
+#                      message: &msg_locdd |
+#                        {{'\U0001F6B9'}} Управление :
+
+    ## SOS - Регина проснулась
+      - id: SOS - Регина проснулась
+        alias: telegram_SOS_Regina
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+        condition:
+          - condition: template
+            value_template: >-
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["sos", "Sos", "сос", "Сос"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/sos"] }} 
+              {%- endif -%}
+        action:
+          - service: media_player.play_media
+            entity_id: media_player.kn_yandex_station_mini  # замените на вашу колонку
+            data:
+              media_content_id: <speaker is_whisper="false">Сос, Регина проснулась. #<speaker is_whisper="false">Сос, Регина проснулась.
+              media_content_type: text #:Умный дом
+              extra:
+                volume_level: 0.3
+          - service: telegram_bot.send_message
+            data:
+              target: !secret chat_id_kitka
+              message: |
+                *Регина проснулась!*
+          - delay: 00:00:05
+          - service: telegram_bot.delete_message
+            data_template:
+              message_id: 'last'
+              chat_id: !secret chat_id_kitka
+              
+    ## Всем спать - все выключить
+      - id: Телеграм - всем спать, диалог
+        alias: telegram_sleep_all_dialog
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+#            event_data:
+#              command: '/sleep_all'
+        condition:
+          - condition: template
+            value_template: >-
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["Всем спать", "всем спать"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/sleep_all"] }} 
+              {%- endif -%}
+        action:
+          - service: automation.trigger
+            entity_id:
+              - automation.alice_sleep_all
+
+    ##  Таймер на выключение Алисы с параметром
+      - id: Телеграм - таймер выключения Алисы
+        alias: telegram_Ya.Max_timer_off
+        initial_state: true
+        trigger:
+#          - platform: event
+#            event_type: telegram_text
+          - platform: event
+            event_type: telegram_command
+            event_data:
+              command: '/Alice'
+        condition:
+          - condition: template
+            value_template: >-
+              {%- if trigger.event.event_type == 'telegram_text' -%}
+                {{ trigger.event.data.text in ["fffffffff", "ffffffff"] }}
+              {%- else -%}
+                {{ trigger.event.data.command in ["/Alice"] }} 
+              {%- endif -%}
+        action:
+          - service: media_player.volume_mute # mute
+            target:
+              entity_id:
+                - media_player.lr_yandex_station_max
+            data:
+              is_volume_muted: "{{ not state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+          - service: media_player.play_media
+            entity_id: media_player.lr_yandex_station_max
+            data:
+              media_content_id: "Выключись через {{ trigger.event.data['args']|join(' ') }} минут"
+              media_content_type: command
+          - delay: "00:00:05"
+          - service: media_player.volume_set
+            data:
+              entity_id:
+                - media_player.lr_yandex_station_max
+              volume_level: 0.1
+#          - service: media_player.volume_mute #unmute
+#            target:
+#              entity_id:
+#                - media_player.lr_yandex_station_max
+#            data:
+#              is_volume_muted: "{{ state_attr('media_player.lr_yandex_station_max', 'is_volume_muted') }}"
+
+
+    ## Тест для запуска через кнопку --- Кнопка слишком большая, размер не меняется, неудобно
+#      - id: Вызов меню управления телеграм через кнопку
+#        alias: telegram_menu_start_button
+#        initial_state: true
+#        trigger:
+#          - platform: event
+#            event_type: telegram_command
+#            event_data:
+#              command: "/start"
+#        action:
+#          - service: telegram_bot.send_message
+#            data:
+#              target: "{{ trigger.event.data.chat_id }}"
+#              message: "Новый старт с кнопкой"
+#              keyboard:  #[] для удаления кнопки
+#                - '/go'
+
+#      - id: Test
+#        alias: 'Старт управления умным домом через кнопку'
+#        trigger:
+#          - platform: event
+#            event_type: telegram_command
+#            event_data:
+#              command: "/go"
+#        action:
+#          - service: telegram_bot.send_message
+#            data:
+#              target: "{{ trigger.event.data.chat_id }}"
+#              message: |
+#                {{'\U0001F527'}} *Управление умным домом*
+#                * *
+#                {{'\U0001F4BB'}} *CPU* - {{ states('sensor.processor_use') }} %, {{'\U0001F321'}} - {{ states('sensor.processor_temperature') }} °C
+#              inline_keyboard: 
+#              - '{{''\U00002328''}} Телеметрия:/telemetry'
+#              - '{{''\U0001F3E2''}} Гостиная:/lr_control , {{''\U0001F374''}} Кухня:/kn_control'
+#              - '{{''\U0001F6B6''}} Коридор:/cr_control'
+#              - '{{''\U0001F6AB''}} Убрать меню:/menu_hide'
+              

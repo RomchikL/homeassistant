@@ -1,0 +1,94 @@
+sensors:
+
+    recorder:
+      include:
+        entities:
+           - binary_sensor.roma_home
+           - binary_sensor.kitka_home
+           
+    homeassistant:
+      customize:
+   
+
+        binary_sensor.roma_home:
+          friendly_name: Рома
+          icon: mdi:face-man
+        binary_sensor.kitka_home:
+          friendly_name: Кристина
+          icon: mdi:face-woman
+        binary_sensor.lan_home:
+          friendly_name: Папа
+          icon: mdi:face-man
+        binary_sensor.zukhra_home:
+          friendly_name: Мама
+          icon: mdi:face-woman
+          
+        automation.control_we_home_restore:
+          friendly_name: Сброс датчика -мы дома-
+          icon: mdi:home-account
+
+    input_boolean:
+    
+      we_are_home:
+        name: Остались дома
+        initial: true
+        icon: mdi:home-account           
+
+    template:
+     
+      - binary_sensor:
+
+    # Трекер Ромы по esp и wi fi
+          - name: roma_home
+            state: >
+              {{ is_state('device_tracker.phone_roma', 'home') or is_state('binary_sensor.cr_ble_tracker_mi_band_2', 'on') or is_state('binary_sensor.bt_ble_tracker_mi_band_2', 'on') 
+              }}
+            delay_off: 00:03:00
+            device_class: presence
+            icon: mdi:home-account
+            
+    # Трекер Кристины по esp и wi fi
+          - name: kitka_home
+            state: >
+              {{ is_state('device_tracker.phone_kitka', 'home') or is_state('binary_sensor.cr_ble_tracker_mi_band_5', 'on') or is_state('binary_sensor.bt_ble_tracker_mi_band_5', 'on')               
+              }}
+            delay_off: 00:03:00
+            device_class: presence
+            icon: mdi:home-account
+
+            # or is_state('binary_sensor.bt_ble_tracker_redmond_skytracker', 'on') or is_state('binary_sensor.cr_ble_tracker_redmond_skytracker', 'on')
+
+    # Трекер Папы по wi fi
+          - name: lan_home
+            state: >
+              {{ is_state('device_tracker.realme_8_alex', 'home')               
+              }}
+            delay_off: 00:03:00
+            device_class: presence
+            icon: mdi:home-account
+
+    # Трекер Мамы по wi fi
+          - name: zukhra_home
+            state: >
+              {{ is_state('device_tracker.m2004j19c_redmi9', 'home')               
+              }}
+            delay_off: 00:03:00
+            device_class: presence
+            icon: mdi:home-account
+            
+    automation:
+    
+      - alias: control_we_home_restore
+        id: control_we_home_restore
+        description: Сброс датчика -мы дома-
+        initial_state: true
+        trigger:
+         - platform: time
+           at: "03:00:00"
+        condition:
+          - condition: template
+            value_template:  "{{ is_state('input_boolean.we_are_home', 'off') }}"
+        action:
+        - service: input_boolean.turn_on
+          data:
+            entity_id: input_boolean.we_are_home

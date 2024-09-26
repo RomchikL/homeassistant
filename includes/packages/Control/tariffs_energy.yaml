@@ -1,0 +1,108 @@
+tariffs_energy:
+
+    homeassistant:
+
+      customize:
+        automation.ha_energy_set_tariff:
+          friendly_name: Дом - Выбрать тариф
+          icon: mdi:reload
+
+        automation.ha_tariff_arm:
+          friendly_name: Дом - Переключение тарифа
+          icon: mdi:reload
+
+    input_button:
+
+      select_tariff:
+        name: Выбор тарифа
+
+    group:
+      selected_tariffs:
+        name: Все сущности с тарифами
+        entities:
+          - select.0xa4c138323f769290_meter #розетка елочки
+          - select.0xa4c138e5e488903a_meter #розетка холодос
+          - select.0xa4c138f1330afac4_meter #розетка сервера
+          - select.0xa4c1387beab4cd4f_meter #розетка стиралка
+          - select.0xa4c13873bd4330eb_meter #розетка чайника
+          - select.0xa4c138184fccfbb1_meter #розетка удлинитель
+          - select.0xa4c138623bc77529_meter #розетка стабилизатора
+          - select.0x187a3efffe355d1a_meter #вход фаза
+          - select.0xa4c1389395f3f656_meter #розетка Микки
+          
+
+
+    automation:
+
+      - alias: ha_energy_set_tariff
+        id: ha_energy_set_tariff
+        description: Дом - Выбрать тариф
+        initial_state: true
+        trigger:
+        - platform: time
+          at: "07:10:00" 
+          variables:
+            tariff: "day"
+        - platform: time
+          at: "23:10:00" 
+          variables:
+            tariff: "night"  
+        action:
+        - service: select.select_option
+          target:
+            entity_id: group.selected_tariffs
+          data:
+            option: "{{ tariff }}"
+
+          
+      - alias: ha_tariff_arm
+        id: ha_tariff_arm
+        description: Переключение тарифа
+        initial_state: true
+        trigger:
+    ## Виртуальная кнопка
+        - platform: state
+          entity_id: input_button.select_tariff
+        condition:
+          alias: "Если неверный тариф"
+          or:
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: select.0x187a3efffe355d1a_meter
+                  state: "day"
+                - condition: time
+                  after: '23:10'
+                  before: '07:10'
+ #             variables:
+ #               tariff: "night"
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: select.0x187a3efffe355d1a_meter
+                  state: "night"
+                - condition: time
+                  after: '07:10'
+                  before: '23:10'
+#              variables:
+#                tariff: "day"
+        action:
+        - service: select.select_next
+          target:
+            entity_id: group.selected_tariffs
+#          data:
+#            option: "{{ tariff }}"
+
+
+
+    script:     
+    
+    # Ручное переключение тарифа
+      ha_energy_select_next_tariff:
+        alias: ha_energy_select_next_tariff
+        icon: mdi:lightning-bolt-outline
+        sequence:
+         - service: select.select_next
+           target:
+              entity_id: group.selected_tariffs
+

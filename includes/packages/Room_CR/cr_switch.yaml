@@ -1,0 +1,95 @@
+cr_switch:
+
+    recorder:
+      include:
+        entities:
+           - switch.0xa4c138f1330afac4 # розетка сервер
+           - sensor.0xa4c138f1330afac4_meter_day
+           - sensor.0xa4c138f1330afac4_meter_night
+           - sensor.0xa4c138f1330afac4_power
+           - switch.0x54ef4410009f9505 # свет коридор
+           - switch.0xa4c138aca076db2a # розетка планшета
+           - sensor.0xa4c138aca076db2a_power
+
+           - sensor.0x187a3efffe355d1a_meter_day # Ввод фаза 
+           - sensor.0x187a3efffe355d1a_meter_night
+           - sensor.0x187a3efffe355d1a_power
+           - sensor.0x187a3efffe355d1a_meter_night_cost
+           - sensor.0x187a3efffe355d1a_meter_day_cost
+
+    homeassistant:
+      customize:
+                    
+        switch.0xa4c138f1330afac4:
+          friendly_name: Сервер
+          icon: phu:imac
+          
+        sensor.0xa4c138f1330afac4_meter_night:
+          friendly_name: Сервер ночь
+                
+        sensor.0xa4c138f1330afac4_meter_day:
+          friendly_name: Сервер день
+
+        sensor.0x187a3efffe355d1a_meter_night:
+          friendly_name: Вход фаза ночь
+          unit_of_measurement: kWh
+          device_class: energy
+          state_class: total
+                
+        sensor.0x187a3efffe355d1a_meter_day:
+          friendly_name: Вход фаза день
+          unit_of_measurement: kWh
+          device_class: energy
+          state_class: total
+          
+#        automation.bt_ceiling_light_on_motion:
+#          friendly_name: Ванная - Включениче света по датчику движения
+#          icon: mdi:ceiling-light
+
+
+    sensor:
+
+      - platform: integration
+        name: '0xa4c138f1330afac4_integration'
+        source: sensor.0xa4c138f1330afac4_power
+        unit_prefix: k
+        round: 2
+        
+      - platform: integration
+        name: '0xa4c138aca076db2a_integration'
+        source: sensor.0xa4c138aca076db2a_power
+        unit_prefix: k
+        round: 2
+
+        
+    utility_meter:
+
+      0xa4c138aca076db2a_meter:
+        source: sensor.0xa4c138aca076db2a_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night
+#        offset:
+#          days: 20
+
+      0xa4c138f1330afac4_meter:
+        source: sensor.0xa4c138f1330afac4_integration
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+ #       offset:
+  #        days: 20
+
+      0x187a3efffe355d1a_meter:
+        source: sensor.0x187a3efffe355d1a_energy
+        unique_id: 0x187a3efffe355d1a
+        cycle: monthly 
+        tariffs:
+          - day
+          - night 
+   #     offset:
+    #      days: 20
+
+          
