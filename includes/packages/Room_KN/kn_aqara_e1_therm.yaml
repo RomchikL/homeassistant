@@ -40,11 +40,11 @@ kn_aqara_e1_therm:
       - alias: kn_aqara_e1_temp_schedule
         id: kn_aqara_e1_temp_schedule
         description: Умное расписание Aqara E1
-        initial_state: false
+        initial_state: ture
         trigger:
          - platform: time
-           at: "06:0:00"
-           id: "06"
+           at: "05:30:00"
+           id: "0530"
          - platform: time
            at: "07:0:00"
            id: "07"
@@ -52,8 +52,8 @@ kn_aqara_e1_therm:
            at: "06:30:00"
            id: "0630"
          - platform: time
-           at: "17:00:00"
-           id: "17"
+           at: "17:30:00"
+           id: "1730"
          - platform: time
            at: "18:00:00"
            id: "18"
@@ -85,7 +85,7 @@ kn_aqara_e1_therm:
               - choose:
                 - conditions:
                     - condition: trigger
-                      id: "06"
+                      id: "0530"
                   sequence:
                     - service: climate.set_temperature
                       data:
@@ -101,12 +101,12 @@ kn_aqara_e1_therm:
                         temperature: 18
                 - conditions:
                     - condition: trigger
-                      id: "18"
+                      id: "1730"
                   sequence:
                     - service: climate.set_temperature
                       data:
                         entity_id: climate.0x54ef44100070621d
-                        temperature: 23
+                        temperature: 23.5
                 - conditions:
                     - condition: trigger
                       id: "19"
@@ -119,7 +119,7 @@ kn_aqara_e1_therm:
       - alias: kn_aqara_e1_window_control
         id: kn_aqara_e1_window_control
         description: Aqara E1 - окно
-        initial_state: false
+        initial_state: true
         trigger:
          - platform: state
            entity_id: binary_sensor.0xa4c1388bf2574d1e_contact

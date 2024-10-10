@@ -46,14 +46,14 @@ aqara_e1_therm:
       - alias: lr_aqara_e1_temp_schedule
         id: lr_aqara_e1_temp_schedule
         description: Умное расписание Aqara E1
-        initial_state: false
+        initial_state: true
         trigger:
          - platform: time
            at: "06:30:00"
            id: "0630"
          - platform: time
-           at: "06:00:00"
-           id: "06"
+           at: "05:30:00"
+           id: "0530"
          - platform: time
            at: "07:00:00"
            id: "07"
@@ -61,11 +61,11 @@ aqara_e1_therm:
            at: "08:30:00"
            id: "0830"
          - platform: time
-           at: "17:00:00"
-           id: "17"
-         - platform: time
            at: "18:00:00"
            id: "18"
+         - platform: time
+           at: "17:30:00"
+           id: "1730"
          - platform: time
            at: "19:00:00"
            id: "19"
@@ -94,7 +94,7 @@ aqara_e1_therm:
               - choose:
                 - conditions:
                     - condition: trigger
-                      id: "06"
+                      id: "0530"
                   sequence:
                     - service: climate.set_temperature
                       data:
@@ -110,12 +110,12 @@ aqara_e1_therm:
                         temperature: 18
                 - conditions:
                     - condition: trigger
-                      id: "18"
+                      id: "1730"
                   sequence:
                     - service: climate.set_temperature
                       data:
                         entity_id: climate.0x54ef441000705554
-                        temperature: 23
+                        temperature: 23.5
                 - conditions:
                     - condition: trigger
                       id: "19"
@@ -129,7 +129,7 @@ aqara_e1_therm:
       - alias: lr_aqara_e1_window_control
         id: lr_aqara_e1_window_control
         description: Aqara E1 - окно
-        initial_state: false
+        initial_state: true
         trigger:
          - platform: state
            entity_id: binary_sensor.0x00158d0008e1c64f_contact
