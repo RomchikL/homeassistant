@@ -1121,7 +1121,7 @@ cards:
                 - domain: binary_sensor
                   state: 'on'
                   attributes:
-                    device_class: 'smoke'
+                    device_class: 'problem'
                   options:
                       secondary_info: last-changed
                       state_color: true

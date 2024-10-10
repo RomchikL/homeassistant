@@ -19,7 +19,21 @@ aqara_e1_therm:
         automation.lr_aqara_e1_window_control:
           friendly_name: Aqara E1 - окно
           icon: phu:aqara-thermo-e1
-          
+
+    template:
+     
+      - binary_sensor:
+
+    # Датчик внешнего сенсора температуры
+          - name: lr_aqara_e1_ext_temp
+            friendly_name: Внешний датчик температуры Aqara зал
+            state: >
+              {{ is_state_attr('climate.0x54ef441000705554', 'sensor', 'internal')
+              }}
+            delay_off: 00:01:00
+            device_class: problem
+            icon: mdi:home-account
+                      
 
              
         

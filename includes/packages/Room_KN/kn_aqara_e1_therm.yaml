@@ -19,7 +19,20 @@ kn_aqara_e1_therm:
         automation.kn_aqara_e1_window_control:
           friendly_name: Aqara E1 - окно
           icon: phu:aqara-thermo-e1
-             
+
+    template:
+     
+      - binary_sensor:
+
+    # Датчик внешнего сенсора температуры
+          - name: kn_aqara_e1_ext_temp
+            friendly_name: Внешний датчик температуры Aqara кухня
+            state: >
+              {{ is_state_attr('climate.0x54ef44100070621d', 'sensor', 'internal')
+              }}
+            delay_off: 00:01:00
+            device_class: problem
+            icon: mdi:home-account             
         
     automation:
     
@@ -40,7 +53,7 @@ kn_aqara_e1_therm:
       - alias: kn_aqara_e1_temp_schedule
         id: kn_aqara_e1_temp_schedule
         description: Умное расписание Aqara E1
-        initial_state: ture
+        initial_state: true
         trigger:
          - platform: time
            at: "05:30:00"

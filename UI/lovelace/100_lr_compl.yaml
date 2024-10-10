@@ -490,8 +490,6 @@ cards:
           primary_info: name
           secondary_info: state
           name: Батарея
-          tap_action:
-            action: more-info       
             
 ############################ Колонка 3 ############################
 
