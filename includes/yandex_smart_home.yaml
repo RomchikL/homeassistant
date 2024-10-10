@@ -169,7 +169,7 @@ entity_config:
     
   switch.0xa4c1388af6a76f04_l3:
     type: devices.types.socket
-    name: Вентилятор
+    name: Дуся
     room: Зал
 
   sensor.0x00158d0008ce3df9_temperature:
