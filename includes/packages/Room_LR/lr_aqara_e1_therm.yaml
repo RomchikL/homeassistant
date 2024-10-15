@@ -26,13 +26,13 @@ aqara_e1_therm:
 
     # Датчик внешнего сенсора температуры
           - name: lr_aqara_e1_ext_temp
-            friendly_name: Внешний датчик температуры Aqara зал
+#            friendly_name: Внешний датчик температуры Aqara зал
             state: >
               {{ is_state_attr('climate.0x54ef441000705554', 'sensor', 'internal')
               }}
             delay_off: 00:01:00
             device_class: problem
-            icon: mdi:home-account
+            icon: mdi:thermometer-alert
                       
 
              
