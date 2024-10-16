@@ -218,7 +218,7 @@ scene: !include includes/scenes.yaml
 #automation: !include includes/automations.yaml
 yandex_smart_home: !include includes/yandex_smart_home.yaml
 yandex_station_intents: !include includes/yandex_station_intents.yaml
-yandex_music_browser: !include includes/yandex_music_browser.yaml
+#yandex_music_browser: !include includes/yandex_music_browser.yaml
 automation: !include includes/automations.yaml
 
 #Вынос в папки
