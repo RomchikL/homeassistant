@@ -6,6 +6,7 @@ deps/
 image/
 tts/
 www/
+templates/
 .shopping_list.json
 home-assistant_v2.db
 home-assistant.log
