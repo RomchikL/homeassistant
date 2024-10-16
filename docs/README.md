@@ -1,5 +1,5 @@
 <div align="left">
-    <a href="https://github.com/homeassistant/commits/main"><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/RomchikL/homeassistant
+    <a href="https://github.com/RomchikL/homeassistant/commits/main"><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/RomchikL/homeassistant
 "></a>
 </div>
 
