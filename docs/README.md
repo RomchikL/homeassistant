@@ -1,3 +1,8 @@
+<div align="left">
+    <a href="https://github.com/homeassistant/commits/main"><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/RomchikL/homeassistant
+"></a>
+</div>
+
 # Welcome !
 
 This is my Home Assistant installation.
@@ -12,7 +17,14 @@ Number of sensors | 284
 
 ## My installed extensions:
 
+<details>
+  <summary>Add-ons</summary>
+
 ### Add-ons
+</details>
+
+<details>
+  <summary>Custom integrations</summary>
 
 ### Custom integrations
 - [Browser Mod](https://github.com/thomasloven/hass-browser_mod)
@@ -32,6 +44,10 @@ Number of sensors | 284
 - [Yandex.Station](https://github.com/AlexxIT/YandexStation)
 - [Yandex.Station Intents](https://github.com/dext0r/ha-yandex-station-intents)
 - [Yeelight V2](https://github.com/ykmn/hacs-yeelight_v2)
+</details>
+
+<details>
+  <summary>Lovelace plugins</summary>
 
 ### Lovelace plugins
 - [Apexcharts Card](https://github.com/RomRider/apexcharts-card)
@@ -61,9 +77,14 @@ Number of sensors | 284
 - [Timer Bar Card](https://github.com/rianadon/timer-bar-card)
 - [Weather Radar Card](https://github.com/Makin-Things/weather-radar-card)
 - [Yandex Icons](https://github.com/iswitch/ha-yandex-icons)
+</details>
 
-### Themes
 
+## My dashboard
+
+<a href="#" onclick="openPopup('screenshots/1.png', 'Hall'); return false;"><img src="screenshots/1.png" alt="Hall"></a>
+<a href="#" onclick="openPopup('screenshots/2.png', 'Electricity'); return false;"><img src="screenshots/2.png" alt="Electricity"></a>
+<a href="#" onclick="openPopup('screenshots/3.png', 'System Info Image'); return false;"><img src="screenshots/3.png" alt="System Info Image"></a>
 
 ***
 
