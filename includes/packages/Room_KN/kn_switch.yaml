@@ -22,7 +22,7 @@ kn_switch:
            - switch.0xa4c138850066f7cd_left
            - switch.kn_backlight_lenta #0xa4c1384b2bfeb644_l1 Лента гарнитур
            - switch.kn_backlight_lamps #0xa4c1384b2bfeb644_l2 Лампочки гарнитур
-           - switch.0xa4c1389395f3f656 # рознтка Микки
+           - switch.0xa4c1389395f3f656 # рознтка Микки (диспоузер)
            
 
     sensor:
@@ -143,12 +143,12 @@ kn_switch:
                 friendly_name: СВЧ день
 
             switch.0xa4c1389395f3f656:
-                friendly_name: Микки
+                friendly_name: Диспоузер
                 icon: mdi:speaker                
             sensor.0xa4c1389395f3f656_meter_night:
-                friendly_name: Микки ночь               
+                friendly_name: Диспоузер ночь               
             sensor.0xa4c1389395f3f656_meter_day:
-                friendly_name: Микки день
+                friendly_name: Диспоузер день
 
             automation.kn_socket_refrigerator_control:
                 friendly_name: Кухня - контроль розетки холодильника

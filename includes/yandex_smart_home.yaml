@@ -53,7 +53,7 @@ filter:
     - binary_sensor.0x00158d0008dfa7df_water_leak
     - binary_sensor.0x00158d0008f1142d_occupancy
     - climate.0x54ef44100070621d
-    - switch.0xa4c1389395f3f656 # розетка Микки
+    - switch.0xa4c1389395f3f656 # розетка Микки (диспоузер)
     - sensor.kn_ble_tracker_dracaena_temperature
     - sensor.kn_ble_tracker_zamioculcas_temperature
 ################# Балкон ######################
@@ -231,7 +231,7 @@ entity_config:
 
   switch.0xa4c1389395f3f656:
     type: devices.types.socket
-    name: Микки
+    name: Диспоузер
     room: Кухня
     
   switch.0xa4c138e5e488903a:
