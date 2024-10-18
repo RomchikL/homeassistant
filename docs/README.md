@@ -1,6 +1,5 @@
 <div align="left">
-    <a href="https://github.com/RomchikL/homeassistant/commits/main"><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/RomchikL/homeassistant
-"></a>
+    <a href="https://github.com/RomchikL/homeassistant/commits/main"><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/RomchikL/homeassistant"></a>
 </div>
 
 # Welcome !
@@ -11,8 +10,8 @@ This is my Home Assistant installation.
 
 Description | value
 -- | --
-Number of entities | 743
-Number of sensors | 284
+Number of entities | 736
+Number of sensors | 279
 
 
 ## My installed extensions:
@@ -82,9 +81,10 @@ Number of sensors | 284
 
 ## My dashboard
 
-<a href="#" onclick="openPopup('screenshots/1.png', 'Hall'); return false;"><img src="screenshots/1.png" alt="Hall"></a>
-<a href="#" onclick="openPopup('screenshots/2.png', 'Electricity'); return false;"><img src="screenshots/2.png" alt="Electricity"></a>
-<a href="#" onclick="openPopup('screenshots/3.png', 'System Info Image'); return false;"><img src="screenshots/3.png" alt="System Info Image"></a>
+![screenshot1](screenshots/1.png)
+![screenshot2](screenshots/2.png)
+![screenshot3](screenshots/3.png)
+
 
 ***
 
