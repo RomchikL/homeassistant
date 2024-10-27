@@ -668,21 +668,34 @@ cards:
                 
                   #####
 
-        - type: tile
+#        - type: tile
+#          entity: climate.0x54ef44100070621d
+#          icon: phu:aqara-thermo-e1
+#          vertical: true
+#          name: Батарея 
+#          features:
+#            - type: target-temperature
+#            - type: "climate-hvac-modes"
+#              hvac_modes:
+#                - "off"
+#                - heat                
+#              preset_modes:
+#                - home
+#                - eco  
+
+        - type: custom:mushroom-climate-card
           entity: climate.0x54ef44100070621d
           icon: phu:aqara-thermo-e1
-          vertical: true
-          name: Батарея 
-          features:
-            - type: target-temperature
-            - type: "climate-hvac-modes"
-              hvac_modes:
-                - "off"
-                - heat                
-              preset_modes:
-                - home
-                - eco  
-
+          hvac_modes:
+            - heat
+            - "off"
+          show_temperature_control: true
+          layout: vertical
+          fill_container: true
+          collapsible_controls: true
+          primary_info: name
+          secondary_info: state
+          name: Батарея
 
 
 

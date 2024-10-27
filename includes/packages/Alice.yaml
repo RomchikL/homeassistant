@@ -344,8 +344,13 @@ alice:
           sequence:
             - service: media_player.play_media
               target:
-                entity_id: media_player.xiaomi_tv_box_cast
+                entity_id: media_player.samsung_tv_custom #media_player.xiaomi_tv_box_cast
               data:
                 media_content_id: >-
                   http://192.168.1.100:8123/api/camera_proxy_stream/camera.yandex_station_x003gq000vbn8b_lyrics?token={{state_attr('camera.yandex_station_x003gq000vbn8b_lyrics', 'access_token') }}
                 media_content_type: image/jpeg
+#            - service: media_player.play_media
+#              data:
+#                entity_id: media_player.samsung_tv_custom
+#                media_content_type: "send_key"
+#                media_content_id: KEY_SOURCE
