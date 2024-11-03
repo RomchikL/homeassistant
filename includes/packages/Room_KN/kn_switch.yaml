@@ -153,20 +153,9 @@ kn_switch:
             automation.kn_socket_refrigerator_control:
                 friendly_name: Кухня - контроль розетки холодильника
                 icon: mdi:fridge
-
-            automation.kn_led_flowers_on_morning:
-                friendly_name: Кухня - включение ленты для цветов утром
+            automation.kn_led_flowers_control:
+                friendly_name: Кухня - управление лентой для цветов
                 icon: mdi:flower
-            automation.kn_led_flowers_off_morning:
-                friendly_name: Кухня - выключение ленты для цветов утром
-                icon: mdi:flower
-            automation.kn_led_flowers_on_evening:
-                friendly_name: Кухня - включение ленты для цветов вечером
-                icon: mdi:flower
-            automation.kn_led_flowers_off_evening:
-                friendly_name: Кухня - выключение ленты для цветов вечером
-                icon: mdi:flower
-
  
  
     automation:
@@ -202,76 +191,67 @@ kn_switch:
               message: | 
                 Внимание!
                 Розетка холодильника выключена или недоступна!
-                
-      - alias: kn_led_flowers_on_morning
-        id: kn_led_flowers_on_morning
-        description: Кухня - включение ленты для цветов утром
+
+
+
+      - alias: kn_led_flowers_control
+        id: kn_led_flowers_control
+        description: Кухня - управление лентой для цветов
         initial_state: true
         trigger:
         - platform: time
           at: '06:00:00'
-        condition:
-        - condition: state
-          entity_id: switch.0xa4c13849ef842ae5
-          state: 'off'
-        action:
-        - service: switch.turn_on
-          entity_id: switch.0xa4c13849ef842ae5
-        
-      - alias: kn_led_flowers_off_morning
-        id: kn_led_flowers_off_morning
-        description: Кухня - выключение ленты для цветов утром
-        initial_state: true
-        trigger:
+          id: "0600"
         - platform: sun
-          # Possible values: sunset, sunrise
           event: sunrise
-          # Optional time offset. This example will trigger 45 minutes before sunset.
-          #offset: "-00:45:00"
-    # Утром в 8:30
-#        - platform: time
-#          at: '08:30:00'
-        condition:
-        - condition: state
-          entity_id: switch.0xa4c13849ef842ae5
-          state: 'on'
-        action:
-        - service: switch.turn_off
-          entity_id: switch.0xa4c13849ef842ae5
-        
-      - alias: kn_led_flowers_on_evening
-        id: kn_led_flowers_on_evening
-        description: Кухня - включение ленты для цветов вечером
-        initial_state: true
-        trigger:
+          #offset: "-00:45:00" # Optional time offset. This example will trigger 45 minutes before sunset.
+          id: "sunrise"
         - platform: sun
-          # Possible values: sunset, sunrise
           event: sunset
-          # Optional time offset. This example will trigger 45 minutes before sunset.
-          #offset: "-00:45:00"
-    # Вечером в 19:30
-#        - platform: time
-#          at: '19:30:00'
-        condition:
-        - condition: state
-          entity_id: switch.0xa4c13849ef842ae5
-          state: 'off'
-        action:
-        - service: switch.turn_on
-          entity_id: switch.0xa4c13849ef842ae5
-        
-      - alias: kn_led_flowers_off_evening
-        id: kn_led_flowers_off_evening
-        description: Кухня - выключение ленты для цветов вечером
-        initial_state: true
-        trigger:
-    # Вечером в 23:00
+          id: "sunset"
         - platform: time
           at: '23:00:00'
+          id: "2300"
         condition:
         - condition: state
           entity_id: switch.0xa4c13849ef842ae5
-          state: 'on'
+          state: 'off'
         action:
-        - service: switch.turn_off
-          entity_id: switch.0xa4c13849ef842ae5
+        - choose:
+          - conditions:
+              - condition: trigger
+                id: "0600"
+            sequence:
+            - if:
+              - "{{ is_state('switch.0xa4c13849ef842ae5', 'off') }}" 
+              then:
+              - service: switch.turn_on
+                entity_id: switch.0xa4c13849ef842ae5
+          - conditions:
+              - condition: trigger
+                id: "sunrise"
+            sequence:
+            - if:
+              - "{{ is_state('switch.0xa4c13849ef842ae5', 'on') }}" 
+              then:
+              - service: switch.turn_off
+                entity_id: switch.0xa4c13849ef842ae5
+          - conditions:
+              - condition: trigger
+                id: "sunset"
+            sequence:
+            - if:
+              - "{{ is_state('switch.0xa4c13849ef842ae5', 'off') }}" 
+              then:
+              - service: switch.turn_on
+                entity_id: switch.0xa4c13849ef842ae5
+          - conditions:
+              - condition: trigger
+                id: "2300"
+            sequence:
+            - if:
+              - "{{ is_state('switch.0xa4c13849ef842ae5', 'on') }}" 
+              then:
+              - service: switch.turn_off
+                entity_id: switch.0xa4c13849ef842ae5
+
