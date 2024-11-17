@@ -212,10 +212,10 @@ kn_switch:
         - platform: time
           at: '23:00:00'
           id: "2300"
-        condition:
-        - condition: state
-          entity_id: switch.0xa4c13849ef842ae5
-          state: 'off'
+#        condition:
+#        - condition: state
+#          entity_id: switch.0xa4c13849ef842ae5
+#          state: 'off'
         action:
         - choose:
           - conditions:
