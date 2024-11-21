@@ -68,7 +68,7 @@ lr_hum:
              attribute: humidifier.water_status
              from: "true"
              to: "false"
-             for: "00:00:20"
+             for: "00:00:10"
 #          condition:
 #            - condition: template # only every 5 minutes at most
 #              value_template:  "{{ (( as_timestamp(now()) - as_timestamp(state_attr('automation.lr_hum_water_warning', 'last_triggered')) | int(0) ) / 60 ) > 30 }}"
@@ -92,6 +92,13 @@ lr_hum:
            - platform: state
              entity_id: humidifier.deerma_jsq_befb_humidifier
              attribute: mode
+          condition:
+            - condition: state
+              entity_id: humidifier.deerma_jsq_befb_humidifier
+              attribute: humidifier.water_status
+              state: true
+#            - condition: template # если есть вода
+#              value_template:  "{{ (( as_timestamp(now()) - as_timestamp(state_attr('automation.lr_hum_water_warning', 'last_triggered')) | int(0) ) / 60 ) > 30 }}"
           action:
             - choose:
               - conditions:
