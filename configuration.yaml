@@ -231,3 +231,7 @@ automation: !include includes/automations.yaml
 #    pygrocy.grocy_api_client: debug,
 #    custom_components.grocy: debug
 #    }
+
+#logger:
+#  logs:
+#    custom_components.pesc: debug

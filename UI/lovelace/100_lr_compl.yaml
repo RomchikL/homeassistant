@@ -365,7 +365,7 @@ cards:
           cards:
 
             - type: custom:mushroom-template-card
-              primary: Температура
+              primary: Темп. Agara
               secondary: |-
                     {{states ('sensor.0x00158d0008ce3df9_temperature')}} С°
               layout: vertical
@@ -391,7 +391,7 @@ cards:
                 action: more-info
 
             - type: custom:mushroom-template-card
-              primary: Влажность
+              primary: Влаж. Aqara
               secondary: |-
                     {{states ('sensor.0x00158d0008ce3df9_humidity')}} %
               layout: vertical
@@ -461,6 +461,188 @@ cards:
                 {% endif %} 
               tap_action:
                 action: more-info                 
+
+
+        - type: custom:mod-card
+          card_mod:
+            style: |
+              ha-card {
+                background: #1a1a1a;
+              }
+          card:
+
+            type: grid
+            square: false
+            columns: 1
+            cards:
+
+              - type: custom:mushroom-title-card
+                subtitle: Qingping
+
+              - type: grid
+                square: false
+                columns: 3
+                cards:
+
+                - type: custom:mushroom-template-card
+                  primary: Температура
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_temperature')}} %
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_temperature
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_temperature")|float <= 15 %}
+                    indigo
+                    {% elif states("sensor.qingping_air_monitor_temperature")|float <= 19 %}
+                    blue
+                    {% elif states("sensor.qingping_air_monitor_temperature")|float <= 20 %}
+                    cyan
+                    {% elif states("sensor.qingping_air_monitor_temperature")|float <= 25 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_temperature")|float <= 30 %}
+                    amber
+                    {% elif states("sensor.qingping_air_monitor_temperature")|float <= 40 %}
+                    orange
+                    {% endif %}
+                  icon: mdi:temperature-celsius
+                  tap_action:
+                    action: more-info  
+
+                - type: custom:mushroom-template-card
+                  primary: Влажность
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_humidity')}} %
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_humidity
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_humidity")|float <= 30 %}
+                    deep-orange
+                    {% elif states("sensor.qingping_air_monitor_humidity")|float <= 40 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_humidity")|float <= 50 %}
+                    light-blue
+                    {% elif states("sensor.qingping_air_monitor_humidity")|float <= 60 %}
+                    blue
+                    {% elif states("sensor.qingping_air_monitor_humidity")|float > 60 %}
+                    indigo
+                    {% endif %}
+                  icon: mdi:water-percent
+                  tap_action:
+                    action: more-info   
+
+                - type: custom:mushroom-template-card
+                  primary: Шум
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_noise')}} dB
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_noise
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_noise")|float <= 50 %}
+                    green
+                    {% elif states("sensor.qingping_air_monitor_noise")|float <= 70 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_noise")|float > 70 %}
+                    orange
+                    {% endif %}
+                  icon: mdi:ear-hearing
+                  tap_action:
+                    action: more-info 
+
+              - type: grid
+                square: false
+                columns: 4
+                cards:
+
+                - type: custom:mushroom-template-card
+                  primary: CO2
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_co2')}} ppm
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_co2
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_co2")|float <= 1000 %}
+                    green
+                    {% elif states("sensor.qingping_air_monitor_co2")|float <= 2000 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_co2")|float <= 3000 %}
+                    red
+                    {% elif states("sensor.qingping_air_monitor_co2")|float > 3000 %}
+                    maroon
+                    {% endif %}
+                  icon: mdi:molecule-co2
+                  tap_action:
+                    action: more-info 
+
+                - type: custom:mushroom-template-card
+                  primary: eTVOC
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_etvoc')}}
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_etvoc
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_etvoc")|float <= 3 %}
+                    greenyellow
+                    {% elif states("sensor.qingping_air_monitor_etvoc")|float <= 37 %}
+                    green
+                    {% elif states("sensor.qingping_air_monitor_etvoc")|float <= 120 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_etvoc")|float <= 293 %}
+                    red
+                    {% elif states("sensor.qingping_air_monitor_etvoc")|float > 293 %}
+                    maroon
+                    {% endif %}
+                  icon: mdi:molecule
+                  tap_action:
+                    action: more-info 
+
+                - type: custom:mushroom-template-card
+                  primary: PM10
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_pm10')}} µg/m³
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_pm10
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_pm10")|float <= 54 %}
+                    green
+                    {% elif states("sensor.qingping_air_monitor_pm10")|float <= 154 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_pm10")|float <= 254 %}
+                    orange
+                    {% elif states("sensor.qingping_air_monitor_pm10")|float <= 354 %}
+                    red
+                    {% elif states("sensor.qingping_air_monitor_pm10")|float <= 424 %}
+                    orchid
+                    {% elif states("sensor.qingping_air_monitor_pm10")|float > 424 %}
+                    maroon
+                    {% endif %}
+                  icon: mdi:molecule
+                  tap_action:
+                    action: more-info 
+
+                - type: custom:mushroom-template-card
+                  primary: PM25
+                  secondary: |-
+                        {{states ('sensor.qingping_air_monitor_pm25')}} µg/m³
+                  layout: vertical
+                  entity: sensor.qingping_air_monitor_pm25
+                  icon_color: |-
+                    {% if states("sensor.qingping_air_monitor_pm25")|float <= 9 %}
+                    green
+                    {% elif states("sensor.qingping_air_monitor_pm25")|float <= 35 %}
+                    yellow
+                    {% elif states("sensor.qingping_air_monitor_pm25")|float <= 55 %}
+                    orange
+                    {% elif states("sensor.qingping_air_monitor_pm25")|float <= 125 %}
+                    red
+                    {% elif states("sensor.qingping_air_monitor_pm25")|float <= 225 %}
+                    orchid
+                    {% elif states("sensor.qingping_air_monitor_pm25")|float > 225 %}
+                    maroon
+                    {% endif %}
+                  icon: mdi:molecule
+                  tap_action:
+                    action: more-info 
+
 
 #        - type: tile
 #          entity: climate.0x54ef441000705554
