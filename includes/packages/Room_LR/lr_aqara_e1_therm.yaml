@@ -28,7 +28,7 @@ aqara_e1_therm:
           - name: lr_aqara_e1_ext_temp
 #            friendly_name: Внешний датчик температуры Aqara зал
             state: >
-              {{ is_state_attr('climate.0x54ef441000705554', 'sensor', 'internal')
+              {{ is_state('select.0x54ef441000705554_sensor', 'internal')
               }}
             delay_off: 00:01:00
             device_class: problem
