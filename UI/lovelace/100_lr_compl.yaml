@@ -591,12 +591,12 @@ cards:
                     {% elif states("sensor.qingping_air_monitor_etvoc")|float > 293 %}
                     maroon
                     {% endif %}
-                  icon: mdi:molecule
+                  icon: mdi:virus-outline
                   tap_action:
                     action: more-info 
 
                 - type: custom:mushroom-template-card
-                  primary: PM10
+                  primary: PM 10
                   secondary: |-
                         {{states ('sensor.qingping_air_monitor_pm10')}} µg/m³
                   layout: vertical
@@ -615,12 +615,12 @@ cards:
                     {% elif states("sensor.qingping_air_monitor_pm10")|float > 424 %}
                     maroon
                     {% endif %}
-                  icon: mdi:molecule
+                  icon: mdi:chart-scatter-plot-hexbin
                   tap_action:
                     action: more-info 
 
                 - type: custom:mushroom-template-card
-                  primary: PM25
+                  primary: PM 2,5
                   secondary: |-
                         {{states ('sensor.qingping_air_monitor_pm25')}} µg/m³
                   layout: vertical
@@ -639,7 +639,7 @@ cards:
                     {% elif states("sensor.qingping_air_monitor_pm25")|float > 225 %}
                     maroon
                     {% endif %}
-                  icon: mdi:molecule
+                  icon: mdi:chart-scatter-plot
                   tap_action:
                     action: more-info 
 
