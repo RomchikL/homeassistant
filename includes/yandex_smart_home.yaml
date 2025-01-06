@@ -1,8 +1,8 @@
 #yandex_smart_home:
-notifier:
-  - oauth_token: !secret yaha-oauth_token
-    skill_id: !secret yaha-skill_id 
-    user_id: !secret yaha-user_id 
+#notifier:
+#  - oauth_token: !secret yaha-oauth_token
+#    skill_id: !secret yaha-skill_id 
+#    user_id: !secret yaha-user_id 
     
 
     # Если в диалоге авторизовано несколько пользователей Home Assistant или
