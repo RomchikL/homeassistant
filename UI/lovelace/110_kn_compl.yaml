@@ -166,15 +166,15 @@ cards:
             - type: custom:mushroom-template-card
               primary: Освещенность
               secondary: |-
-                    {{states ('sensor.0x00158d0008f1142d_illuminance_lux')}} lux
+                    {{states ('sensor.0x00158d0008f1142d_illuminance')}} lux
               layout: vertical
-              entity: sensor.0x00158d0008f1142d_illuminance_lux
+              entity: sensor.0x00158d0008f1142d_illuminance
               icon_color: |-
-                {% if states("sensor.0x00158d0008f1142d_illuminance_lux")|float <= 100 %}
+                {% if states("sensor.0x00158d0008f1142d_illuminance")|float <= 100 %}
                 blue-grey
-                {% elif states("sensor.0x00158d0008f1142d_illuminance_lux")|float <= 200 %}
+                {% elif states("sensor.0x00158d0008f1142d_illuminance")|float <= 200 %}
                 grey
-                {% elif states("sensor.0x00158d0008f1142d_illuminance_lux")|float > 200 %}
+                {% elif states("sensor.0x00158d0008f1142d_illuminance")|float > 200 %}
                 white
                 {% endif %}
               icon: mdi:brightness-5

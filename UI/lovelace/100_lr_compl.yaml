@@ -487,7 +487,7 @@ cards:
                 - type: custom:mushroom-template-card
                   primary: Температура
                   secondary: |-
-                        {{states ('sensor.qingping_air_monitor_temperature')}} %
+                        {{states ('sensor.qingping_air_monitor_temperature')}} С°
                   layout: vertical
                   entity: sensor.qingping_air_monitor_temperature
                   icon_color: |-
