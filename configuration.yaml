@@ -64,6 +64,10 @@ system_health:
 # Stream from camera
 stream:
 history:
+
+# Camera stream
+go2rtc:
+  url: !secret path_go2rtc
     
 
 # Reverse Proxy
