@@ -14,15 +14,19 @@ bt_buttons:
         id: bt_lenta_aqara
         description: Ванная - Управление лентой кнопкой Aqara
         initial_state: true
-        trigger:
-        - platform: state
-          entity_id: sensor.0x00158d0006f85055_action
-          to: 'single'
-          id: "single"
-        - platform: state
-          entity_id: sensor.0x00158d0006f85055_action
-          to: 'double'
-          id: "double"          
+        triggers:
+          - trigger: device
+            domain: mqtt
+            device_id: ba50097cd83fad79c0d6535cfa6a8dd6
+            type: action
+            subtype: single
+            id: "single"
+          - trigger: device
+            domain: mqtt
+            device_id: ba50097cd83fad79c0d6535cfa6a8dd6
+            type: action
+            subtype: double
+            id: "double"          
         action:
           - choose:
             - conditions:
