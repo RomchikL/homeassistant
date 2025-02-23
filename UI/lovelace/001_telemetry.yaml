@@ -883,26 +883,40 @@ cards:
                 show_header_toggle: false
               filter:
                 include:
-                - domain: switch
-                  state: 'on'
-                  attributes:
-                    power: '! none'
+                - domain: sensor
+                  entity_id: sensor.*_power
                   options:
                      type: custom:multiple-entity-row
-                     toggle: true
+                     toggle: false
                     #  show_state: false
                      secondary_info: last-changed
                      state_color: true
-                     entities:
-                      - attribute: power
-                        name: Потребление
-                        unit: 'Ватт'
+#                     entities:
+#                      - attribute: power
+#                        name: Потребление
+#                        unit: 'Ватт'
                 exclude:
-                - domain: switch
-                  state: 'on'
-                  attributes:
-                    power: '< 10'
-                - entity_id: switch.*power_outage*
+                - domain: sensor
+                  state: '< 10'
+                - domain: sensor
+                  state: 'unavailable'
+                - entity_id: sensor.0x187a3efffe355d1a_power
+
+#                - entity_id: switch.*power_outage*
+#                - entity_id: switch.*child_lock*
+#                - entity_id: switch.*window_detection*
+#                - entity_id: switch.*flip_indicator*
+#                template: |
+#                  {% set variable = namespace(value = {}) %}
+#                  {% set variable.value = expand(states.switch)
+#                  | selectattr('entity_id', 'in', integration_entities('mqtt') )
+#                  | rejectattr('entity_id','search','(power_outage|child_lock|window_detection|flip_indicator|valve_detection|right|left|0xa4c1388af6a76f04|schedule|permit_join|0xa4c1381662c81b0e|0x54ef4410009f9505)') 
+#                  | map(attribute='entity_id') | map("regex_replace", "switch", "sensor") | map("regex_replace", "$", "_power") | list %}
+#                  {%- for item in variable.value -%}
+#                    {% if states(item) >= "10" %}
+#                      {{ item }}
+#                    {% endif %}
+#                  {%- endfor -%}               
                 
             - type: custom:auto-entities
               card:

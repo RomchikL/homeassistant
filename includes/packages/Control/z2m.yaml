@@ -39,6 +39,29 @@ z2m:
           friendly_name: Движение коридор
         binary_sensor.0x00158d0008f1142d_occupancy:
           friendly_name: Движение кухня
+
+        sensor.0xa4c138623bc77529_power:
+          friendly_name: Стабилизатор
+        sensor.0xa4c13873bd4330eb_power:
+          friendly_name: Чайник
+        sensor.0xa4c138aca076db2a_power:
+          friendly_name: Планшет
+        sensor.0xa4c138f1330afac4_power:
+          friendly_name: Сервер
+        sensor.0x70b3d52b6001b5e1_power:
+          friendly_name: СВЧ
+        sensor.0xa4c1386f409b4ac4_power:
+          friendly_name: Подсветка цветы кухня
+        sensor.0xa4c13849ef842ae5_power:
+          friendly_name: Лента цветы
+        sensor.0xa4c138323f769290_power:
+          friendly_name: Ёлочки кухня
+        sensor.0xa4c138e5e488903a_power:
+          friendly_name: Холодильник
+        sensor.0xa4c138184fccfbb1_power:
+          friendly_name: Удлинитель зал
+        sensor.0xa4c1387beab4cd4f_power:
+          friendly_name: Стиралка
     
     template:
 
