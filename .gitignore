@@ -17,3 +17,5 @@ secrets.yaml
 state.tsv
 includes/packages/alarm.yaml
 Readme.md
+wget-log
+wget-log.1

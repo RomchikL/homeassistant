@@ -46,6 +46,10 @@ cr_switch:
 #          friendly_name: Ванная - Включениче света по датчику движения
 #          icon: mdi:ceiling-light
 
+        automation.cr_switch_aqara_decoupled:
+          friendly_name: Коридор - отвязать клавиши Aqara 
+          icon: phu:aqara-h1-switch
+
 
     sensor:
 
@@ -92,4 +96,26 @@ cr_switch:
    #     offset:
     #      days: 20
 
+
+
+    automation:
+
+
+      - alias: cr_switch_aqara_decoupled
+        id: cr_switch_aqara_decoupled
+        description: Коридор - отвязать клавиши Aqara
+        initial_state: true
+        trigger:
+          - platform: event
+            event_type: yandex_intent
+            event_data:
+              text: Рататуй
+        action:
+        - service: select.select_option
+          target:
+            entity_id: select.0x54ef4410009f9505_operation_mode
+          data:
+            option: "decoupled"
+     
+     
           

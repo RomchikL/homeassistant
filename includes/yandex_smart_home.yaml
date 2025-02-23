@@ -37,6 +37,7 @@ filter:
 #    - sensor.0x00158d0008ce3df9_humidity
     - binary_sensor.0x00158d0008e1c64f_contact
     - climate.0x54ef441000705554
+    - 
 ################# Кухня ######################
     - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка 
     - switch.0xa4c13849ef842ae5 # розетка цветы фиолетовая
