@@ -38,7 +38,7 @@ test:
 #      customize:
 
 #        sensor.0x00158d0008dfa560_control:
-#          friendly_name: Протечка ванная стояк          
+#          friendly_name: Протечка ванная стиралка          
           
 #    template:
     

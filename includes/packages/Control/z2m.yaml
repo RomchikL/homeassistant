@@ -26,7 +26,7 @@ z2m:
         binary_sensor.0x00158d0008d93f0d_contact:
           friendly_name: Дверь вход         
         binary_sensor.0x00158d0008dfa560_water_leak:
-          friendly_name: Протечка ванная стояк
+          friendly_name: Протечка стиралка
         binary_sensor.0xa4c1387c6db81d88_water_leak:
           friendly_name: Протечка ванная 
         binary_sensor.0x00158d0008dfa7df_water_leak:

@@ -4,9 +4,9 @@ telegram_alarm:
       customize:
           
         binary_sensor.0x00158d0008dfa560_water_leak:
-          friendly_name: Ванная протечка, стояк
+          friendly_name: Ванная протечка, стиралка
         sensor.0x00158d0008dfa560_battery:
-          friendly_name: Ванная протечка, стояк
+          friendly_name: Ванная протечка, стиралка
           
         binary_sensor.0x00158d0008dfa7df_water_leak:
           friendly_name: Кухня протечка, раковина

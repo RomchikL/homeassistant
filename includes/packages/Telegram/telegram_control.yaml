@@ -460,7 +460,7 @@ telegram_control:
                       message: &msg_bt |
                         {{'\U0001F6C0'}} Управление ванная :
                         {{'\U0001F321'}} - {{ states('sensor.0x00158d0008ce3dca_temperature') }} °C, {{'\U0001F4A7'}} - {{ states('sensor.0x00158d0008ce3dca_humidity') }} %
-                        {{'\U0001F6B1'}} - Стояк - {% if is_state('binary_sensor.0x00158d0008dfa560_water_leak', 'on') %} Протечка {% else %} Сухо {% endif %} 
+                        {{'\U0001F6B1'}} - Стиралка - {% if is_state('binary_sensor.0x00158d0008dfa560_water_leak', 'on') %} Протечка {% else %} Сухо {% endif %} 
                         {{'\U0001F6AA'}} - {% if is_state('binary_sensor.0xa4c138dc68586d06_contact', 'on') %} Открыта {% else %} Закрыта {% endif %}
                         {{'\U0001F6B6'}} - {% if is_state('binary_sensor.0x00158d0008f1142d_occupancy', 'on') %} Движение {% else %} Нет движения {% endif %} 
                       inline_keyboard: &keyb_bt
