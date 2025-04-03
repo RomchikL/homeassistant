@@ -24,7 +24,7 @@ bt_sensors:
           device_class: moisture
 
         binary_sensor.0xa4c1380837d46b7d_contact:
-          friendly_name: Протечка стиралка
+          friendly_name: Протечка стояк
           device_class: moisture
           
 #        sensor.0x00158d0008ce3dca_mmhg_pressure:

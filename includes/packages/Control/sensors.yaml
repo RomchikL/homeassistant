@@ -70,7 +70,7 @@ sensors:
     # Трекер Мамы по wi fi
           - name: zukhra_home
             state: >
-              {{ is_state('device_tracker.m2004j19c_redmi9', 'home')               
+              {{ is_state('device_tracker.poco_m6_pro', 'home')               
               }}
             delay_off: 00:03:00
             device_class: presence

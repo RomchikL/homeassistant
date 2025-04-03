@@ -37,7 +37,7 @@ filter:
 #    - sensor.0x00158d0008ce3df9_humidity
     - binary_sensor.0x00158d0008e1c64f_contact
     - climate.0x54ef441000705554
-    - 
+
 ################# Кухня ######################
     - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка 
     - switch.0xa4c13849ef842ae5 # розетка цветы фиолетовая
@@ -79,9 +79,9 @@ filter:
     - switch.0xa4c1381662c81b0e # лента
     - switch.0xa4c1387beab4cd4f # розетка стиралка
     - binary_sensor.0xa4c138dc68586d06_contact
-    - binary_sensor.0x00158d0008dfa560_water_leak # протечка стояк
+    - binary_sensor.0x00158d0008dfa560_water_leak # протечка стиралка
     - binary_sensor.0xa4c1387c6db81d88_contact # протечка ванная
-    - binary_sensor.0xa4c1380837d46b7d_contact # протечка стиралка
+    - binary_sensor.0xa4c1380837d46b7d_contact # протечка стояк
     - binary_sensor.bt_ld2410_presence
 ################# Тест ######################
     - binary_sensor.lan_home
@@ -422,7 +422,7 @@ entity_config:
     room: Ванная
     
   binary_sensor.0x00158d0008dfa560_water_leak:
-    name: Протечка стояк
+    name: Протечка стиралка
     room: Ванная      
 
   binary_sensor.0xa4c1387c6db81d88_contact:
@@ -432,7 +432,7 @@ entity_config:
 
   binary_sensor.0xa4c1380837d46b7d_contact:
     type: devices.types.sensor.water_leak
-    name: Протечка стиралка
+    name: Протечка стояк
     room: Ванная 
     
   binary_sensor.bt_ld2410_presence:
