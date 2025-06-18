@@ -28,6 +28,7 @@ filter:
     - switch.0x54ef441000b89402_right # свет зал лампочки
     - switch.0xa4c138184fccfbb1 # розетка удлинителя
     - switch.0xa4c138623bc77529 # розетка стабилизатора
+    - switch.0xa4c1388af6a76f04_l1 # первая розетка умного удлинителя - грелка
     - switch.0xa4c1388af6a76f04_l3 # Дуся/вентилятор
     - light.lamp_1s
     - media_player.android_tv_192_168_1_150
@@ -212,8 +213,12 @@ entity_config:
   climate.0x54ef441000705554:
     name: Батарея
     room: Зал    
-    
-    
+
+  switch.0xa4c1388af6a76f04_l1:
+    type: devices.types.socket
+    name: Грелка
+    room: Зал   
+
 ################# Кухня ######################
   switch.0xa4c1386f409b4ac4:
      type: devices.types.light
