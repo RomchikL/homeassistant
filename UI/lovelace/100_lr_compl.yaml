@@ -703,23 +703,41 @@ cards:
               - icon: 'mdi:account-music'
                 id: script.alice_karaoke
                 type: script
+                #################### Галя
+              - icon: 'mdi:weather-night'
+                type: service
+                id: media_player.play_media
+                data:
+                  media_content_id: http://radio.kamchatkalive.ru:8103/chillout
+                  media_content_type: stream.mp3
+                  entity_id: media_player.lr_yandex_station_max
+              - icon: 'mdi:guitar-electric'
+                type: service
+                id: media_player.play_media
+                data:
+                  media_content_id: http://radio.kamchatkalive.ru:8103/rock
+                  media_content_type: stream.mp3
+                  entity_id: media_player.lr_yandex_station_max
+              - icon: 'mdi:party-popper'
+                type: service
+                id: media_player.play_media
+                data:
+                  media_content_id: http://radio.kamchatkalive.ru:8103/dance
+                  media_content_type: stream.mp3
+                  entity_id: media_player.lr_yandex_station_max
+              - icon: 'mdi:rocket-launch'
+                type: service
+                id: media_player.play_media
+                data:
+                  media_content_id: https://rock.amgradio.ru/RusRock?4184
+                  media_content_type: stream.mp3
+                  entity_id: media_player.lr_yandex_station_max
             columns: 5
           hide:
             sound_mode: true
             runtime: false
           tts:
             platform: yandex_station
-
-        - type: "custom:jukebox-card"
-          links:
-            - url: http://radio.kamchatkalive.ru:8103/chillout
-              name: Chill
-            - url: http://radio.kamchatkalive.ru:8103/rock
-              name: Rock
-            - url: http://radio.kamchatkalive.ru:8103/dance
-              name: Dance
-          entities:
-            - media_player.mpd
 
 
         - type: grid

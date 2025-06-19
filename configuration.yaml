@@ -21,6 +21,7 @@ homeassistant:
 # For HomeKit
 #zeroconf:
 
+
 config:
 #Сканирование доступных устройств в сети
 ssdp:
@@ -119,6 +120,7 @@ yandex_station:
     !secret ya_mini_id :
       host: 192.168.3.4
     !secret ya_max_id :
+#      host: 192.168.1.35
       host: 192.168.3.20    
 
   media_players:
@@ -132,7 +134,7 @@ yandex_station:
 #      sync_volume: False  # опциональное отключение синхронизации громкости звука
 
 # Медиа контент
-#media_source:
+media_source:
 
 lovelace:
   mode: yaml
@@ -240,4 +242,4 @@ automation: !include includes/automations.yaml
 
 #logger:
 #  logs:
-#    custom_components.pesc: debug
+#    custom_components.yandex_station: debug
