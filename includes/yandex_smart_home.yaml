@@ -33,11 +33,12 @@ filter:
     - light.lamp_1s
     - media_player.android_tv_192_168_1_150
     - media_player.samsung_q60ba_55_tv
-    - media_player.mpd
+#    - media_player.mpd
     - sensor.0x00158d0008ce3df9_temperature
 #    - sensor.0x00158d0008ce3df9_humidity
     - binary_sensor.0x00158d0008e1c64f_contact
     - climate.0x54ef441000705554
+    - 
 
 ################# Кухня ######################
     - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка 
@@ -125,10 +126,10 @@ entity_config:
     name: Приставка
     room: Зал
 
-  media_player.mpd:
-    type: devices.types.media_device
-    name: Галя
-    room: Зал    
+#  media_player.mpd:
+#    type: devices.types.media_device
+#    name: Галя
+#    room: Зал    
     
   media_player.samsung_q60ba_55_tv:
     type: devices.types.media_device.tv

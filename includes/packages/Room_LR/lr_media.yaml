@@ -8,16 +8,16 @@ lr_media:
     homeassistant:
       customize:
       
-        media_player.mpd:
-          friendly_name: Галя
+#        media_player.mpd:
+#          friendly_name: Галя
 
-        automation.lr_tox_volume_down_evening:
-          friendly_name: Гостиная - уменьшить громкость TOX ночью
-          icon: mdi:television-box
+#        automation.lr_tox_volume_down_evening:
+#          friendly_name: Гостиная - уменьшить громкость TOX ночью
+#          icon: mdi:television-box
 
-        automation.lr_tox_volume_up_morning:
-          friendly_name: Гостиная - увеличить громкость TOX утром
-          icon: mdi:television-box
+#        automation.lr_tox_volume_up_morning:
+#          friendly_name: Гостиная - увеличить громкость TOX утром
+#          icon: mdi:television-box
          
         automation.lr_yandex_station_max_volume_down_evening:
           friendly_name: Гостиная - уменьшить громкость станции Max ночью
@@ -26,32 +26,32 @@ lr_media:
     automation:
 
 
-      - alias: lr_tox_volume_down_evening
-        id: lr_tox_volume_down_evening
-        description: Гостиная - уменьшить громкость TOX ночью
-        initial_state: false
-        trigger:
-        - platform: time
-          at: '22:00:00'
-        action:
-        - service: media_player.volume_set
-          entity_id: media_player.android_tv_192_168_1_150
-          data:
-            volume_level: 0.5
+#      - alias: lr_tox_volume_down_evening
+#        id: lr_tox_volume_down_evening
+#        description: Гостиная - уменьшить громкость TOX ночью
+#        initial_state: false
+#        trigger:
+#        - platform: time
+#          at: '22:00:00'
+#        action:
+#        - service: media_player.volume_set
+#          entity_id: media_player.android_tv_192_168_1_150
+#          data:
+#            volume_level: 0.5
             
             
-      - alias: lr_tox_volume_up_morning
-        id: lr_tox_volume_up_morning
-        description: Гостиная - увеличить громкость TOX утром
-        initial_state: false
-        trigger:
-        - platform: time
-          at: '8:00:00'
-        action:
-        - service: media_player.volume_set
-          entity_id: media_player.android_tv_192_168_1_150
-          data:
-            volume_level: 1
+#      - alias: lr_tox_volume_up_morning
+#        id: lr_tox_volume_up_morning
+#        description: Гостиная - увеличить громкость TOX утром
+#        initial_state: false
+#        trigger:
+#        - platform: time
+#          at: '8:00:00'
+#        action:
+#        - service: media_player.volume_set
+#          entity_id: media_player.android_tv_192_168_1_150
+#          data:
+#            volume_level: 1
             
       - alias: lr_yandex_station_max_volume_down_evening
         id: lr_yandex_station_max_volume_down_evening

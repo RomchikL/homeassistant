@@ -78,6 +78,7 @@ http:
   - 172.21.0.0/24
   - 192.168.10.0/24
   - 192.168.1.0/24
+  - 192.168.3.20/32 # Ya.Max
   ip_ban_enabled: true
   login_attempts_threshold: 5
 #  api_password: !secret http_api_password
@@ -127,8 +128,8 @@ yandex_station:
     - entity_id: media_player.samsung_q60ba_55_tv
       name: SamsungTV
 #      media_content_type: url  # важно для интеграции SamsungTV из HACS
-    - entity_id: media_player.tox1_150
-      name: Tox
+#    - entity_id: media_player.tox1_150
+#      name: Tox
 #    - entity_id: media_player.tox1_150_ap
 #      name: Tox Apple     
 #      sync_volume: False  # опциональное отключение синхронизации громкости звука
