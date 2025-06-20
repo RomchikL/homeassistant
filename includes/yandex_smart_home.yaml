@@ -38,7 +38,7 @@ filter:
 #    - sensor.0x00158d0008ce3df9_humidity
     - binary_sensor.0x00158d0008e1c64f_contact
     - climate.0x54ef441000705554
-    - 
+    - media_player.lr_galya
 
 ################# Кухня ######################
     - switch.0xa4c1386f409b4ac4 # розетка цветы подсветка 
@@ -219,6 +219,28 @@ entity_config:
     type: devices.types.socket
     name: Грелка
     room: Зал   
+
+  media_player.lr_galya:
+    type: devices.types.media_device
+    name: Галя
+    room: Зал
+    features:
+      - next_previous_track
+      - select_source
+      - turn_on_off
+      - play_pause
+      - play_media
+    turn_on:
+      action: media_player.turn_on
+      entity_id: media_player.lr_galya
+    turn_off:
+      action: media_player.turn_off
+      entity_id: media_player.lr_galya
+#    modes:
+#      input_source: # УДЯ <-> HA       # не поддерживаются такие названия модов
+#        Релакс: ['Chill-Out']
+#        Рок: ['Rock']
+#        Дэнс: ['Dance']
 
 ################# Кухня ######################
   switch.0xa4c1386f409b4ac4:

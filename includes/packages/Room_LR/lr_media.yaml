@@ -10,6 +10,8 @@ lr_media:
       
 #        media_player.mpd:
 #          friendly_name: Галя
+        media_player.lr_galya:
+          friendly_name: Галя
 
 #        automation.lr_tox_volume_down_evening:
 #          friendly_name: Гостиная - уменьшить громкость TOX ночью
@@ -22,6 +24,103 @@ lr_media:
         automation.lr_yandex_station_max_volume_down_evening:
           friendly_name: Гостиная - уменьшить громкость станции Max ночью
           icon: yandex:station-max
+
+    input_select:
+      lr_galya_channel_selector:
+        name: "Галя - Текущий канал"
+        options:
+          - "Chill-Out"
+          - "Rock"
+          - "Dance"
+        initial: "Chill-Out"
+
+    media_player:
+      - platform: universal
+        name: "lr_galya"
+        state_template: >
+          {{ states('media_player.lr_yandex_station_max') }}
+        commands:
+          turn_on:
+            service: script.lr_galya_play_current_channel
+          turn_off:
+            service: media_player.media_stop
+            target:
+              entity_id: media_player.lr_yandex_station_max
+          select_source:
+            service: script.lr_galya_select_source
+            data_template:
+              source: "{{ source }}"
+          media_play:
+            service: script.lr_galya_play_current_channel
+          media_pause:
+            service: media_player.media_stop
+            target:
+              entity_id: media_player.lr_yandex_station_max
+          media_next_track:
+            service: script.lr_galya_next_channel
+          media_previous_track:
+            service: script.lr_galya_previous_channel
+        attributes:
+          state: media_player.lr_yandex_station_max
+          source: input_select.lr_galya_channel_selector
+          source_list: input_select.lr_galya_channel_selector|options
+        device_class: speaker
+        unique_id: lr_galya
+
+
+
+    script:
+
+      # Выбор канала по имени
+      lr_galya_select_source:
+        alias: "Галя - Выбор канала по имени"
+        fields:
+          source:
+            description: "Название канала для воспроизведения"
+            example: "Chill-Out"
+        sequence:
+          - service: media_player.play_media
+            target:
+              entity_id: media_player.lr_yandex_station_max
+            data_template:
+              media_content_id: >-
+                {% if source == 'Chill-Out' %}
+                  http://radio.kamchatkalive.ru:8103/chillout
+                {% elif source == 'Rock' %}
+                  http://radio.kamchatkalive.ru:8103/rock
+                {% elif source == 'Dance' %}
+                  http://radio.kamchatkalive.ru:8103/dance
+                {% else %}
+                  null
+                {% endif %}
+              media_content_type: "audio/mpeg"
+
+      # Воспроизведение текущего канала
+      lr_galya_play_current_channel:
+        alias: "Галя - Play текущий канал"
+        sequence:
+          - service: script.lr_galya_select_source
+            data:
+              source: "{{ states('input_select.lr_galya_channel_selector') }}"
+
+      # Круговое переключение вперед
+      lr_galya_next_channel:
+        alias: "Галя - Следующий канал"
+        sequence:
+          - service: input_select.select_next
+            target:
+              entity_id: input_select.lr_galya_channel_selector
+          - service: script.lr_galya_play_current_channel
+
+      # Круговое переключение назад
+      lr_galya_previous_channel:
+        alias: "Галя - Предыдущий канал"
+        sequence:
+          - service: input_select.select_previous
+            target:
+              entity_id: input_select.lr_galya_channel_selector
+          - service: script.lr_galya_play_current_channel
+
 
     automation:
 
