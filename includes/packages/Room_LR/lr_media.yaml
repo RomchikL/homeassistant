@@ -48,7 +48,7 @@ lr_media:
               entity_id: media_player.lr_yandex_station_max
           select_source:
             service: script.lr_galya_select_source
-            data_template:
+            data:
               source: "{{ source }}"
           media_play:
             service: script.lr_galya_play_current_channel
