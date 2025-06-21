@@ -48,7 +48,7 @@ frontend:
     - /hacsfiles/bar-card/bar-card.js
 
 
-template: !include sidebar.yaml
+#template: !include sidebar.yaml
 
 # Включение карты
 #map:

@@ -8,8 +8,8 @@ views:
   - !include UI/lovelace/130_cr_compl.yaml
 #  - !include UI/lovelace/180_outdoor.yaml
 #  - !include UI/lovelace/190_alarm.yaml
-  - !include UI/lovelace/170_test.yaml
   - !include UI/lovelace/003_power.yaml
+  - !include UI/lovelace/170_test.yaml
 
   
   

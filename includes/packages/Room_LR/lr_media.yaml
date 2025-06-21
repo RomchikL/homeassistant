@@ -37,8 +37,12 @@ lr_media:
     media_player:
       - platform: universal
         name: "lr_galya"
-        state_template: >
-          {{ states('media_player.lr_yandex_station_max') }}
+        state_template: >-
+          {% if is_state('media_player.lr_galya', 'playing') %}
+            playing
+          {% else %}
+            idle
+          {% endif %}
         commands:
           turn_on:
             service: script.lr_galya_play_current_channel
@@ -61,7 +65,7 @@ lr_media:
           media_previous_track:
             service: script.lr_galya_previous_channel
         attributes:
-          state: media_player.lr_yandex_station_max
+          state: media_player.lr_galya
           source: input_select.lr_galya_channel_selector
           source_list: input_select.lr_galya_channel_selector|options
         device_class: speaker
